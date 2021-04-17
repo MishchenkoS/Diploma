@@ -20,3 +20,5 @@ router.post('/start/:idTournament/:round/:idTest/test', addTestToRound);
 
 router.patch('/start/:idTournament/:round/:idTest', changeStatusTest);
 router.patch('/finish/:idTournament', changeStatusTournament);
+
+module.exports = router;
