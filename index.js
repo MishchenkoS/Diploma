@@ -8,8 +8,7 @@ const authRouter = require('./routers/authRouter');
 const usersRouter = require('./routers/usersRouter');
 const testsRouter = require('./routers/testsRouter');
 const gamesRouter = require('./routers/gamesRouter');
-// const trucksRouter = require('./routers/trucksRouter');
-// const loadsRouter = require('./routers/loadsRouter');
+const tournamentsRouter = require('./routers/tournamentRouter');
 
 const PORT = process.env.PORT || 8080;
 
@@ -22,8 +21,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/users/me', usersRouter);
 app.use('/api/tests', testsRouter);
 app.use('/api/games', gamesRouter);
-// app.use('/api/trucks', trucksRouter);
-// app.use('/api/loads', loadsRouter);
+app.use('/api/tournaments', tournamentsRouter);
 app.use((err, req, res, next) => res.status(500).json({message: err.message}));
 
 const start = async () => {
