@@ -1,7 +1,7 @@
 const express = require('express');
 
 const { authMiddleware, adminRoleChecker } = require('./middlewares/authMiddleware');
-const { testValidation, idValidation } = require('./middlewares/validationMiddleware');
+const { testValidation, idGameValidation } = require('./middlewares/validationMiddleware');
 const { newTest, getTestsInfo, changeTest, deleteTest, getTestInfo } =
     require('../controllers/testsController');
 const { asyncWrapper } = require('../helpers');
@@ -11,14 +11,14 @@ const router = new express.Router();
 //Добавить валидацию
 
 router.get('/', authMiddleware, 
-    asyncWrapper(adminRoleChecker), getTestsInfo);
+    asyncWrapper(adminRoleChecker), asyncWrapper(getTestsInfo));
 router.get('/:testId', authMiddleware, 
-    asyncWrapper(adminRoleChecker), asyncWrapper(idValidation), getTestInfo);
+    asyncWrapper(adminRoleChecker), asyncWrapper(idGameValidation), asyncWrapper(getTestInfo));
 router.post('/test', authMiddleware, 
-    asyncWrapper(adminRoleChecker), asyncWrapper(testValidation), newTest);
+    asyncWrapper(adminRoleChecker), asyncWrapper(testValidation), asyncWrapper(newTest));
 router.patch('/:testId', authMiddleware, asyncWrapper(adminRoleChecker), 
-    asyncWrapper(idValidation), asyncWrapper(testValidation), changeTest);
+    asyncWrapper(idGameValidation), asyncWrapper(testValidation), asyncWrapper(changeTest));
 router.delete('/:testId', authMiddleware,
-    asyncWrapper(adminRoleChecker), asyncWrapper(idValidation), deleteTest);
+    asyncWrapper(adminRoleChecker), asyncWrapper(idGameValidation), asyncWrapper(deleteTest));
 
 module.exports = router;

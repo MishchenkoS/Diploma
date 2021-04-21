@@ -1,18 +1,30 @@
 const { Game } = require('../models/gameModel');
+const gameDao = require('../dao/gameDao');
+const userDao = require('../dao/userDao');
+const { Tournament } = require('../models/tournamentModel');
 
 module.exports.newGame = async (req, res) => {
-  const { nameGame, rounds} = req.body;
-  const game = await Game.findOne({nameGame})
-    .catch((err) => {
-      console.error(err.message);
-    });
+  const { nameGame, rounds, leadings, players, type } = req.body;
+  await gameDao.findGameByName(nameGame);
 
-  if (game) {
-    return res.status(400).json({message: `Game ${nameGame} already exists`});
+  for(let i = 0; i < leadings.length; i++) {
+    let userProfileInfo = await userDao.findUserById(leadings[i]);
+    if(userProfileInfo.role === "STUDENT") {
+      return res.status(400).json({message: `User ${userProfileInfo.login} is not leading!`});
+    }
+  }
+
+  if(type === "PLAYER") {
+    for(let i = 0; i < leadings.length; i++) {
+      await userDao.findUserById(players[i]);
+    }
   }
 
   const newGame = new Game({
     nameGame,
+    leadings, 
+    players, 
+    type,
     rounds
   });
 
@@ -22,61 +34,86 @@ module.exports.newGame = async (req, res) => {
 
 
 module.exports.getGamesInfo = async (req, res) => {
-  const gamesInfo = await Game.find({})
-    .catch((err) => {
-      console.error(err.message);
-    });
-
-  if (!gamesInfo || gamesInfo.length === 0) {
-    return res.status(400).json({message: 'No games found'});
-  }
-
+  const gamesInfo = await gameDao.findGames();
   res.json(gamesInfo); 
 }
 
 module.exports.getGameInfo = async (req, res) => {
-  const gameInfo = await Game.findById(req.params.gameId)
-    .catch((err) => {
-      console.error(err.message);
-    });
-  
-  if (!gameInfo) {
-    return res.status(400).json({message: 'No game found'});
-  }
-  
+  const gameInfo = await gameDao.findGameById(req.params.gameId);
   res.json({game: gameInfo});
 }
 
 module.exports.getRoundInfo = async (req, res) => {
-  const gameInfo = await Game.findById(req.params.gameId)
-    .catch((err) => {
-      console.error(err.message);
-    });
-  
-  if (!gameInfo) {
-    return res.status(400).json({message: 'No game found'});
-  }
-
+  const gameInfo = await gameDao.findGameById(req.params.gameId);
   const round = req.params.round;
 
-  if(!gameInfo.rounds[round] || gameInfo.rounds[round].length === 0) {
+  if(!gameInfo.rounds[round]) {
     return res.status(400).json({message: 'No round found'});
   }
+  
+
+  // if(!gameInfo.rounds[round] || gameInfo.rounds[round].length === 0) {
+  //   return res.status(400).json({message: 'No round found'});
+  // }
 
   res.json({round: gameInfo.rounds[round]});
 }
 
+module.exports.changeLeadings = async (req, res) => {
+  const game = await gameDao.findGameById(req.params.gameId);
+  const { leadings } = req.body;
+  for(let i = 0; i < leadings.length; i++) {
+    let userProfileInfo = await userDao.findUserById(leadings[i]);
+    if(userProfileInfo.role === "STUDENT") {
+      return res.status(400).json({message: `User ${userProfileInfo.login} is not leading!`});
+    }
+  }
+  await game.updateOne({leadings : leadings});
+  res.json({message: 'Leadings changed successfully!'});
+};
 
-module.exports.changeRound = async (req, res) => {
-  const game = await Game.findById(req.params.gameId)
-    .catch((err) => {
-      console.error(err.message);
-    });
+module.exports.addLeadings = async (req, res) => {
+  const game = await gameDao.findGameById(req.params.gameId);
+  const { leadings } = req.body;
+  for(let i = 0; i < leadings.length; i++) {
+    let userProfileInfo = await userDao.findUserById(leadings[i]);
+    if(userProfileInfo.role === "STUDENT") {
+      return res.status(400).json({message: `User ${userProfileInfo.login} is not leading!`});
+    }
+  }
+  game.leadings.concat(leadings);
+  await game.updateOne({leadings : game.leadings.concat(leadings)});
+  res.json({message: 'Leadings added successfully!'});
+};
 
-  if (!game) {
-    return res.status(400).json({message: 'No game found'});
+module.exports.changePlayers = async (req, res) => {
+  const game = await gameDao.findGameById(req.params.gameId);
+  const { players } = req.body;
+  if(game.type === "PLAYER") {
+    for(let i = 0; i < players.length; i++) {
+      await userDao.findUserById(players[i]);
+    }
+  }
+  await game.updateOne({players : players});
+  res.json({message: 'Players changed successfully!'});
+};
+
+module.exports.addPlayers = async (req, res) => {
+  const game = await gameDao.findGameById(req.params.gameId);
+  const { players } = req.body;
+  if(game.type === "PLAYER") {
+    for(let i = 0; i < players.length; i++) {
+      await userDao.findUserById(players[i]);
+    }
   }
 
+  await game.updateOne({players : game.players.concat(players)});
+  res.json({message: 'Players added successfully!'});
+};
+
+
+module.exports.changeRound = async (req, res) => {
+  const game = await gameDao.findGameById(req.params.gameId);
   const round = req.params.round;
   const { tests } = req.body;
 
@@ -91,53 +128,71 @@ module.exports.changeRound = async (req, res) => {
 }
 
 module.exports.changeNameGame = async (req, res) => {
-  const game = await Game.findById(req.params.gameId)
-    .catch((err) => {
-      console.error(err.message);
-    });
-  
-  if (!game) {
-    return res.status(400).json({message: 'No game found'});
-  }
-
+  const game = await gameDao.findGameById(req.params.gameId);
   const { nameGame } = req.body;
-  const gameForName = await Game.findOne({nameGame})
-    .catch((err) => {
-      console.error(err.message);
-    });
 
-  if (gameForName) {
-    return res.status(400).json({message: `Game ${nameGame} already exists`});
-  }
-
+  await gameDao.findGameByName(nameGame);
   await game.updateOne({nameGame : nameGame});
+
   res.json({message: 'Name game changed successfully!'});
 };
 
 module.exports.changeRounds = async (req, res) => {
-  const game = await Game.findById(req.params.gameId)
-    .catch((err) => {
-      console.error(err.message);
-    });
-
-  if (!game) {
-    return res.status(400).json({message: 'No game found'});
-  }
-
+  const game = await gameDao.findGameById(req.params.gameId);
   const { rounds } = req.body;
+
   await game.updateOne({rounds : rounds});
   res.json({message: 'Rounds changed successfully!'});
 };
 
+module.exports.deleteLeadingWithGame = async (req, res) => {
+  const game = await gameDao.findGameById(req.params.gameId);
+  const leading = req.params.leadingId;
+  const position = game.leadings.indexOf(leading);
+  if(position !== -1) {
+    game.leadings.splice(position, 1);
+    if(game.leadings.length === 0) {
+      await game.deleteOne();
+      return res.json({message: 'Game deleted successfully!'});
+    }
+    await game.updateOne({leadings : game.leadings});
+    return res.json({message: `Leading deleted with game!`});  
+  }
+
+  return res.status(400).json({message: `Leading did not found`});
+};
+
+module.exports.deletePlayerWithGame = async (req, res) => {
+  const game = await gameDao.findGameById(req.params.gameId);
+  const player = req.params.playerId;
+  const position = game.players.indexOf(player);
+  if(position !== -1) {
+    game.players.splice(position, 1);
+    if(game.players.length === 0) {
+      await game.deleteOne();
+      return res.json({message: 'Game deleted successfully!'});
+    }
+    await game.updateOne({players : game.players});
+    return res.json({message: `Player deleted with game!`});  
+  }
+
+  return res.status(400).json({message: `Player did not found`});
+};
 
 module.exports.deleteGame = async (req, res) => {
-  const game = await Game.findById(req.params.gameId)
-    .catch((err) => {
-      console.error(err.message);
-    });
-
-  if (!game) {
-    return res.status(400).json({message: 'No game found'});
+  const gameId = req.params.gameId
+  const game = await gameDao.findGameById(gameId);
+  const tournaments = await Tournament.find({})
+    .catch(err => console.log(err));
+  
+  if(tournaments) {
+    for(let i = 0; i < tournaments.length; i++) {
+      if(tournaments[i].gameId === gameId) {
+        await tournaments[i].deleteOne();
+        tournaments.splice(i, 1);
+        i--;
+      }
+    } 
   }
 
   await game.deleteOne();
@@ -145,15 +200,7 @@ module.exports.deleteGame = async (req, res) => {
 };
 
 module.exports.deleteRound = async (req, res) => {
-  const game = await Game.findById(req.params.gameId)
-    .catch((err) => {
-      console.error(err.message);
-    });
-
-  if (!game) {
-    return res.status(400).json({message: 'No game found'});
-  }
-
+  const game = await gameDao.findGameById(req.params.gameId);
   const round = req.params.round;
 
   if(!game.rounds[round] || game.rounds[round].length === 0) {
@@ -172,15 +219,7 @@ module.exports.deleteRound = async (req, res) => {
 };
 
 module.exports.deleteTestWithGame = async (req, res) => {
-  const game = await Game.findById(req.params.gameId)
-    .catch((err) => {
-      console.error(err.message);
-    });
-
-  if (!game) {
-    return res.status(400).json({message: 'No game found'});
-  }
-
+  const game = await gameDao.findGameById(req.params.gameId);
   const round = req.params.round;
   const testId = req.params.testId;
   const roundsWithGame = game.rounds;

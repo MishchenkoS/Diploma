@@ -7,24 +7,10 @@ const tournamentSchema = new mongoose.Schema({
     uniq: true,
     required: true
   },
-  leadings: {
-    type: [mongoose.Schema.Types.ObjectId],
-    ref: 'User',
-    required: true
-  },
-  players: {
-    type: [String],
-    required: true
-  },
-  //Игроки/команды
-  type: {
-    type: String,
-    required: true
-  },
-  //Закончена, играется
   status: {
     type: String,
-    required: true
+    required: true,
+    default: "Start"
   },
   rounds: [
     [ 

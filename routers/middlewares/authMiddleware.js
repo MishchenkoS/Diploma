@@ -33,3 +33,19 @@ module.exports.adminRoleChecker = async (req, res, next) => {
   }
   next();
 };
+
+module.exports.leadingRoleChecker = async (req, res, next) => {
+  const userId = req.user.id;
+  const user = await User.findById(userId)
+    .catch((err) => {
+      console.error(err.message);
+    });
+    
+  if (!user) {
+    return res.status(400).json({message: 'No user found'});
+  }
+  if (user.role !== 'LEADING' && user.role !== 'ADMIN') {
+    return res.status(400).json({message: 'The user is not a leading or admin'});
+  }
+  next();
+};

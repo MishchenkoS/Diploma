@@ -7,9 +7,24 @@ const gameSchema = new mongoose.Schema({
     uniq: true,
     required: true
   },
+  leadings: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'User',
+    required: true
+  },
+  players: {
+    type: [String],
+    required: true
+  },
+  //Игроки/команды
+  type: {
+    type: String,
+    required: true
+  },
   rounds: {
-    type: [[mongoose.Schema.Types.ObjectId]],
-    ref: 'Test',
+    // type: [[mongoose.Schema.Types.ObjectId]],
+    type: [mongoose.Schema.Types.Mixed],
+    // ref: 'Test',
     required: true,
     
   },

@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken'); //Реализация веб-токено�
 
 const { User } = require('../models/userModel');
 const {JWT_SECRET} = require('../config');
+const userDao = require('../dao/userDao');
 
 module.exports.registration = async (req, res) => {
   //Добавить проверку на админа в системе
@@ -31,16 +32,12 @@ module.exports.registration = async (req, res) => {
 
 module.exports.login = async (req, res) => {
   const {login, password} = req.body;
-  const user = await User.findOne({login})
-    .catch((err) => {
-      console.error(err.message);
-    });
-  const isCorrectPassword = user ? await bcrypt.compare(password,
-    user.password) : false;
+  const user = await userDao.getUserByLogin(login);
 
-  if (!user || !isCorrectPassword) {
-    return res.status(400).json({message: 'Wrong login or password'});
+  if (!(await bcrypt.compare(password, user.password))) {
+    return res.status(400).json({message: 'Wrong password'});
   }
+  
   const token = jwt.sign({login: user.login, id: user._id}, JWT_SECRET);
   res.json({jwt_token: token});
 };

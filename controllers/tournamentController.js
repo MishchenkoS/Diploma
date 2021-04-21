@@ -1,40 +1,38 @@
 const { Game } = require('../models/gameModel');
 const { Tournament } = require('../models/tournamentModel');
+const tournamentDao = require('../dao/tournamentDao');
+const gameDao = require('../dao/gameDao');
 
 module.exports.newTournament = async (req, res) => {
-  const { gameId, leadings, players, type } = req.body;
+  const { gameId } = req.body;
 
   const newTournament = new Tournament({
     gameId, 
-    leadings, 
-    players, 
-    type 
   });
 
   await newTournament.save();
   res.json({message: 'Tournament created successfully!'});
-
 };
 
 module.exports.addTestToRound = async (req, res) => {
-  const tournamentId = req.params.tournamentId;
+  const tournament = await tournamentDao.findTournamentById(req.params.tournamentId);
   const round = req.params.round;
   const testId = req.params.testId;
   const { status } = req.body;
 
-  const tournament = await Tournament.findById(tournamentId)
-    .catch((err) => {
-      console.error(err.message);
+  if(tournament.rounds[round]) {
+    tournament.rounds[round].push({
+      testId,
+      status
     });
-
-  if (!tournament) {
-    return res.status(400).json({message: 'No tournament found'});
+  } else {
+    tournament.rounds.push({
+      testId,
+      status
+    });
   }
 
-  tournament.rounds[round].push({
-    testId,
-    status
-  });
+  console.log(tournament.rounds);
 
   tournament.updateOne({rounds: tournament.rounds});
 
@@ -42,47 +40,45 @@ module.exports.addTestToRound = async (req, res) => {
 };
 
 module.exports.addAnswer = async (req, res) => {
-  const tournamentId = req.params.tournamentId;
+  const tournament = await tournamentDao.findTournamentById(req.params.tournamentId);
   const round = req.params.round;
   const testId = req.params.testId;
   const { player, answer } = req.body;
-
-  const tournament = await Tournament.findById(tournamentId)
-    .catch((err) => {
-      console.error(err.message);
-    });
-
-  if (!tournament) {
-    return res.status(400).json({message: 'No tournament found'});
-  }
   
-  for(let i = 0; i < tournament.rounds[round].length; i++) {
-    if(tournament.rounds[round][i].testId === testId) {
-      tournament.rounds[round][i].responders.push(player);
-      tournament.rounds[round][i].answers[player] = answer;
-      break;
+  if(tournament.rounds[round]){
+    for(let i = 0; i < tournament.rounds[round].length; i++) {
+      if(tournament.rounds[round][i].testId === testId) {
+        tournament.rounds[round][i].responders.push(player);
+        tournament.rounds[round][i].answers[player] = answer;
+        break;
+      } else {
+        tournament.rounds[round][i].testId = testId;
+        tournament.rounds[round][i].responders.push(player);
+        tournament.rounds[round][i].answers[player] = answer;
+      }
     }
+  } else {
+    console.log('tut');
+    const obj = {
+      testId,
+      responders: [player],
+      answers: {
+        [player]: answer
+      }
+    }
+    console.log(obj);
+    tournament.rounds.push(obj);
   }
 
   tournament.updateOne({rounds: tournament.rounds});
   res.json({message: `Player ${player} answered ${answer}`});
-
 };
 
-module.exports.changeStatusTest = async (res, req) => {
-  const tournamentId = req.params.tournamentId;
+module.exports.changeStatusTest = async (req, res) => {
+  const tournament = await tournamentDao.findTournamentById(req.params.tournamentId);
   const round = req.params.round;
   const testId = req.params.testId;
   const { status } = req.body;
-
-  const tournament = await Tournament.findById(tournamentId)
-    .catch((err) => {
-      console.error(err.message);
-    });
-
-  if (!tournament) {
-    return res.status(400).json({message: 'No tournament found'});
-  }
 
   for(let i = 0; i < tournament.rounds[round].length; i++) {
     if(tournament.rounds[round][i].testId === testId) {
@@ -95,29 +91,23 @@ module.exports.changeStatusTest = async (res, req) => {
   res.json({message: `Status test update`});
 };
 
-module.exports.getTestResult = async (res, reg) => {
-  const tournamentId = req.params.tournamentId;
+module.exports.getTestResult = async (req, res) => {
+  const tournament = await tournamentDao.findTournamentById(req.params.tournamentId);
   const round = req.params.round;
   const testId = req.params.testId;
-
-  const tournament = await Tournament.findById(tournamentId)
-    .catch((err) => {
-      console.error(err.message);
-    });
-
-  if (!tournament) {
-    return res.status(400).json({message: 'No tournament found'});
-  }
-
   const tour = tournament.rounds[round];
+
+  if(!tour){
+    return res.status(400).json({message: "No result test found"})
+  }
 
   for(let i = 0; i < tour.length; i++) {
     if(tour[i].testId === testId) {
-      res.json({test: tour[i]});
-      break;
+      return res.json({test: tour[i]});
     }
   }
 
+  return res.status(400).json({message: "No result test found"})
 };
 
 module.exports.changeStatusTournament = async (req, res) => {
@@ -137,34 +127,18 @@ module.exports.changeStatusTournament = async (req, res) => {
 };
 
 module.exports.deleteTournament = async (req, res) => {
-  const tournament = await Tournament.findById(req.params.tournamentId)
-    .catch((err) => {
-      console.error(err.message);
-    });
-
-  if (!tournament) {
-    return res.status(400).json({message: 'No tournament found'});
-  }
+  const tournament = await tournamentDao.findTournamentById(req.params.tournamentId);
 
   await tournament.deleteOne();
   res.json({message: 'Tournament deleted successfully!'});
 };
 
 module.exports.changeAnswer = async (req, res) => {
-  const tournamentId = req.params.tournamentId;
+  const tournament = await tournamentDao.findTournamentById(req.params.tournamentId);
   const round = req.params.round;
   const testId = req.params.testId;
   const { player, answer } = req.body;
 
-  const tournament = await Tournament.findById(tournamentId)
-    .catch((err) => {
-      console.error(err.message);
-    });
-
-  if (!tournament) {
-    return res.status(400).json({message: 'No tournament found'});
-  }
-  
   for(let i = 0; i < tournament.rounds[round].length; i++) {
     if(tournament.rounds[round][i].testId === testId) {
       tournament.rounds[round][i].answers[player] = answer;
@@ -174,79 +148,29 @@ module.exports.changeAnswer = async (req, res) => {
 
   tournament.updateOne({rounds: tournament.rounds});
   res.json({message: `Player ${player} is answer has been changed`});
-
 };
 
 module.exports.getTournamentInfo = async (req, res) => {
-  const tournamentId = req.params.tournamentId;
-  const tournamentInfo = await Tournament.findById(tournamentId)
-    .catch((err) => {
-      console.error(err.message);
-    });
-
-  if (!tournamentInfo) {
-    return res.status(400).json({message: 'No tournament found'});
-  }
-
+  const tournamentInfo = await tournamentDao.findTournamentById(req.params.tournamentId); 
   res.json({tournament: tournamentInfo});
 };
 
 module.exports.getTournamentsInfo = async (req, res) => {
-  const tournamentsInfo = await Tournament.find({})
-    .catch((err) => {
-      console.error(err.message);
-    });
-
-  if (!tournamentsInfo  || tournamentsInfo.length === 0) {
-    return res.status(400).json({message: 'No tournaments found'});
-  }
-
+  const tournamentsInfo = await tournamentDao.findTournaments();
   res.json(tournamentsInfo); 
 };
 
 module.exports.getGame = async (req, res) => {
-  const tournamentId = req.params.tournamentId;
-  const tournament = await Tournament.findById(tournamentId)
-    .catch((err) => {
-      console.error(err.message);
-    });
-
-  if (!tournament) {
-    return res.status(400).json({message: 'No tournament found'});
-  }
-
-  const game = await Game.findById(tournament.gameId)
-    .catch((err) => {
-      console.error(err.message);
-    });
-
-  if (!game) {
-    return res.status(400).json({message: 'No game found'});
-  }
+  const tournament = await tournamentDao.findTournamentById(req.params.tournamentId);
+  const game = await gameDao.findGameById(tournament.gameId);
 
   res.json(game); 
 };
 
 module.exports.getRound = async (req, res) => {
-  const tournamentId = req.params.tournamentId;
+  const tournament = await tournamentDao.findTournamentById(req.params.tournamentId);
+  const game = await gameDao.findGameById(tournament.gameId);
   const round = req.params.round;
-  const tournament = await Tournament.findById(tournamentId)
-    .catch((err) => {
-      console.error(err.message);
-    });
-
-  if (!tournament) {
-    return res.status(400).json({message: 'No tournament found'});
-  }
-
-  const game = await Game.findById(tournament.gameId)
-    .catch((err) => {
-      console.error(err.message);
-    });
-
-  if (!game) {
-    return res.status(400).json({message: 'No game found'});
-  }
 
   res.json(game.rounds[round]); 
 };

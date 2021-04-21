@@ -2,8 +2,10 @@ const express = require('express');
 
 const { asyncWrapper } = require('../helpers');
 const { authMiddleware, adminRoleChecker } = require('./middlewares/authMiddleware');
-const { idValidation, gameValidation, roundValidation, nameGameValidation, testValidation } = require('./middlewares/validationMiddleware');
-const { getGamesInfo, newGame, getGameInfo, getRoundInfo, changeRound, changeNameGame, changeRounds, deleteGame, deleteRound, deleteTestWithGame } = 
+const { idGameValidation, gameValidation, roundValidation, nameGameValidation, testValidation, 
+  leadingsChangingValidation, roundsValidation } = require('./middlewares/validationMiddleware');
+const { getGamesInfo, newGame, getGameInfo, getRoundInfo, changeRound, changeNameGame, changeRounds, 
+  deleteGame, deleteRound, deleteTestWithGame, changeLeadings, addLeadings, changePlayers, addPlayers, deleteLeadingWithGame, deletePlayerWithGame } = 
   require('../controllers/gamesController');
 const { getTestInfo, changeTest } = require('../controllers/testsController');
 
@@ -11,32 +13,45 @@ const { getTestInfo, changeTest } = require('../controllers/testsController');
 const router = new express.Router();
 
 router.get('/', authMiddleware, 
-    asyncWrapper(adminRoleChecker), getGamesInfo);
-router.get('/game/:gameId',asyncWrapper(idValidation), authMiddleware, 
+    asyncWrapper(adminRoleChecker), asyncWrapper(getGamesInfo));
+router.get('/game/:gameId',asyncWrapper(idGameValidation), authMiddleware, 
     asyncWrapper(adminRoleChecker), getGameInfo);
-router.get('/game/:gameId/:round', asyncWrapper(idValidation),authMiddleware, 
-    asyncWrapper(adminRoleChecker), getRoundInfo);
-router.get('/game/:gameId/:round/:testId', asyncWrapper(idValidation), authMiddleware, 
-    asyncWrapper(adminRoleChecker), getTestInfo);
+router.get('/game/:gameId/:round', asyncWrapper(idGameValidation),authMiddleware, 
+    asyncWrapper(adminRoleChecker), asyncWrapper(getRoundInfo));
+router.get('/game/:gameId/:round/:testId', asyncWrapper(idGameValidation), authMiddleware, 
+    asyncWrapper(adminRoleChecker), asyncWrapper(getTestInfo));
 
 router.post('/game', authMiddleware, 
-    asyncWrapper(adminRoleChecker), asyncWrapper(gameValidation), newGame);
+    asyncWrapper(adminRoleChecker), asyncWrapper(gameValidation), asyncWrapper(newGame));
 
-router.patch('/game/:gameId/:round', asyncWrapper(idValidation), authMiddleware, 
-    asyncWrapper(adminRoleChecker), asyncWrapper(roundValidation), changeRound);
-router.patch('/game/:gameId/:round/:testId', asyncWrapper(idValidation), authMiddleware, 
-    asyncWrapper(adminRoleChecker), asyncWrapper(testValidation), changeTest);  
-router.patch('/name/:gameId', asyncWrapper(idValidation), authMiddleware, 
-    asyncWrapper(adminRoleChecker), asyncWrapper(nameGameValidation), changeNameGame);
-router.patch('/rounds/:gameId', asyncWrapper(idValidation), authMiddleware, 
-    asyncWrapper(adminRoleChecker), changeRounds);
+router.patch('/game/:gameId/:round', asyncWrapper(idGameValidation), authMiddleware, 
+    asyncWrapper(adminRoleChecker), asyncWrapper(roundValidation), asyncWrapper(changeRound));
+router.patch('/game/:gameId/:round/:testId', asyncWrapper(idGameValidation), authMiddleware, 
+    asyncWrapper(adminRoleChecker), asyncWrapper(testValidation), asyncWrapper(changeTest));  
+router.patch('/name/:gameId', asyncWrapper(idGameValidation), authMiddleware, 
+    asyncWrapper(adminRoleChecker), asyncWrapper(nameGameValidation), asyncWrapper(changeNameGame));
+router.patch('/rounds/:gameId', asyncWrapper(idGameValidation), authMiddleware, 
+    asyncWrapper(adminRoleChecker), asyncWrapper(roundsValidation), asyncWrapper(changeRounds));
+router.patch('/leadings/:gameId', asyncWrapper(idGameValidation), authMiddleware, 
+    asyncWrapper(adminRoleChecker), asyncWrapper(leadingsChangingValidation), asyncWrapper(changeLeadings));
+router.patch('/leadingsAdd/:gameId', asyncWrapper(idGameValidation), authMiddleware, 
+    asyncWrapper(adminRoleChecker), asyncWrapper(leadingsChangingValidation), asyncWrapper(addLeadings));
+router.patch('/players/:gameId', asyncWrapper(idGameValidation), authMiddleware, 
+    asyncWrapper(adminRoleChecker),  asyncWrapper(changePlayers));
+router.patch('/playersAdd/:gameId', asyncWrapper(idGameValidation), authMiddleware, 
+    asyncWrapper(adminRoleChecker), asyncWrapper(addPlayers));
 
-router.delete('/game/:gameId', asyncWrapper(idValidation), authMiddleware, 
-    asyncWrapper(adminRoleChecker), deleteGame);
-router.delete('/game/:gameId/:round', asyncWrapper(idValidation), authMiddleware, 
-  asyncWrapper(adminRoleChecker), deleteRound);
-router.delete('/game/:gameId/:round/:testId', asyncWrapper(idValidation), authMiddleware, 
-  asyncWrapper(adminRoleChecker), deleteTestWithGame);
+
+router.delete('/game/:gameId', asyncWrapper(idGameValidation), authMiddleware, 
+    asyncWrapper(adminRoleChecker), asyncWrapper(deleteGame));
+router.delete('/game/:gameId/:round', asyncWrapper(idGameValidation), authMiddleware, 
+    asyncWrapper(adminRoleChecker), asyncWrapper(deleteRound));
+router.delete('/game/:gameId/:round/:testId', asyncWrapper(idGameValidation), authMiddleware, 
+    asyncWrapper(adminRoleChecker), asyncWrapper(deleteTestWithGame));
+router.delete('/leading/:gameId/:leadingId', asyncWrapper(idGameValidation), authMiddleware, 
+    asyncWrapper(adminRoleChecker), asyncWrapper(deleteLeadingWithGame));
+router.delete('/player/:gameId/:playerId', asyncWrapper(idGameValidation), authMiddleware, 
+    asyncWrapper(adminRoleChecker), asyncWrapper(deletePlayerWithGame));
 
 module.exports = router;
 
