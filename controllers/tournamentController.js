@@ -32,10 +32,7 @@ module.exports.addTestToRound = async (req, res) => {
     });
   }
 
-  console.log(tournament.rounds);
-
-  tournament.updateOne({rounds: tournament.rounds});
-
+  await tournament.updateOne({rounds: tournament.rounds});
   res.json({message: 'Test start!'});
 };
 
@@ -58,19 +55,17 @@ module.exports.addAnswer = async (req, res) => {
       }
     }
   } else {
-    console.log('tut');
-    const obj = {
+ 
+    tournament.rounds.push({
       testId,
       responders: [player],
       answers: {
         [player]: answer
       }
-    }
-    console.log(obj);
-    tournament.rounds.push(obj);
+    });
   }
 
-  tournament.updateOne({rounds: tournament.rounds});
+  await tournament.updateOne({rounds: tournament.rounds});
   res.json({message: `Player ${player} answered ${answer}`});
 };
 
@@ -87,7 +82,7 @@ module.exports.changeStatusTest = async (req, res) => {
     }
   }
 
-  tournament.updateOne({rounds: tournament.rounds});
+  await tournament.updateOne({rounds: tournament.rounds});
   res.json({message: `Status test update`});
 };
 
@@ -103,7 +98,8 @@ module.exports.getTestResult = async (req, res) => {
 
   for(let i = 0; i < tour.length; i++) {
     if(tour[i].testId === testId) {
-      return res.json({test: tour[i]});
+      res.json({test: tour[i]});
+      break;
     }
   }
 
@@ -146,7 +142,7 @@ module.exports.changeAnswer = async (req, res) => {
     }
   }
 
-  tournament.updateOne({rounds: tournament.rounds});
+  await tournament.updateOne({rounds: tournament.rounds});
   res.json({message: `Player ${player} is answer has been changed`});
 };
 

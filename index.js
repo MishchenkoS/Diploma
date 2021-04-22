@@ -25,7 +25,7 @@ app.use('/api/tournaments', tournamentsRouter);
 app.use((err, req, res, next) => res.status(500).json({message: err.message}));
 
 const start = async () => {
-  await mongoose.connect('mongodb+srv://snezhka_18:snezhka@cluster0.kpnu9.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
+  await mongoose.connect('mongodb+srv://@cluster0.kpnu9.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
@@ -38,4 +38,3 @@ const start = async () => {
 start();
 
 
-//mongodb+srv://snezhka_18:<password>@cluster0.kpnu9.mongodb.net/test
