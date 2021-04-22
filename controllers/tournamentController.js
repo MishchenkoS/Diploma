@@ -32,6 +32,8 @@ module.exports.addTestToRound = async (req, res) => {
     });
   }
 
+  console.log(tournament.rounds)
+
   await tournament.updateOne({rounds: tournament.rounds});
   res.json({message: 'Test start!'});
 };
@@ -44,7 +46,7 @@ module.exports.addAnswer = async (req, res) => {
   
   if(tournament.rounds[round]){
     for(let i = 0; i < tournament.rounds[round].length; i++) {
-      if(tournament.rounds[round][i].testId === testId) {
+      if(tournament.rounds[round][i].testId == testId) {
         tournament.rounds[round][i].responders.push(player);
         tournament.rounds[round][i].answers[player] = answer;
         break;
@@ -55,7 +57,6 @@ module.exports.addAnswer = async (req, res) => {
       }
     }
   } else {
- 
     tournament.rounds.push({
       testId,
       responders: [player],
@@ -97,9 +98,8 @@ module.exports.getTestResult = async (req, res) => {
   }
 
   for(let i = 0; i < tour.length; i++) {
-    if(tour[i].testId === testId) {
-      res.json({test: tour[i]});
-      break;
+    if(tour[i].testId == testId) {
+      return res.json({test: tour[i]});
     }
   }
 

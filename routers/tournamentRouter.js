@@ -14,7 +14,7 @@ router.get('/', authMiddleware, asyncWrapper(leadingRoleChecker), asyncWrapper(g
 router.post('/start', authMiddleware, asyncWrapper(leadingRoleChecker), asyncWrapper(tournamentValidation), asyncWrapper(newTournament));
 
 router.get('/info/:tournamentId', authMiddleware, asyncWrapper(leadingRoleChecker), asyncWrapper(getTournamentInfo));
-router.get('/start/:tournamentId', authMiddleware, asyncWrapper(getGame));//вывод игры
+router.get('/start/:tournamentId', authMiddleware, asyncWrapper(getGame));
 router.get('/start/:tournamentId/:round', authMiddleware, asyncWrapper(leadingRoleChecker), asyncWrapper(getRound));
 router.get('/start/:tournamentId/:round/:testId', authMiddleware, asyncWrapper(getTestInfo));
 router.get('/start/:tournamentId/:round/:testId/result', authMiddleware, asyncWrapper(getTestResult));
