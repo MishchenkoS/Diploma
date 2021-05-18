@@ -1,0 +1,76 @@
+import React from "react";
+import {Switch, Route, Redirect} from "react-router-dom";
+import { HomePage } from "../pages/HomePage";
+import { LoginPage } from "../pages/users/LoginPage";
+import { AuthPage } from "../pages/users/AuthPage";
+import { UsersInfoPage } from "../pages/users/UsersInfoPage";
+import { TestsInfoPage } from "../pages/tests/TestsInfoPage";
+import { GamesInfoPage } from "../pages/games/GamesInfoPage";
+import { TournamentsInfoPage } from "../pages/tournaments/TournamentsInfoPage";
+import { TournamentInfoPage } from "../pages/tournaments/TournamentInfoPage";
+import { TestPage } from "../pages/tests/TestInfoPage";
+import { GamePage } from "../pages/games/GameInfoPage";
+import { UserInfoPage } from "../pages/users/UserInfoPage";
+import { TestAddPage } from "../pages/tests/TestAddPage";
+
+export const useRoutes = (isAuthenticated) => {
+  if(isAuthenticated) {
+    return (
+      <Switch>
+        <Route path="/" exact>
+          <HomePage></HomePage>
+          {/* <LoginPage></LoginPage> */}
+        </Route>
+        <Route exact path='/users'>
+          <UsersInfoPage></UsersInfoPage>
+        </Route>
+        <Route exact path={`/users/:userId`}>
+          <UserInfoPage></UserInfoPage>
+        </Route>
+        <Route exact path='/tests'>
+          <TestsInfoPage></TestsInfoPage>
+        </Route>
+        <Route exact path='/tests/test/:testId'>
+          <TestPage></TestPage>
+        </Route>
+        <Route exact path='/tests/addTest'>
+          <TestAddPage></TestAddPage>
+        </Route>
+        <Route exact path='/games'>
+          <GamesInfoPage></GamesInfoPage>
+        </Route>
+        <Route exact path='/games/game/:gameId'>
+          <GamePage></GamePage>
+        </Route>
+        <Route exact path='/tournaments'>
+          <TournamentsInfoPage></TournamentsInfoPage>
+        </Route>
+        <Route exact path='/tournaments/:tournamentId'>
+          <TournamentInfoPage></TournamentInfoPage>
+        </Route>
+        <Route path='/register'>
+          <LoginPage></LoginPage> 
+        {/* </Route>
+            <Route path='/login'>
+      <AuthPage></AuthPage> */}
+   </Route>
+        <Redirect to="/" />
+      </Switch>
+    );
+  }
+
+  return (
+    <Switch>
+      <Route path="/" exact>
+        <HomePage></HomePage>
+        {/* <LoginPage></LoginPage> */}
+      </Route>
+      <Route path='/login'>
+        <AuthPage></AuthPage>
+      </Route>
+      <Redirect to="/" />
+
+    </Switch>
+  );
+
+}

@@ -39,6 +39,6 @@ module.exports.login = async (req, res) => {
   }
   
   const token = jwt.sign({login: user.login, id: user._id}, JWT_SECRET);
-  res.json({jwt_token: token});
+  res.json({jwtToken: token, userId: user._id, role: user.role, message: 'Вы вошли в систему'});
 };
 

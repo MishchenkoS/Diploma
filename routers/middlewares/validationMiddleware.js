@@ -13,7 +13,10 @@ module.exports.registrationValidation = async (req, res, next) => {
     role: joi.string().pattern(new RegExp('^(STUDENT|LEADING|ADMIN)$'))
   });
 
+  console.log(req.body)
+
   await schema.validateAsync(req.body);
+  console.log(req.body)
   next();
 };
 
