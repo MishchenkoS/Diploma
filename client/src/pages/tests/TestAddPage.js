@@ -5,7 +5,10 @@ import { useHttp } from "../../hooks/httpHooks";
 import { TestInfo } from "../../components/TestInfo";
 import { useMessage } from "../../hooks/messageHook";
 import { RadioTests } from "../../components/RadioTest";
+import { CheckTests } from "../../components/CheckTests";
+import { WriteTests } from "../../components/WriteTests";
 
+//Добавить картинки
 export const TestAddPage = () => {
   const {token} = useContext(AuthContext);
 
@@ -14,14 +17,13 @@ export const TestAddPage = () => {
   const {loading, error, request, clearError} = useHttp();
   const [type, setType] = useState(null);
 
-  // const [form, setForm] = useState({
-  //   login: "",
-  //   password: "",
-  //   firstname: "",
-  //   lastname: "",
-  //   group: "",
-  //   team: ""
-  // });
+  const [form, setForm] = useState({
+    type: "",
+    complexity: "",
+    question: "",
+    answers: [],
+    true_answers: [],
+  });
 
   useEffect(() => {
     message(error);
@@ -32,8 +34,8 @@ export const TestAddPage = () => {
     window.M.updateTextFields()
   }, [])
 
-  const changeHandler = (event) => {
-    // setForm({...form, [event.target.name]: event.target.value});
+  const changeSelect = (event) => {
+    setForm({...form, [event.target.name]: event.target.value});
     setType(event.target.value)
   }
 
@@ -59,17 +61,21 @@ export const TestAddPage = () => {
         <h2>Создать новый тест</h2>
       </div>
       <div className="col s12 darken-1">
+      
       <label>Выберите тип теста</label>
-        <select onChange={changeHandler}>
+        <select name="type" onChange={changeSelect}>
           <option value="" disabled selected>---</option>
           <option value="RADIO">Один вариант ответа</option>
           <option value="CHECK">Несколько вариантов ответа</option>
           <option value="WRITE">Вписать значение в поле</option>
-  
         </select>
 
       </div>
-      {type==="RADIO" && <RadioTests></RadioTests>}
+      {type==="RADIO" && <RadioTests formArg={form} setFormArg={setForm}></RadioTests>}
+      {type==="CHECK" && <CheckTests></CheckTests>}
+      {type==="WRITE" && <WriteTests></WriteTests>}
+      {console.log(form)}
+      <input type='submit' value='Добавить тест'/>
     </>
     // <div>
     //   <div className="input-field">
