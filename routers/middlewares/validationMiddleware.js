@@ -3,6 +3,7 @@ const joi = require('joi');
 joi.objectId = require('joi-objectid')(joi);
 
 module.exports.registrationValidation = async (req, res, next) => {
+  console.log("reg");
   const schema = joi.object({
     login: joi.string().required(),
     password: joi.string().required(),
@@ -10,7 +11,10 @@ module.exports.registrationValidation = async (req, res, next) => {
     lastname: joi.string().required(),
     group: joi.string(),
     team: joi.string(),
-    role: joi.string().pattern(new RegExp('^(STUDENT|LEADING|ADMIN)$'))
+    role: joi.string().pattern(new RegExp('^(STUDENT|LEADING|ADMIN)$')),
+    created_date: joi.string(),
+    _id : joi.string(),
+    __v: joi.number()
   });
 
   console.log(req.body)
@@ -68,6 +72,7 @@ module.exports.answerValidation = async (req, res, next) => {
 }
 
 module.exports.testValidation = async (req, res, next) => {
+  console.log("valid",req.body)
   const schema = joi.object({
     complexity: joi.number().required(), 
     type: joi.string().pattern(new RegExp('^(RADIO|CHECK|WRITE)$')).required(), 
@@ -75,10 +80,14 @@ module.exports.testValidation = async (req, res, next) => {
     img_question: joi.string(), 
     answers: joi.array().items(joi.string()).required(), 
     img_answers: joi.array().items(joi.string()), 
-    true_answer: joi.array().items(joi.string()).required()
+    true_answers: joi.array().items(joi.string()).required(),
+    created_date: joi.string(),
+    _id : joi.string(),
+    __v: joi.number()
   });
 
-  await schema.validateAsync(req.body);
+  const result = await schema.validateAsync(req.body);
+  console.log(result)
   next();
 };
 
@@ -93,7 +102,10 @@ module.exports.gameValidation = async (req, res, next) => {
     leadings: joi.array().items(joi.objectId()).required(),
     players: joi.array().items(players).required(),
     type: joi.string().pattern(new RegExp('^(TEAM|PLAYER)$')).required(),
-    rounds: joi.array().items(joi.object().pattern(joi.objectId(), joi.objectId())).required()
+    rounds: joi.array().items(joi.object().pattern(joi.objectId(), joi.objectId())).required(),
+    created_date: joi.string(),
+    _id : joi.string(),
+    __v: joi.number()
   });
 
   await schema.validateAsync(req.body);
@@ -152,6 +164,8 @@ module.exports.idUserValidation = async (req, res, next) => {
   const schema = joi.object({
     userId: joi.objectId(),
   });
+
+  console.log("valid")
 
   await schema.validateAsync(req.params);
   next();

@@ -1,12 +1,12 @@
-import React, { useState, useContext, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useContext, useCallback  } from "react";
 import { useParams } from "react-router-dom";
-import { Loader } from "../../components/Loader";
 import { AuthContext } from "../../context/authContext";
-import { useHttp } from "../../hooks/httpHooks";
-import { UserInfo } from "../../components/UserInfo";
 import { useMessage } from "../../hooks/messageHook";
+import { useHttp } from "../../hooks/httpHooks";
+import { Loader } from "../../components/Loader";
+import { LoginPage } from "./LoginPage";
 
-export const UserInfoPage = () => {
+export const UserChangePage = () => {
   const {token} = useContext(AuthContext);
   const {loading, error, request, clearError} = useHttp();
   const [user, setUser] = useState(null);
@@ -14,14 +14,13 @@ export const UserInfoPage = () => {
   const message = useMessage();
   console.log(userId)
 
-
   const getUser = useCallback ( async () => {
     try {
+      console.log(userId)
       const fetched = await request(`/api/users/me/admin/${userId}`, "GET", null, {
         Authorization: `Bearer ${token}`
       });
-    
-console.log(fetched)
+
       setUser(fetched.user);
       
     } catch(error) {
@@ -44,8 +43,7 @@ console.log(fetched)
 
   return (
     <>
-      {!loading && user && <UserInfo user={user} />}
+    {!loading && user && <LoginPage form={user} setForm={setUser} ok={true} />}
     </>
-  );
-
+  )
 }

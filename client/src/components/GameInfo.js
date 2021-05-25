@@ -2,6 +2,7 @@ import React, { useContext, useCallback, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 import { useHttp } from "../hooks/httpHooks";
+import { useMessage } from "../hooks/messageHook";
 import { Loader } from "../components/Loader";
 
 // import { Link } from "react-router-dom";
@@ -9,10 +10,17 @@ import { Loader } from "../components/Loader";
 export const GameInfo = ({ game }) => {
   //Loader
   const {token} = useContext(AuthContext);
-  const {request, loading} = useHttp();
+  const {loading, error, request, clearError} = useHttp();
   const [leadings, setLeadings] = useState([]);
   const [players, setPlayers] = useState([]);
   const [rounds, setRounds] = useState([]);
+  const message = useMessage();
+  console.log(game)
+
+  useEffect(() => {
+    message(error);
+    clearError();
+  }, [error, message, clearError]);
 
   const getLeading = useCallback ( async (id) => {
     try {
@@ -54,6 +62,9 @@ export const GameInfo = ({ game }) => {
     }
   }, [token, request]);
 
+  const changeGame = () => {
+    window.location.href = `/games/changeGame/${game._id}`;
+  }
 
   useEffect(() => {
     game.leadings.map((item) => {
@@ -63,6 +74,7 @@ export const GameInfo = ({ game }) => {
       getPlayers(item);
     });
     game.rounds.map((item) => {
+      console.log(item)
       for(let key in item) {
         getRound(key);
       }
@@ -77,9 +89,114 @@ export const GameInfo = ({ game }) => {
     return <Loader></Loader>
   }
 
+  const deleteGame = async () => {
+    try {
+      const fetched = await request(`/api/games/game/${game._id}`, "DELETE", null, {
+        Authorization: `Bearer ${token}`
+      });
+      window.location.href = "/games";      
+    } catch(error) {
+
+    }
+  }
+
   return (
     <>
-      <p>Название: {game.nameGame}</p>
+    <div className='div-btn div-name-page'><h5>Игра</h5></div>
+  <table className="striped">
+    <thead>
+      <tr>
+        <th>Название</th>
+        <th>Тип</th>
+        <th>Дата создания</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+      <td>{game.nameGame}</td>
+      <td>{game.type}</td>
+      <td>{new Date(game.created_date).toLocaleDateString()}</td>
+      </tr>
+    </tbody>
+
+  </table>
+
+
+  <table className="striped">
+    <thead>
+      <tr>
+        <th>Ведущие</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+      {leadings.map((item, index) => {
+          return (
+            <td key={`${index}`}>
+              <Link to={`/users/user/${game.leadings[index]}`}>
+              {item.login}
+              </Link>
+            </td>
+          );
+      })
+      }
+      </tr>
+    </tbody>
+  </table>
+
+  <table className="striped">
+  <thead>
+      <tr>
+        <th>Игроки</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+      {players.map((item, index) => {
+          return (
+            <td key={`${index}`}>
+              <Link to={`/users/user/${game.players[index]}`}>
+              {item.login}
+              </Link>
+            </td>
+          );
+      })}
+      </tr>
+    </tbody>
+  </table>
+
+  <table className="striped">
+  <thead>
+      <tr>
+        <th>Раунды</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr> 
+      {rounds.map((item, index) => {
+        let testInRound = [<td>Раунд №{index+1}</td>]
+
+          
+        for(let key in item) {
+          testInRound.push( <td key={`${index}${key}`}><Link to={`/tests/test/${item[key]._id}`}>{item[key].question}</Link></td>) 
+        }
+        return testInRound;
+      })}
+      </tr>
+    </tbody>
+  </table>
+
+  <div className='div-btn-test'>
+      <button onClick={changeGame} className="btn waves-effect waves-light indigo lighten-1 btn-add ">
+          Изменить игру<i class="material-icons right">edit</i></button>
+
+        <button onClick={deleteGame} className="btn waves-effect waves-light indigo lighten-1 btn-add">
+          Удалить игру<i class="material-icons right">delete</i></button></div>
+
+
+
+
+      {/* <p>Название: {game.nameGame}</p>
       <p>Тип: {game.type}</p>
       <p>Ведущие: 
       {leadings.map((item, index) => {
@@ -116,7 +233,7 @@ export const GameInfo = ({ game }) => {
         return testInRound;
       })}
       </p>
-
+      <p>{new Date(game.created_date).toLocaleDateString()}</p> */}
       
 
 

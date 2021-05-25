@@ -6,7 +6,9 @@ const testDao = require('../dao/testDao');
 //Создаем новый тест
 
 module.exports.newTest = async (req, res) => {
-  const { complexity, type, question, img_question, answers, img_answers, true_answer } = req.body;
+  const { complexity, type, question, img_question, answers, img_answers, true_answers } = req.body;
+
+  console.log("controller", req.body)
 
   const newTest = new Test({
     complexity, 
@@ -15,7 +17,7 @@ module.exports.newTest = async (req, res) => {
     img_question, 
     answers, 
     img_answers, 
-    true_answer
+    true_answers
   });
 
   await newTest.save();
@@ -35,7 +37,7 @@ module.exports.getTestInfo = async (req, res) => {
 
 
 module.exports.changeTest = async (req, res) => {
-  const { complexity, type, question, img_question, answers, img_answers, true_answer } = req.body;
+  const { complexity, type, question, img_question, answers, img_answers, true_answers } = req.body;
   const test = await testDao.findTestById(req.params.testId);
 
   await test.updateOne({
@@ -45,7 +47,7 @@ module.exports.changeTest = async (req, res) => {
     img_question, 
     answers, 
     img_answers, 
-    true_answer
+    true_answers
   });
 
   res.json({message: 'Test changed successfully!'});

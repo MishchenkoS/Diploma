@@ -1,8 +1,8 @@
 import React, { useState, useContext, useEffect, useCallback } from "react";
 import { Loader } from "../../components/Loader"; 
 import { AuthContext } from "../../context/authContext";
+import { testAddContext } from "../../context/testAddContext"
 import { useHttp } from "../../hooks/httpHooks";
-import { TestInfo } from "../../components/TestInfo";
 import { useMessage } from "../../hooks/messageHook";
 import { RadioTests } from "../../components/RadioTest";
 import { CheckTests } from "../../components/CheckTests";
@@ -11,18 +11,17 @@ import { WriteTests } from "../../components/WriteTests";
 //Добавить картинки
 export const TestAddPage = () => {
   const {token} = useContext(AuthContext);
-
+  // let {type, complexity, question, answers, true_answers} = useContext(testAddContext);
   const message = useMessage();
-
   const {loading, error, request, clearError} = useHttp();
   const [type, setType] = useState(null);
-
+  const [count, setCount] = useState([1,2]);
   const [form, setForm] = useState({
     type: "",
-    complexity: "",
+    complexity: 0,
     question: "",
-    answers: [],
-    true_answers: [],
+    answers: [""],
+    true_answers: []
   });
 
   useEffect(() => {
@@ -32,11 +31,69 @@ export const TestAddPage = () => {
 
   useEffect(() => {
     window.M.updateTextFields()
-  }, [])
+  }, []);
 
   const changeSelect = (event) => {
-    setForm({...form, [event.target.name]: event.target.value});
+
+    setForm({
+      [event.target.name]: event.target.value, 
+      complexity: 0,
+      question: "",
+      answers: [""],
+      true_answers: []
+    });
     setType(event.target.value)
+  }
+
+  const testAdd = async () => {
+    try {
+      // setForm((form)=>{
+      //   const answers = [...form.answers];
+      //   const true_answers = form.true_answers.map((item)=>{
+      //     item = answers[item];
+      //     return item;
+      //   });
+      //   return {...form, true_answers};
+      // });
+
+      const true_answers = form.true_answers.map((item)=>{
+        item = form.answers[item];
+          return item;
+      });
+
+
+      const form_request = {...form, true_answers };
+
+
+      if(form_request.true_answers.length
+        && form_request.answers.length){
+        
+        const data = await request('/api/tests/test', 'POST', {...form_request}, {
+          Authorization: `Bearer ${token}`
+        });
+        message(data.message);
+      } else {
+        message("Не все поля заполнены");
+        console.log(form_request)
+      }
+
+
+      console.log(form_request)
+
+      
+
+      setForm((form=>({
+        type: "",
+        complexity: 0,
+        question: "",
+        answers: [""],
+        true_answers: []
+      })))
+    } catch (error) {
+      
+    }
+
+    return false;
   }
 
   // const registerHandler = async () => {
@@ -50,32 +107,47 @@ export const TestAddPage = () => {
   // }
 
   useEffect(() => {
-    var select = document.querySelectorAll('select');
-    var instances = window.M.FormSelect.init(select, {
-    });
+    const select = document.querySelectorAll('select');
+    const instances = window.M.FormSelect.init(select, {});
+
+    // const formHtml = document.querySelector('form');
+    // formHtml.addEventListener('submit', testAdd, false);
+
   }, []);
 
   return (
     <>
       <div>
-        <h2>Создать новый тест</h2>
+        <h5>Создать новый тест</h5>
       </div>
+      <form action="" onSubmit={e => { e.preventDefault(); }}>
       <div className="col s12 darken-1">
       
       <label>Выберите тип теста</label>
-        <select name="type" onChange={changeSelect}>
-          <option value="" disabled selected>---</option>
+        <select defaultValue="" name="type" onChange={changeSelect} required>
+          <option value="" disabled>---</option>
           <option value="RADIO">Один вариант ответа</option>
           <option value="CHECK">Несколько вариантов ответа</option>
           <option value="WRITE">Вписать значение в поле</option>
         </select>
 
       </div>
-      {type==="RADIO" && <RadioTests formArg={form} setFormArg={setForm}></RadioTests>}
-      {type==="CHECK" && <CheckTests></CheckTests>}
-      {type==="WRITE" && <WriteTests></WriteTests>}
       {console.log(form)}
-      <input type='submit' value='Добавить тест'/>
+      {type && type==="RADIO" && 
+      <RadioTests formArg={form} setFormArg={setForm} count={count} setCount={setCount}></RadioTests>}
+      {type && type==="CHECK" && 
+      <CheckTests formArg={form} setFormArg={setForm} count={count} setCount={setCount}></CheckTests>}
+      {type && type==="WRITE" && 
+      <WriteTests formArg={form} setFormArg={setForm}></WriteTests>}
+      {/* {console.log(form)} */}
+      <div className='div-btn'>
+      <button  
+        type='submit' 
+        onClick={testAdd} 
+        className="btn waves-effect waves-light indigo lighten-1 btn-add"
+      >Создать тест<i className="material-icons right">send</i></button>
+      </div>
+      </form>
     </>
     // <div>
     //   <div className="input-field">

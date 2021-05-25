@@ -1,10 +1,10 @@
 const express = require('express');
 
 const {authMiddleware, adminRoleChecker} = require('./middlewares/authMiddleware');
-const {getUserProfileInfo, deleteUserProfile, changeUserPassword, changeUserRole, getUsersProfileInfo} =
+const {getUserProfileInfo, deleteUserProfile, changeUserPassword, changeUserRole, getUsersProfileInfo, changeUser} =
     require('../controllers/usersController');
 const {asyncWrapper} = require('../helpers');
-const {idUserValidation, paswordChangingValidation, roleChangingValidation} =
+const {idUserValidation, paswordChangingValidation, roleChangingValidation, registrationValidation} =
     require('./middlewares/validationMiddleware');
 
 const router = new express.Router();
@@ -15,6 +15,10 @@ router.get('/admin', authMiddleware,
     asyncWrapper(adminRoleChecker), asyncWrapper(getUsersProfileInfo));
 router.get('/admin/:userId', authMiddleware, asyncWrapper(adminRoleChecker),
     asyncWrapper(idUserValidation), asyncWrapper(getUserProfileInfo));
+
+router.patch('/admin/changeUser/:userId', authMiddleware, asyncWrapper(adminRoleChecker), 
+    asyncWrapper(idUserValidation),asyncWrapper(registrationValidation), asyncWrapper(changeUser));
+
 router.patch('/admin/password/:userId', authMiddleware, asyncWrapper(adminRoleChecker), 
     asyncWrapper(idUserValidation), asyncWrapper(paswordChangingValidation), asyncWrapper(changeUserPassword));
 router.patch('/admin/role/:userId', authMiddleware, asyncWrapper(adminRoleChecker), 

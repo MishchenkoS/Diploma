@@ -1,4 +1,6 @@
 @import "~materialize-css/dist/css/materialize.min.css";
+@import url(https://fonts.googleapis.com/icon?family=Material+Icons);
+
 
 body {
   margin: 0;
@@ -15,9 +17,126 @@ code {
 }
 
 .dropdown-content li>a, .dropdown-content li>span {
-  color: #1e88e5;
+  color: #1a237e;
 }
 
+.div-login {
+  margin-top: 2rem;
+}
+
+.my-btn {
+  width: 20rem;
+  /* align-content: center; */
+}
+
+
+
+
+/* .checkbox-blue-grey[type="checkbox"].filled-in:checked+span:not(.lever):after {
+  border: 2px solid #01579b;
+  background-color: #0277bd;
+} */
+
+
+
+/* .burger {
+  width: 35px;
+  height: 3px;
+  background-color: white;
+  margin: 0.5rem 0;
+}
+
+.burger_i {
+  margin-top: 1rem;
+  padding: 0;
+}*/
+
+nav .sidenav-trigger {
+  margin: 0;
+} 
+
+input:focus {
+  border-bottom: 1px solid #1a237e !important;
+  box-shadow: 0 1px 0 0 #1a237e !important;
+}
+
+label.active {
+  color: #000 !important;
+}
+
+[type="radio"]:not(:checked)+span, [type="radio"]:checked+span{
+  padding-left: 25px;
+  height: 16px;
+}
+
+[type="radio"]:checked+span:after, [type="radio"].with-gap:checked+span:after {
+  background-color:#1a237e;
+}
+[type="radio"]:checked+span:after, [type="radio"].with-gap:checked+span:before, 
+[type="radio"].with-gap:checked+span:after {
+  border: 2px solid #1a237e;
+}
+
+
+[type="checkbox"]:checked+span:not(.lever)::before{
+  border-right: 2px solid #1a237e;
+  border-bottom: 2px solid #1a237e;
+}
+
+[type="checkbox"]+span:not(.lever){
+  padding-left: 25px;
+  height: 16px;
+}
+
+.with-gap {
+  padding:0;
+}
+
+.span-radio {
+  padding: 0;
+}
+
+.btn-add {
+  margin: 1rem auto;
+  width: 20rem;
+  display: inline-block;
+  
+  /*line-height: 50px;*/
+  position: relative;
+  /* border: 1px solid white;
+  padding: 0 1rem; */
+}
+
+.div-btn {
+  display: block;
+  text-align: center;
+}
+
+.div-btn-test {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  justify-content: space-between;
+}
+
+.collection a.collection-item {
+  color: #1a237e;
+}
+
+.div-name-page {
+  margin-bottom: 2rem;
+}
+
+.a-clear {
+  color: #1a237e;
+}
 /* .checkboxMy {
   opacity: 1;
 } */
+
+@media screen and (max-device-width: 1024px){
+  .div-btn-test {
+    display: grid;
+    grid-template-columns: 100%;
+    justify-content: space-between;
+  }
+}

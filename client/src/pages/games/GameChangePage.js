@@ -1,18 +1,16 @@
-import React, { useState, useContext, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useContext, useCallback  } from "react";
 import { useParams } from "react-router-dom";
-import { Loader } from "../../components/Loader";
 import { AuthContext } from "../../context/authContext";
-import { useHttp } from "../../hooks/httpHooks";
-import { GameInfo } from "../../components/GameInfo";
 import { useMessage } from "../../hooks/messageHook";
+import { useHttp } from "../../hooks/httpHooks";
+import { Loader } from "../../components/Loader";
+import { GameAddPage } from "./GameAddPage";
 
-export const GamePage = () => {
+export const GameChangePage = () => {
   const {token} = useContext(AuthContext);
   const {loading, error, request, clearError} = useHttp();
   const [game, setGame] = useState(null);
   const gameId = useParams().gameId;
-  console.log(gameId)
-
   const message = useMessage();
 
   const getGame = useCallback ( async () => {
@@ -40,10 +38,10 @@ export const GamePage = () => {
   if(loading) {
     return <Loader></Loader>
   }
-
+  console.log(game)
   return (
     <>
-      {!loading && game && <GameInfo game={game} />}
+      {!loading && game && <GameAddPage form={game} setForm={setGame} ok={true} />}
     </>
   );
 }

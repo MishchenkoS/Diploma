@@ -32,6 +32,20 @@ module.exports.newGame = async (req, res) => {
   res.json({message: "Game created successfully!"});
 };
 
+module.exports.changeGame = async (req, res) => {
+  const { nameGame, rounds, leadings, players, type } = req.body;
+  const game = await gameDao.findGameById(req.params.gameId);
+
+  await game.updateOne({
+    nameGame,
+    leadings, 
+    players, 
+    type,
+    rounds
+  });
+
+  res.json({message: 'Game updated successfully!'});
+}
 
 module.exports.getGamesInfo = async (req, res) => {
   const gamesInfo = await gameDao.findGames();

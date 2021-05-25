@@ -12,6 +12,10 @@ import { TestPage } from "../pages/tests/TestInfoPage";
 import { GamePage } from "../pages/games/GameInfoPage";
 import { UserInfoPage } from "../pages/users/UserInfoPage";
 import { TestAddPage } from "../pages/tests/TestAddPage";
+import { GameAddPage } from "../pages/games/GameAddPage";
+import { TestChangePage } from "../pages/tests/TestChangePage";
+import { GameChangePage } from "../pages/games/GameChangePage";
+import { UserChangePage } from "../pages/users/UserChangePage";
 
 export const useRoutes = (isAuthenticated) => {
   if(isAuthenticated) {
@@ -24,9 +28,13 @@ export const useRoutes = (isAuthenticated) => {
         <Route exact path='/users'>
           <UsersInfoPage></UsersInfoPage>
         </Route>
-        <Route exact path={`/users/:userId`}>
+        <Route exact path={`/users/user/:userId`}>
           <UserInfoPage></UserInfoPage>
         </Route>
+        <Route exact path='/users/changeUser/:userId'>
+          <UserChangePage></UserChangePage>
+        </Route>
+
         <Route exact path='/tests'>
           <TestsInfoPage></TestsInfoPage>
         </Route>
@@ -36,18 +44,30 @@ export const useRoutes = (isAuthenticated) => {
         <Route exact path='/tests/addTest'>
           <TestAddPage></TestAddPage>
         </Route>
+        <Route exact path='/tests/changeTest/:testId'>
+          <TestChangePage></TestChangePage>
+        </Route>
+
         <Route exact path='/games'>
           <GamesInfoPage></GamesInfoPage>
         </Route>
         <Route exact path='/games/game/:gameId'>
           <GamePage></GamePage>
         </Route>
+        <Route exact path='/games/addGame'>
+          <GameAddPage></GameAddPage>
+        </Route>
+        <Route exact path='/games/changeGame/:gameId'>
+          <GameChangePage></GameChangePage>
+        </Route>
+
         <Route exact path='/tournaments'>
           <TournamentsInfoPage></TournamentsInfoPage>
         </Route>
         <Route exact path='/tournaments/:tournamentId'>
           <TournamentInfoPage></TournamentInfoPage>
         </Route>
+        
         <Route path='/register'>
           <LoginPage></LoginPage> 
         {/* </Route>

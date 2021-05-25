@@ -3,11 +3,13 @@ import { Loader } from "../../components/Loader"
 import { UsersInfo } from "../../components/UsersInfo";
 import { useHttp } from "../../hooks/httpHooks";
 import { AuthContext } from "../../context/authContext";
+import { useMessage } from "../../hooks/messageHook";
 
 export const UsersInfoPage = () => {
   const {token} = useContext(AuthContext);
-  const {request, loading} = useHttp();
+  const {loading, error, request, clearError} = useHttp();
   const [users, setUsers] = useState([]);
+  const message = useMessage();
 
   const getUsers = useCallback ( async () => {
     try {
@@ -25,6 +27,11 @@ export const UsersInfoPage = () => {
   useEffect(() => {
     getUsers();
   }, [getUsers]);
+
+  useEffect(() => {
+    message(error);
+    clearError();
+  }, [error, message, clearError]);
 
   if(loading) {
     return <Loader></Loader>

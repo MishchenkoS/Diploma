@@ -35,13 +35,14 @@ export const AuthPage = () => {
   }
 
   return (
-    <div className="row">
+    <div className="div-login">
       <div className="input-field">
         <input 
           placeholder="Введите login"
           id="login"
           type="text"
           name="login"
+          autoComplete="off"
           onChange={changeHandler}
           value={form.login}
         />
@@ -54,18 +55,23 @@ export const AuthPage = () => {
           id="password"
           type="password"
           name="password"
+          autoComplete="off"
           onChange={changeHandler}
           value={form.password}
         />
         <label htmlFor="password">Пароль</label>
       </div>
+      <div className="input-field div-btn">
       <button
         type="submit" 
         disabled={loading}
         onClick={loginHandler}
+        className="btn waves-effect waves-light indigo lighten-1 my-btn"
       >
         Login
+      <i class="material-icons right">assignment_turned_in</i>
       </button>
+      </div>
     </div>
   );
 }

@@ -19,6 +19,23 @@ module.exports.getUserProfileInfo = async (req, res) => {
   res.json({user: userProfileInfo});
 };
 
+module.exports.changeUser = async (req, res) => {
+  const { login, password, firstname, lastname, group, team, role} = req.body;
+  const user = await userDao.findUserById(req.params.userId);
+
+  await user.updateOne({
+    login,
+    password: await bcrypt.hash(password, 10),
+    firstname,
+    lastname,
+    group,
+    team,
+    role,
+  });
+
+  res.json({message: 'User changed successfully!'});
+}
+
 module.exports.changeUserRole = async (req, res) => {
   const adminId = req.user.id;
   const userId = req.params.userId;
@@ -56,6 +73,7 @@ module.exports.changeUserPassword = async (req, res) => {
 
 module.exports.deleteUserProfile = async (req, res) => {
   const userId = req.params.userId;
+  console.log("delete")
   const user = await userDao.findUserById(userId);
   const games = await Game.find({})
     .catch((err) => {

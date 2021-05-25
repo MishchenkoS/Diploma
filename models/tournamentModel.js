@@ -4,7 +4,6 @@ const tournamentSchema = new mongoose.Schema({
   gameId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Game',
-    uniq: true,
     required: true
   },
   status: {
@@ -30,7 +29,12 @@ const tournamentSchema = new mongoose.Schema({
         }
       }
     ]
-  ]
+  ],
+
+  created_date: {
+    type: Date,
+    default: Date.now(),
+  }, 
   
 });
 

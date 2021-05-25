@@ -4,12 +4,14 @@ import { Loader } from "../../components/Loader";
 import { AuthContext } from "../../context/authContext";
 import { useHttp } from "../../hooks/httpHooks";
 import { TournamentInfo } from "../../components/TournamentInfo";
+import { useMessage } from "../../hooks/messageHook";
 
 export const TournamentInfoPage = () => {
   const {token} = useContext(AuthContext);
-  const {request, loading} = useHttp();
+  const {loading, error, request, clearError} = useHttp();
   const [tournament, setTournament] = useState(null);
   const tournamentId = useParams().tournamentId;
+  const message = useMessage();
   // console.log(tournamentId)
 
   const getTournament = useCallback ( async () => {
@@ -30,6 +32,11 @@ export const TournamentInfoPage = () => {
   useEffect(() => {
     getTournament();
   }, [getTournament]);
+
+  useEffect(() => {
+    message(error);
+    clearError();
+  }, [error, message, clearError]);
 
   if(loading) {
     return <Loader></Loader>

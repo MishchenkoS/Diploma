@@ -8,16 +8,20 @@ export const UsersInfo = ({ users }) => {
   }
 
   return (
-    <div>
+    <>
+    <div className='div-btn div-name-page'><h5>Список пользователей</h5></div>
+    <div className="collection">
       {users.map((user, index) => {
         return (
-          <div key={`${user._id}`}>
+          // <div key={`${user._id}`}>
+            <Link to={`/users/user/${user._id}`} className="collection-item ">
             <span>{ index + 1 } </span>
-            <Link to={`/users/${user._id}`}>{ user.login }</ Link>
+            { user.login }  <i class="material-icons right">arrow_forward</i></ Link>
             
-          </div>
+          // </div>
         );
       }) }
     </div>
+    </>
   );
 }
