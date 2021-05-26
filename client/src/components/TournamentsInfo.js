@@ -9,15 +9,48 @@ import { Loader } from "./Loader";
 
 export const TournamentsInfo = ({ tournaments}) => {
   const {loading, error, request, clearError} = useHttp();
-  const {token} = useContext(AuthContext);
+  const {token, role} = useContext(AuthContext);
   const message = useMessage();
-  const [game, setGame] = useState([]);
+  const [games, setGames] = useState([]);
 
-  if (!tournaments.length) {
-    return <p className="center">Турниров пока нет</p>
-  }
 
   console.log(tournaments)
+
+
+  const getGames = useCallback(async (id) => {
+    try {
+      if(role==="ADMIN") {
+        const fetched = await request(`/api/games/game/${id}`, "GET", null, {
+          Authorization: `Bearer ${token}`
+        });
+        setGames((games)=>[...games, fetched.game]);
+      } else {
+
+      
+      const fetched = await request(`/api/games/myGames/${id}`, "GET", null, {
+        Authorization: `Bearer ${token}`
+      });
+      setGames((games)=>[...games, fetched.game]);
+      console.log(fetched.game)
+    }
+    } catch (error) {
+    }
+  }, [token, request]);
+
+  useEffect(()=>{
+    console.log(2)
+    tournaments.map((item)=>{
+      console.log(item.gameId)
+        getGames(item.gameId);
+    })
+
+  }, [tournaments])
+
+  useEffect(() => {
+    message(error);
+    clearError();
+  }, [error, message, clearError]);
+
   // const {token} = useContext(AuthContext);
   // const {request, loading} = useHttp();
   // useEffect(() => {
@@ -47,23 +80,33 @@ export const TournamentsInfo = ({ tournaments}) => {
 
 
 
-  if(loading) {
+  if(loading ) {
     return <Loader></Loader>
+  }
+
+  if (!tournaments.length) {
+    return <p className="center">Турниров пока нет</p>
   }
 
 
   return (
-    <div>
+    <>
+    {games.length === tournaments.length && <div>
       {tournaments.map((tournament, index) => {
         // getGame(tournament.gameId);
+        console.log(games)
         return (
           <div key={`${tournament._id}`}>
             <span>{ index + 1 } </span>
-            <Link to={`/tournaments/${tournament._id}`}>{ tournament._id }</ Link>
+            <Link to={`/tournaments/${tournament._id}`}> 
+            <span>{ games[index].nameGame }  </span>
+            <span>{new Date(tournament.created_date).toLocaleDateString()}</span>
+            </ Link>
             
           </div>
         );
       }) }
-    </div>
+    </div>}
+    </>
   );
 }

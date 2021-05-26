@@ -189,6 +189,7 @@ export const GameAddPage = (formArg) => {
             Authorization: `Bearer ${token}`
           });
           message(data.message);
+          window.location.href = '/games';
       } else {
         message("Не все поля заполнены");
       }

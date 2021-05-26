@@ -14,7 +14,7 @@ import { NavbarLeading } from "./components/NavbarLeading";
 function App() {
   const {token, login, logout, userId, role, ready} = useAuth();
   const isAuthenticated = !!token;
-  const routes = useRoutes(isAuthenticated);
+  const routes = useRoutes(isAuthenticated, role);
 
   if(!ready) {
     return <Loader></Loader>

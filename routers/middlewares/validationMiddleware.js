@@ -72,7 +72,7 @@ module.exports.answerValidation = async (req, res, next) => {
 }
 
 module.exports.testValidation = async (req, res, next) => {
-  console.log("valid",req.body)
+  console.log("testValidation",req.body)
   const schema = joi.object({
     complexity: joi.number().required(), 
     type: joi.string().pattern(new RegExp('^(RADIO|CHECK|WRITE)$')).required(), 
@@ -148,6 +148,7 @@ module.exports.nameGameValidation = async (req, res, next) => {
 
 
 module.exports.idGameValidation = async (req, res, next) => {
+  console.log("idGameValidation")
   const schema = joi.object({
     testId: joi.objectId(),
     gameId: joi.objectId(),
@@ -164,8 +165,6 @@ module.exports.idUserValidation = async (req, res, next) => {
   const schema = joi.object({
     userId: joi.objectId(),
   });
-
-  console.log("valid")
 
   await schema.validateAsync(req.params);
   next();

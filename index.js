@@ -3,6 +3,10 @@ require('dotenv').config(); //Загрузка переменных из сре�
 const mongoose = require('mongoose'); 
 const express = require('express');
 const morgan = require('morgan');
+const multer = require('multer');
+const { createBucket } = require('mongoose-gridfs');
+const WebSocket = require('ws');
+
 
 const authRouter = require('./routers/authRouter');
 const usersRouter = require('./routers/usersRouter');
@@ -11,8 +15,10 @@ const gamesRouter = require('./routers/gamesRouter');
 const tournamentsRouter = require('./routers/tournamentRouter');
 
 const PORT = process.env.PORT || 8080;
-
+const ws = new WebSocket('ws://locallhost:8080');
 const app = express();
+// const storage = createBucket(); // createBucket(optns)
+// const upload = multer({ storage });
 
 app.use(express.json());
 app.use(morgan('tiny'));

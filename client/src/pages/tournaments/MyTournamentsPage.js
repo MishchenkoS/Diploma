@@ -5,47 +5,49 @@ import { useHttp } from "../../hooks/httpHooks";
 import { TournamentsInfo } from "../../components/TournamentsInfo";
 import { useMessage } from "../../hooks/messageHook";
 
-export const TournamentsInfoPage = () => {
+export const MyTournamentsPage = () => {
   const {token} = useContext(AuthContext);
   const {loading, error, request, clearError} = useHttp();
   const [tournaments, setTournaments] = useState([]);
-  const message = useMessage();
   // const [games, setGames] = useState([]);
+  const message = useMessage();
 
-  const getTournaments = useCallback ( async () => {
+  const getTournaments = useCallback(async () => {
     try {
-      const fetched = await request('/api/tournaments/', "GET", null, {
+      const fetched = await request('/api/tournaments/myTournaments', "GET", null, {
         Authorization: `Bearer ${token}`
       });
-      console.log(fetched)
       setTournaments(fetched);
-      
-    } catch(error) {
-
+    } catch (error) {
     }
   }, [token, request]);
 
-  // const getGame = useCallback ( async (id) => {
+  // const getGames = useCallback(async (id) => {
   //   try {
-  //     const fetched = await request(`/api/games/game/${id}`, "GET", null, {
+  //     const fetched = await request(`/api/games/myGames/${id}`, "GET", null, {
   //       Authorization: `Bearer ${token}`
   //     });
-      
-  //     setGames(...games, fetched.game);
-      
-  //   } catch(error) {
-
+  //     setGames((games)=>[...games, fetched]);
+  //     console.log(fetched)
+  //   } catch (error) {
   //   }
-  // }, [token, request, getTournaments]);
+  // })
 
   useEffect(() => {
     getTournaments();
-    // tournaments.map((tournament) => {
-    //   console.log(1)
-    //   getGame(tournament.gameId);
-    // })
-  }, [getTournaments]);
-  // console.log(games)
+
+  }, [getTournaments])
+
+  // useEffect(()=>{
+  // //   if(tournaments.length) {
+  // //     console.log(1)
+  // //     tournaments.map((item)=>{
+  // //       getGames(item.gameId);
+  // //     })
+  // //   }
+  // }, []);
+
+
 
   useEffect(() => {
     message(error);
@@ -55,10 +57,9 @@ export const TournamentsInfoPage = () => {
   if(loading) {
     return <Loader></Loader>
   }
-
+  // console.log(games)
   return (
-    <>
-      {!loading && tournaments.length && <TournamentsInfo tournaments={tournaments} />}
-    </>
-  );
+  <>
+    {!loading && tournaments.length && <TournamentsInfo tournaments={tournaments}/>}
+  </>);
 }

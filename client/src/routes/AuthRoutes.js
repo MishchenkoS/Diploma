@@ -16,19 +16,20 @@ import { GameAddPage } from "../pages/games/GameAddPage";
 import { TestChangePage } from "../pages/tests/TestChangePage";
 import { GameChangePage } from "../pages/games/GameChangePage";
 import { UserChangePage } from "../pages/users/UserChangePage";
+import { MyGamesPage } from "../pages/games/MyGamesPage";
+import { MyTournamentsPage } from "../pages/tournaments/MyTournamentsPage";
 
-export const useRoutes = (isAuthenticated) => {
-  if(isAuthenticated) {
+export const useRoutes = (isAuthenticated, role) => {
+  if(isAuthenticated && role === "ADMIN") {
     return (
       <Switch>
         <Route path="/" exact>
           <HomePage></HomePage>
-          {/* <LoginPage></LoginPage> */}
         </Route>
         <Route exact path='/users'>
           <UsersInfoPage></UsersInfoPage>
         </Route>
-        <Route exact path={`/users/user/:userId`}>
+        <Route exact path='/users/user/:userId'>
           <UserInfoPage></UserInfoPage>
         </Route>
         <Route exact path='/users/changeUser/:userId'>
@@ -70,13 +71,35 @@ export const useRoutes = (isAuthenticated) => {
         
         <Route path='/register'>
           <LoginPage></LoginPage> 
-        {/* </Route>
-            <Route path='/login'>
-      <AuthPage></AuthPage> */}
    </Route>
         <Redirect to="/" />
       </Switch>
     );
+  } else if(isAuthenticated && role === "LEADING") {
+    return (
+      <Switch>
+        <Route path="/" exact>
+          <HomePage></HomePage>
+        </Route>
+        <Route exact path="/myGames">
+          <MyGamesPage></MyGamesPage>
+        </Route>
+        <Route exact path='/games/game/:gameId'>
+          <GamePage></GamePage>
+        </Route>
+        <Route exact path='/users/user/:userId'>
+          <UserInfoPage></UserInfoPage>
+        </Route>
+        <Route exact path='/myTournaments'>
+          <MyTournamentsPage></MyTournamentsPage>
+        </Route>
+        <Route exact path='/tournaments/:tournamentId'>
+          <TournamentInfoPage></TournamentInfoPage>
+        </Route>
+        <Redirect to="/" />
+      </Switch>
+    );
+
   }
 
   return (

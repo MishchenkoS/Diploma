@@ -26,6 +26,7 @@ const tournamentSchema = new mongoose.Schema({
         },
         answers: {
           type: mongoose.Schema.Types.Mixed
+          //знчение - массив ответов
         }
       }
     ]

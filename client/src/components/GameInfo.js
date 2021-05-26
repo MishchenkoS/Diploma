@@ -73,12 +73,14 @@ export const GameInfo = ({ game }) => {
     game.players.map((item, index) => {
       getPlayers(item);
     });
+
     game.rounds.map((item) => {
       console.log(item)
       for(let key in item) {
         getRound(key);
       }
     })
+
   }, [getLeading, getPlayers, getRound]);
 
   

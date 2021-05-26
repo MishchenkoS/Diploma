@@ -7,7 +7,7 @@ import { UserInfo } from "../../components/UserInfo";
 import { useMessage } from "../../hooks/messageHook";
 
 export const UserInfoPage = () => {
-  const {token} = useContext(AuthContext);
+  const {token, role} = useContext(AuthContext);
   const {loading, error, request, clearError} = useHttp();
   const [user, setUser] = useState(null);
   const userId = useParams().userId;
@@ -17,12 +17,18 @@ export const UserInfoPage = () => {
 
   const getUser = useCallback ( async () => {
     try {
-      const fetched = await request(`/api/users/me/admin/${userId}`, "GET", null, {
-        Authorization: `Bearer ${token}`
-      });
+      if(role==="ADMIN") {
+        const fetched = await request(`/api/users/me/admin/${userId}`, "GET", null, {
+          Authorization: `Bearer ${token}`
+        });
+        setUser(fetched.user);
+      } else {
+        const fetched = await request(`/api/users/me/`, "GET", null, {
+          Authorization: `Bearer ${token}`
+        });
+        setUser(fetched.user);
+      }
     
-console.log(fetched)
-      setUser(fetched.user);
       
     } catch(error) {
 

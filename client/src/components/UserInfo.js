@@ -7,7 +7,7 @@ import { useMessage } from "../hooks/messageHook";
 
 export const UserInfo = ({ user }) => {
   const {loading, error, request, clearError} = useHttp();
-  const {token} = useContext(AuthContext);
+  const {token, role} = useContext(AuthContext);
   const userId = useParams().userId;
   const message = useMessage();
 
@@ -60,12 +60,12 @@ export const UserInfo = ({ user }) => {
       </tbody>
     </table>
 
-    <div className='div-btn-test'>
+    {role==="ADMIN" && <div className='div-btn-test'>
       <button onClick={changeUser} className="btn waves-effect waves-light indigo lighten-1 btn-add ">
           Изменить данные<i className="material-icons right">edit</i></button>
 
         <button onClick={deleteUser} className="btn waves-effect waves-light indigo lighten-1 btn-add">
-          Удалить пользователя<i className="material-icons right">delete</i></button></div>
+          Удалить пользователя<i className="material-icons right">delete</i></button></div>}
 
       {/* <p>Login: </p>
       <p>Имя: {user.firstname}</p>

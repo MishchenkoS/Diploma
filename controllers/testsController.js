@@ -3,6 +3,13 @@ const { Game } = require('../models/gameModel');
 const testDao = require('../dao/testDao');
 // const { deleteTestWithGame } = require('./gamesController');
 
+
+module.exports.photoAdd = async (req, res) =>{
+  const {photo} = req.body;
+  console.log(photo);
+  
+}
+
 //Создаем новый тест
 
 module.exports.newTest = async (req, res) => {
@@ -31,7 +38,10 @@ module.exports.getTestsInfo = async (req, res) => {
 };
 
 module.exports.getTestInfo = async (req, res) => {
+  console.log("getTestInfo")
+  console.log(req.params.testId)
   const testInfo = await testDao.findTestById(req.params.testId);
+  console.log(testInfo)
   res.json({test: testInfo});
 };
 

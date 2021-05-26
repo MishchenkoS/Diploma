@@ -28,7 +28,8 @@ export const NavbarUser = () => {
         <ul className="right hide-on-med-and-down">
           <li><NavLink to="/">Главная</NavLink></li>
           <li><NavLink to={`/game/online`}>Онлайн</NavLink></li>
-          <li><NavLink to={`/users/${auth.userId}`}>Кабинет</NavLink></li>
+          <li><NavLink to="/myGames">Игры</NavLink></li>
+          <li><NavLink to="/tournaments">Турниры</NavLink></li>
           <li><a href="/" onClick={logoutHandler}>Выйти</a></li>
         </ul>
       </div>
@@ -36,7 +37,8 @@ export const NavbarUser = () => {
     <ul className="sidenav" id="mobile-demo">
           <li><NavLink to="/">Главная</NavLink></li>
           <li><NavLink to={`/game/online`}>Онлайн</NavLink></li>
-          <li><NavLink to={`/users/${auth.userId}`}>Кабинет</NavLink></li>
+          <li><NavLink to="/myGames">Игры</NavLink></li>
+          <li><NavLink to="/tournaments">Турниры</NavLink></li>
           <li><a href="/" onClick={logoutHandler}>Выйти</a></li>
         </ul>
     </>

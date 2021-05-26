@@ -171,3 +171,45 @@ module.exports.getRound = async (req, res) => {
   res.json(game.rounds[round]); 
 };
 
+module.exports.getMyTournamentsInfo = async (req, res) => {
+  const userId = req.user.id;
+  const tournamentsInfo = await tournamentDao.findTournaments();
+  const gamesInfo = []
+  console.log(tournamentsInfo)
+
+  for(let i = 0; i < tournamentsInfo.length; i++) {
+    console.log(tournamentsInfo[i].gameId)
+    const fetched = await gameDao.findGameById(tournamentsInfo[i].gameId);
+        console.log(fetched);
+    gamesInfo.push(fetched);
+  }
+
+  // tournamentsInfo.map(async (item)=>{
+  //   const fetched = await gameDao.findGameByName(item.nameGame);
+  //   console.log(fetched);
+  //   gamesInfo.push(fetched);
+  // });
+  const myTournaments = [];
+  let flag = true;
+
+  console.log(gamesInfo)
+
+  for(let i = 0; i < gamesInfo.length; i++) {
+    for(let j = 0; j < gamesInfo[i].leadings.length; j++) {  
+      if(gamesInfo[i].leadings[j] == userId){
+        myTournaments.push(tournamentsInfo[i]);
+        flag = false;
+        break;
+      }
+    }
+    for(let j = 0; flag && j < gamesInfo[i].players.length; j++) {
+      if(gamesInfo[i].players[j] === userId) {
+        myTournaments.push(tournamentsInfo[i]);
+        break;
+      }
+    }
+    flag = true;
+  }
+
+  res.json(myTournaments); 
+}

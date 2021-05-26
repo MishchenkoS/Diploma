@@ -44,7 +44,7 @@ export const GameLeadingsAll = (formArg) => {
       <div className='div-btn'><h6>Выбрать ведущих</h6></div>
       {users.map((user, index) => {
         if(user.role==="LEADING" || user.role==="ADMIN"){
-          const check = form.players.indexOf(user._id) === -1 ? false : true;
+          const check = form.leadings.indexOf(user._id) === -1 ? false : true;
           return (
             <div key={user._id}>
               <label>

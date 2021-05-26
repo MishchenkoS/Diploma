@@ -19,6 +19,16 @@ module.exports.getUserProfileInfo = async (req, res) => {
   res.json({user: userProfileInfo});
 };
 
+module.exports.getUserInfo = async (req, res) => {
+  let userId = req.user.id;
+  if(req.params.userId){
+    userId = req.params.userId
+  }
+  const userProfileInfo = await userDao.findUserById(userId)
+  const userInfo = {login: userProfileInfo.login};
+  res.json({user: userInfo});
+};
+
 module.exports.changeUser = async (req, res) => {
   const { login, password, firstname, lastname, group, team, role} = req.body;
   const user = await userDao.findUserById(req.params.userId);
