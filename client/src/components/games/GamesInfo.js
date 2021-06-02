@@ -1,6 +1,6 @@
 import React, {useContext} from "react";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../context/authContext";
+import { AuthContext } from "../../context/authContext";
 
 export const GamesInfo = ({ games }) => {
   const {role} = useContext(AuthContext);

@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
-import { testAddContext } from "../context/testAddContext"
-import { Loader } from "./Loader";
+// import { testAddContext } from "../../context/testAddContext"
+import { Loader } from "../Loader";
 
 export const RadioTests = (formArg) => {
   console.log(formArg)

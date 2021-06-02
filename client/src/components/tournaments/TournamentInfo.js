@@ -1,8 +1,8 @@
 import React, { useContext, useCallback, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../context/authContext";
-import { useHttp } from "../hooks/httpHooks";
-import { Loader } from "../components/Loader";
+import { AuthContext } from "../../context/authContext";
+import { useHttp } from "../../hooks/httpHooks";
+import { Loader } from "../Loader";
 
 export const TournamentInfo = ({tournament}) => {
   console.log("tournament",tournament);

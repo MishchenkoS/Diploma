@@ -18,6 +18,8 @@ import { GameChangePage } from "../pages/games/GameChangePage";
 import { UserChangePage } from "../pages/users/UserChangePage";
 import { MyGamesPage } from "../pages/games/MyGamesPage";
 import { MyTournamentsPage } from "../pages/tournaments/MyTournamentsPage";
+import { OnlinePage } from "../pages/online/OnlinePage";
+import { OnlineTournamentPage } from "../pages/online/OnlineTournamentPage";
 
 export const useRoutes = (isAuthenticated, role) => {
   if(isAuthenticated && role === "ADMIN") {
@@ -68,6 +70,13 @@ export const useRoutes = (isAuthenticated, role) => {
         <Route exact path='/tournaments/:tournamentId'>
           <TournamentInfoPage></TournamentInfoPage>
         </Route>
+
+        <Route exact path='/online/'> 
+          <OnlinePage></OnlinePage>
+        </Route>
+        <Route exact path='/online/:gameId'>
+          <OnlineTournamentPage></OnlineTournamentPage>
+        </Route>
         
         <Route path='/register'>
           <LoginPage></LoginPage> 
@@ -75,7 +84,7 @@ export const useRoutes = (isAuthenticated, role) => {
         <Redirect to="/" />
       </Switch>
     );
-  } else if(isAuthenticated && role === "LEADING") {
+  } else if(isAuthenticated && (role === "LEADING" || role==="STUDENT")) {
     return (
       <Switch>
         <Route path="/" exact>
@@ -96,11 +105,17 @@ export const useRoutes = (isAuthenticated, role) => {
         <Route exact path='/tournaments/:tournamentId'>
           <TournamentInfoPage></TournamentInfoPage>
         </Route>
+        <Route exact path='/online/'> 
+          <OnlinePage></OnlinePage>
+        </Route>
+        <Route exact path='/online/:gameId'>
+          <OnlineTournamentPage></OnlineTournamentPage>
+        </Route>
         <Redirect to="/" />
       </Switch>
     );
 
-  }
+  } 
 
   return (
     <Switch>

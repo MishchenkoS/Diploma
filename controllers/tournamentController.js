@@ -3,6 +3,20 @@ const { Tournament } = require('../models/tournamentModel');
 const tournamentDao = require('../dao/tournamentDao');
 const gameDao = require('../dao/gameDao');
 
+module.exports.getAllStart = async (req, res) => {
+  const tournamentsInfo = await tournamentDao.findTournamentByParam('status', 'CREATE');
+  console.log(tournamentsInfo)
+  const tournamentsInfoStart = [...tournamentsInfo];
+  console.log(tournamentsInfoStart)
+  for(let i = 0; i < tournamentsInfo.length; i++) {
+    const game = await gameDao.findGameById(tournamentsInfo[i].gameId);
+    console.log(game.nameGame)
+    tournamentsInfoStart[i].nameGame = game.nameGame;
+   }
+  console.log(tournamentsInfoStart)
+  res.json(tournamentsInfoStart); 
+}
+
 module.exports.newTournament = async (req, res) => {
   const { gameId } = req.body;
 

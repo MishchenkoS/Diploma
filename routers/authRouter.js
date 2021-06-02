@@ -8,11 +8,11 @@ const {registration, login} =
 
 const router = new express.Router();
 
-//Сделать розавторизацию
+
 router.post('/register', asyncWrapper(registrationValidation),
     asyncWrapper(registration));
+ 
 router.post('/login', asyncWrapper(loginValidation), asyncWrapper(login));
-// router.post('/forgot_password', asyncWrapper(forgotPasswordValidation),
-//     asyncWrapper(getNewPassword));
+
 
 module.exports = router;

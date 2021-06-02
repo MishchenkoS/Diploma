@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { Loader } from "../../components/Loader";
 import { AuthContext } from "../../context/authContext";
 import { useHttp } from "../../hooks/httpHooks";
-import { TournamentInfo } from "../../components/TournamentInfo";
+import { TournamentInfo } from "../../components/tournaments/TournamentInfo";
 import { useMessage } from "../../hooks/messageHook";
 
 export const TournamentInfoPage = () => {

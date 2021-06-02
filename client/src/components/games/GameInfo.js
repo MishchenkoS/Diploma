@@ -1,9 +1,9 @@
 import React, { useContext, useCallback, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../context/authContext";
-import { useHttp } from "../hooks/httpHooks";
-import { useMessage } from "../hooks/messageHook";
-import { Loader } from "../components/Loader";
+import { AuthContext } from "../../context/authContext";
+import { useHttp } from "../../hooks/httpHooks";
+import { useMessage } from "../../hooks/messageHook";
+import { Loader } from "../Loader";
 
 // import { Link } from "react-router-dom";
 
@@ -15,6 +15,7 @@ export const GameInfo = ({ game }) => {
   const [players, setPlayers] = useState([]);
   const [rounds, setRounds] = useState([]);
   const message = useMessage();
+
   console.log(game)
 
   useEffect(() => {
@@ -102,6 +103,11 @@ export const GameInfo = ({ game }) => {
     }
   }
 
+  const startGame = async () => {
+    window.location.href = `/online/${game._id}`;
+  }
+
+
   return (
     <>
     <div className='div-btn div-name-page'><h5>Игра</h5></div>
@@ -188,15 +194,17 @@ export const GameInfo = ({ game }) => {
     </tbody>
   </table>
 
-  <div className='div-btn-test'>
+  <div className='div-btn-game'>
       <button onClick={changeGame} className="btn waves-effect waves-light indigo lighten-1 btn-add ">
           Изменить игру<i class="material-icons right">edit</i></button>
 
         <button onClick={deleteGame} className="btn waves-effect waves-light indigo lighten-1 btn-add">
-          Удалить игру<i class="material-icons right">delete</i></button></div>
+          Удалить игру<i class="material-icons right">delete</i></button>
 
+        <button onClick={startGame} className="btn waves-effect waves-light indigo lighten-1 btn-add ">
+          Начать игру<i class="material-icons right">people</i></button>
 
-
+          </div>
 
       {/* <p>Название: {game.nameGame}</p>
       <p>Тип: {game.type}</p>

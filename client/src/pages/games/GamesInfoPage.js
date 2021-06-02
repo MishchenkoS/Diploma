@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Loader } from "../../components/Loader";
 import { AuthContext } from "../../context/authContext";
 import { useHttp } from "../../hooks/httpHooks";
-import { GamesInfo } from "../../components/GamesInfo";
+import { GamesInfo } from "../../components/games/GamesInfo";
 import { useMessage } from "../../hooks/messageHook";
 
 export const GamesInfoPage = () => {

@@ -4,10 +4,10 @@ import { AuthContext } from "../../context/authContext";
 import { useMessage } from "../../hooks/messageHook";
 import { useHttp } from "../../hooks/httpHooks";
 import { Loader } from "../../components/Loader";
-import { GamePlayersAll } from "../../components/GamePlayersAll";
-import { GameTeams } from "../../components/GameTeams";
-import { GameLeadingsAll } from "../../components/GameLeadings";
-import { GameTestsAdd } from "../../components/GameTestsAdd";
+import { GamePlayersAll } from "../../components/games/GamePlayersAll";
+import { GameTeams } from "../../components/games/GameTeams";
+import { GameLeadingsAll } from "../../components/games/GameLeadings";
+import { GameTestsAdd } from "../../components/games/GameTestsAdd";
 
 export const GameAddPage = (formArg) => {
 

@@ -3,12 +3,13 @@ import {BrowserRouter as Router} from "react-router-dom";
 import { useRoutes } from "./routes/AuthRoutes";
 import { useAuth } from "./hooks/authHook";
 import { AuthContext } from "./context/authContext";
-import { NavbarAdmin } from "./components/NavbarAdmin";
-import { NavbarUser } from "./components/NavbarUser";
-import { Navbar } from "./components/Navbar";
+import { NavbarAdmin } from "./components/navbar/NavbarAdmin";
+import { NavbarLeading } from "./components/navbar/NavbarLeading";
+import { NavbarUser } from "./components/navbar/NavbarUser";
+import { Navbar } from "./components/navbar/Navbar";
 import { Loader } from "./components/Loader"
 import 'materialize-css';
-import { NavbarLeading } from "./components/NavbarLeading";
+
 
 
 function App() {

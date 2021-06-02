@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { Loader } from "../../components/Loader";
 import { AuthContext } from "../../context/authContext";
 import { useHttp } from "../../hooks/httpHooks";
-import { TestInfo } from "../../components/TestInfo";
+import { TestInfo } from "../../components/tests/TestInfo";
 import { useMessage } from "../../hooks/messageHook";
 
 export const TestPage = () => {

@@ -1,8 +1,8 @@
 import React, {useContext, useEffect} from "react";
 import { useParams } from "react-router-dom";
-import { AuthContext } from "../context/authContext";
-import { useHttp } from "../hooks/httpHooks";
-import { useMessage } from "../hooks/messageHook";
+import { AuthContext } from "../../context/authContext";
+import { useHttp } from "../../hooks/httpHooks";
+import { useMessage } from "../../hooks/messageHook";
 // import { Link } from "react-router-dom";
 
 export const UserInfo = ({ user }) => {

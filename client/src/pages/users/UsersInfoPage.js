@@ -1,6 +1,6 @@
 import React, {useContext, useState, useCallback, useEffect} from "react";
 import { Loader } from "../../components/Loader"
-import { UsersInfo } from "../../components/UsersInfo";
+import { UsersInfo } from "../../components/users/UsersInfo";
 import { useHttp } from "../../hooks/httpHooks";
 import { AuthContext } from "../../context/authContext";
 import { useMessage } from "../../hooks/messageHook";

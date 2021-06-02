@@ -4,9 +4,9 @@ import { AuthContext } from "../../context/authContext";
 import { testAddContext } from "../../context/testAddContext"
 import { useHttp } from "../../hooks/httpHooks";
 import { useMessage } from "../../hooks/messageHook";
-import { RadioTests } from "../../components/RadioTest";
-import { CheckTests } from "../../components/CheckTests";
-import { WriteTests } from "../../components/WriteTests";
+import { RadioTests } from "../../components/tests/RadioTest";
+import { CheckTests } from "../../components/tests/CheckTests";
+import { WriteTests } from "../../components/tests/WriteTests";
 
 //Добавить картинки
 export const TestAddPage = () => {

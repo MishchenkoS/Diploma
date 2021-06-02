@@ -205,7 +205,7 @@ export const LoginPage = (formArg) => {
         disabled={loading}
         className="btn waves-effect waves-light indigo lighten-1 my-btn"
         >
-          Изменить данныеіс
+          Изменить данные
           <i class="material-icons right">assignment_ind</i>
         </button>
       </div>}

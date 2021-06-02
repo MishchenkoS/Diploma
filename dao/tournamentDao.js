@@ -23,3 +23,22 @@ module.exports.findTournamentById = async (id) =>  {
   }
   return tournament;
 }
+
+module.exports.findTournamentByParam = async (param, value) => {
+  console.log(param, value)
+  const tournaments = await Tournament.find({
+    [param]: value,
+  })
+  .catch((err) => {
+    console.error(err.message);
+  });
+
+  if (!tournaments || tournaments.length === 0) {
+    throw new Error('No tournaments found');
+  }
+  return tournaments;
+}
+
+module.exports.findTournamentAndUpdateById = async (id, param, value) => {
+  await Tournament.findByIdAndUpdate(id, {[param]: value});
+}

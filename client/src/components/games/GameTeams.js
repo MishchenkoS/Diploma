@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
-import { AuthContext } from "../context/authContext";
-import { useHttp } from "../hooks/httpHooks";
-import { Loader } from "../components/Loader";
-import { GamePlayers } from "../components/GamePlayers";
+import { AuthContext } from "../../context/authContext";
+import { useHttp } from "../../hooks/httpHooks";
+import { Loader } from "../Loader";
+import { GamePlayers } from "./GamePlayers";
 import { Link } from "react-router-dom";
 
 
@@ -44,6 +44,10 @@ export const GameTeams = (formArg) => {
     }
 
     console.log(form)
+  }
+
+  if (!teams.length || !users.length) {
+    return <p className="center">Команд пока нет</p>
   }
 
   return(

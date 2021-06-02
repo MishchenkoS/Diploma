@@ -2,9 +2,13 @@ import React, { useState, useContext, useEffect, useCallback } from "react"
 import { useHttp } from "../hooks/httpHooks";
 import { useMessage } from "../hooks/messageHook";
 
+import { AuthContext } from "../context/authContext"
 export const HomePage = () => {
   const message = useMessage();
   const {loading, error, request, clearError} = useHttp();
+  const {token, role} = useContext(AuthContext);
+
+  console.log(role)
 
   const [form, setForm] = useState({
     photo: null,

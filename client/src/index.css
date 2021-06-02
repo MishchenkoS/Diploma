@@ -118,6 +118,12 @@ label.active {
   justify-content: space-between;
 }
 
+.div-btn-game {
+  display: grid;
+  grid-template-columns: 30% 30% 30%;
+  justify-content: space-between;
+}
+
 .collection a.collection-item {
   color: #1a237e;
 }

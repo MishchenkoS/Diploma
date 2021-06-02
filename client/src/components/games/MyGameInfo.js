@@ -1,9 +1,9 @@
 import React, { useContext, useCallback, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../context/authContext";
-import { useHttp } from "../hooks/httpHooks";
-import { useMessage } from "../hooks/messageHook";
-import { Loader } from "../components/Loader";
+import { AuthContext } from "../../context/authContext";
+import { useHttp } from "../../hooks/httpHooks";
+import { useMessage } from "../../hooks/messageHook";
+import { Loader } from "../Loader";
 
 // import { Link } from "react-router-dom";
 

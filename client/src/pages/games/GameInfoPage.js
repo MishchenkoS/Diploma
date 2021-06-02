@@ -3,8 +3,8 @@ import { useParams } from "react-router-dom";
 import { Loader } from "../../components/Loader";
 import { AuthContext } from "../../context/authContext";
 import { useHttp } from "../../hooks/httpHooks";
-import { GameInfo } from "../../components/GameInfo";
-import { MyGameInfo } from "../../components/MyGameInfo";
+import { GameInfo } from "../../components/games/GameInfo";
+import { MyGameInfo } from "../../components/games/MyGameInfo";
 import { useMessage } from "../../hooks/messageHook";
 
 export const GamePage = () => {

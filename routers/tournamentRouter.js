@@ -1,7 +1,8 @@
 const express = require('express');
 const { getTestInfo } = require('../controllers/testsController');
 const { asyncWrapper } = require('../helpers');
-const { getTournamentsInfo, newTournament, getTournamentInfo, getTestResult, addAnswer, addTestToRound, getMyTournamentsInfo,
+const { getTournamentsInfo, newTournament, getTournamentInfo, getTestResult, getAllStart,
+  addAnswer, addTestToRound, getMyTournamentsInfo,
   changeStatusTest, changeStatusTournament, getGame, getRound, deleteTournament, changeAnswer } = require('../controllers/tournamentController');
 const { authMiddleware, leadingRoleChecker } = require('./middlewares/authMiddleware');
 const { tournamentValidation, answerValidation } = require('./middlewares/validationMiddleware');
@@ -10,6 +11,7 @@ const router = new express.Router();
 
 
 router.get('/', authMiddleware, asyncWrapper(leadingRoleChecker), asyncWrapper(getTournamentsInfo));
+router.get('/allStart', asyncWrapper(getAllStart));
 router.get('/myTournaments', authMiddleware,  asyncWrapper(getMyTournamentsInfo))
 router.get('/info/:tournamentId', authMiddleware, asyncWrapper(leadingRoleChecker), asyncWrapper(getTournamentInfo));
 router.get('/start/:tournamentId', authMiddleware, asyncWrapper(getGame));

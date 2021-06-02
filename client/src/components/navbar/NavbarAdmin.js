@@ -1,6 +1,6 @@
 import React, {useContext, useEffect} from 'react';
 import {NavLink, useHistory} from 'react-router-dom';
-import {AuthContext} from '../context/authContext';
+import {AuthContext} from "../../context/authContext";
 // import { useMessage } from "../hooks/messageHook";
 
 export const NavbarAdmin = () => {
@@ -39,7 +39,7 @@ export const NavbarAdmin = () => {
           </a>
         <ul className="right hide-on-med-and-down">
           <li><NavLink to="/">Главная</NavLink></li>
-          <li><NavLink to={`/game/online`}>Онлайн</NavLink></li>
+          <li><NavLink to={`/online`}>Онлайн</NavLink></li>
           <li><NavLink to="/tests">Тесты</NavLink></li>
           <li><NavLink to="/games">Игры</NavLink></li>
           <li><NavLink to="/tournaments">Турниры</NavLink></li>
