@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import io from 'socket.io-client'
 import { Loader } from "../../components/Loader";
 import { AuthContext } from "../../context/authContext";
+const socket = io();
 
 export const OnlineTournamentPage = () => {
   const gameId = useParams().gameId;
@@ -11,10 +12,14 @@ export const OnlineTournamentPage = () => {
 
   const {token, role, userId} = useContext(AuthContext);
   const [rounds, setRounds] = useState(null);
-  const [players, setPlayers] = useState(null)
+  const [players, setPlayers] = useState(null);
+  const [playersConnect, setPlayersConnect] = useState(null);
   const [test, setTest] = useState(null);
   const [answers, setAnswers] = useState([]);
-  const [tournamentId, setTournamentId] = useState(null)
+  const [tournamentId, setTournamentId] = useState(null);
+  const [tournamentStatus, setTournamentStatus] = useState(null);
+  const [roleGame, setRoleGame] = useState(null);
+
 
 
 // window.addEventListener('load', () => {
@@ -25,41 +30,81 @@ export const OnlineTournamentPage = () => {
 
 
 const getTestToLeading = (event) => {
-  return rounds[event.name].event.id;
+  let name = event.target.name;
+  let id = event.target.id;
+  console.log(rounds[name][id]);
+  console.log(event.target.id)
+  console.log(event.target.name)
+  // console.log()
+
+
 }
 
-const createTournament = () => {
-
+const createTournament = (event) => {
+  socket.emit('CREATE', {gameId});
+  event.target.style.display = 'none';
 }
+
+socket.on('CREATE', (data) => {
+  setPlayers(data.players);
+  setTournamentId(data.id);
+  setTournamentStatus(data.status);
+});
+
+socket.on('CONNECT_PLAYER', (data) =>{
+  setPlayers(data.players);
+  setPlayersConnect(data.playersConnect);
+  setTournamentId(data.id);
+  setTournamentStatus(data.status);
+  console.log(data.players)
+  console.log(data.playersConnect)
+  console.log(data.status)
+  // const li = document.getElementById(data.userId);
+  // li.style.color = "green";
+});
+
+const startTournament = () => {
+  socket.emit('START', {gameId, tournamentId});
+}
+
+socket.on('START', (data) => {
+  setTournamentStatus(data.status);
+  if(roleGame === "LEADING") {
+    setRounds(data.rounds);
+  }
+});
+
 
 
 useEffect(()=>{
   if(count) {
-    const socket = io();
+
+    socket.emit('CONNECT', {userId, gameId});
+    socket.on('CONNECT', (data) => {
+      console.log(data.roleGame)
+      setRoleGame(data.roleGame);
+    })
 
 
-    //пользователь переходит на страницу игры
-    socket.emit('CREATE', {message: gameId, userId});
-    //если пользователь - это ведущий, то создать турнир 
-    socket.on('CREATE', (data) => {
-      if(data.resolution) {
-        socket.emit('CREATE_TOURNAMENT', { message: gameId});
-      }
-    });
+    // socket.on('CREATE', (data) => {
+    //   if(data.resolution) {
+    //     socket.emit('CREATE_TOURNAMENT', { message: gameId});
+    //   }
+    // });
 
-    //после создания турнира получить всех игроков, которые принимают участие
-    socket.on('CREATE_TOURNAMENT', (data)=>{
-      //получить всех игроков
-      console.log(data)
-      setPlayers(data.players)
-      setTournamentId(data.id)
-    });
+    // //после создания турнира получить всех игроков, которые принимают участие
+    // socket.on('CREATE_TOURNAMENT', (data)=>{
+    //   //получить всех игроков
+    //   console.log(data)
+    //   setPlayers(data.players)
+    //   setTournamentId(data.id)
+    // });
 
 
 
-    if(players) {
-      socket.emit('')
-    }
+    // if(players) {
+    //   socket.emit('')
+    // }
 
 
 
@@ -184,10 +229,49 @@ useEffect(()=>{
 //   return <Loader></Loader>
 // }
 
+if(!roleGame && !players) {
+  return <Loader></Loader>
+}
+
+console.log(rounds)
 
 
 return <>
-<div>
+{tournamentStatus && <p>Статус турнира: {tournamentStatus}</p>}
+{roleGame==="LEADING" && !tournamentStatus && <button onClick={createTournament}>Разрешить подключаться к игре</button>}
+{players && <ul>
+  {players.map((item)=>{
+    console.log(item)
+    if(playersConnect && playersConnect.indexOf(item.id) !== -1) {
+      console.log(2)
+      return <li style={{color: 'green'}} id={item.id}>{item.login}</li>
+    }
+    return <li id={item.id}>{item.login}</li>
+    // {playersConnect && playersConnect.indexOf(item.id) !== -1 &&
+    //   return <li id={item.id}>{item.login}</li>
+    // }
+   
+  })}
+</ul>}
+{roleGame==="LEADING" && tournamentStatus === "CREATE" && <button onClick={startTournament}>Старт турнира</button>}
+
+{roleGame==="LEADING" && tournamentStatus === "START" && rounds && <div onClick={getTestToLeading}>{rounds.map((item, index)=>{
+  console.log(item);
+  let roundsDOM = [(<span>Раунд {index + 1}</span>)];
+  let i = 0;
+  for(let key in item) {
+    roundsDOM.push(<button id={key} name={index}> {i + 1} </button>);
+    i++;
+  }
+
+  return roundsDOM;
+  // <span>Раунд {index+1}</span>
+
+})} </div>}
+
+
+
+{/* <div>
   <ul>
   {players && players.map((item)=>{
     return <li id={item.id}>{item.login}</li>
@@ -195,6 +279,7 @@ return <>
   </ul>
   {!players && <Loader></Loader>}
 </div>
+
 <button id="start">Начать игру</button>
 <button onClick={getTestToLeading}></button>
 <button id="startTest">Начать тест</button>
@@ -203,7 +288,7 @@ return <>
 <form id="form">
   <input id="input"></input>
   <button type='submit'>Submit</button>
-</form>
+</form> */}
 
 </>
 

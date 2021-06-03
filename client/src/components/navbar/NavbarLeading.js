@@ -27,7 +27,7 @@ export const NavbarLeading = () => {
         </a>
         <ul className="right hide-on-med-and-down">
           <li><NavLink to="/">Главная</NavLink></li>
-          <li><NavLink to={`/game/online`}>Онлайн</NavLink></li>
+          <li><NavLink to={`/online`}>Онлайн</NavLink></li>
           <li><NavLink to="/myGames">Игры</NavLink></li>
           <li><NavLink to="/myTournaments">Турниры</NavLink></li>
           <li><NavLink to={`/users/user/${auth.userId}`}>Обо мне</NavLink></li>
@@ -37,7 +37,7 @@ export const NavbarLeading = () => {
     </nav>
     <ul className="sidenav" id="mobile-demo">
       <li><NavLink to="/">Главная</NavLink></li>
-      <li><NavLink to={`/game/online`}>Онлайн</NavLink></li>
+      <li><NavLink to={`/online`}>Онлайн</NavLink></li>
       <li><NavLink to="/myGames">Игры</NavLink></li>
       <li><NavLink to="/tournaments">Турниры</NavLink></li>
       <li><NavLink to={`/users/user/${auth.userId}`}>Обо мне</NavLink></li>

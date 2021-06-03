@@ -15,11 +15,12 @@ const testsRouter = require('./routers/testsRouter');
 const gamesRouter = require('./routers/gamesRouter');
 const tournamentsRouter = require('./routers/tournamentRouter');
 
-const { Tournament } = require('./models/tournamentModel');
+const { Tournament } = require('./models/tournamentModel'); 
 const tournamentDao = require('./dao/tournamentDao');
 const { Game } = require('./models/gameModel');
 const gameDao = require('./dao/gameDao');
 const userDao = require('./dao/userDao');
+const testDao = require('./dao/testDao');
 
 const PORT = process.env.PORT || 8080;
 // const ws = new WebSocket('ws://locallhost:8080');
@@ -39,6 +40,7 @@ app.use('/api/tests', testsRouter);
 app.use('/api/games', gamesRouter);
 app.use('/api/tournaments', tournamentsRouter);
 app.use((err, req, res, next) => res.status(500).json({message: err.message}));
+
 
 
 
@@ -73,70 +75,156 @@ app.use((err, req, res, next) => res.status(500).json({message: err.message}));
 // // обрабатываем подключение
 // io.on('connection', onConnection)
 
-
+const playersConnect = [];
+let tournamentStatus;
 
 
 io.on('connection', (socket) =>{
   console.log('New user connected');
 
-  socket.on('CREATE', async (data) => {
-    const gameInfo = await gameDao.findGameById(data.message);
+
+  socket.on('CONNECT', async (data) => {
+    const gameInfo = await gameDao.findGameById(data.gameId);
     const leadings = gameInfo.leadings;
-    let leadingResult = false;
-    console.log(data.userId)
-    for(let i = 0; i < leadings.length; i++) {
-      console.log(leadings[i])
-      if(leadings[i] == data.userId) {
-        console.log(1)
-        leadingResult = true;
-        break;
-      }
-
-    }
-    console.log("leading",leadingResult);
-    io.emit('CREATE', {resolution: leadingResult})
-  });
-
-
-  socket.on('CREATE_TOURNAMENT', async (data)=>{
-    //обработка и запись в бд, достать всех игроков
-    console.log(data)
-    const id = mongoose.Types.ObjectId();
-    console.log(id)
-    const newTournament = new Tournament({
-      gameId: data.message, 
-      status: "CREATE",
-      _id: id
-    });
-
-    const gameInfo = await gameDao.findGameById(data.message);
     const players = gameInfo.players;
-
-    // const playersResult = players.map(async (item)=>{
-    //   const userProfileInfo = await userDao.findUserById(item);
-    //   return {login: userProfileInfo.login, id:userProfileInfo._id};
-    // })
     const playersResult = [];
+    let role = "VIEWER";
+    // let flag = true;
+
+    if(leadings.indexOf(data.userId) !== -1) {
+      role = "LEADING";
+    } else if(players.indexOf(data.userId) !== -1) {
+      role = "PLAYER";
+    }
+
     for(let i = 0; i < players.length; i++) {
       const userProfileInfo = await userDao.findUserById(players[i]);
       playersResult.push({login: userProfileInfo.login, id:userProfileInfo._id});
     }
 
-    console.log("players",playersResult);
-  
-    // const userProfileInfo = await userDao.findUserById(userId)
-    // const userInfo = {login: userProfileInfo.login};
 
-    await newTournament.save();
-    console.log(players);
-    io.emit('CREATE_TOURNAMENT', {players: playersResult, id:id})
+    // for(let i = 0; i < leadings.length; i++) {
+    //   if(leadings[i] == data.userId) {
+    //     role = "LEADING";
+    //     flag = false;
+    //     break;
+    //   }
+    // }
+
+    // for(let i = 0; i < players.length; i++) {
+
+    // }
+    console.log(role)
+    socket.emit("CONNECT", {roleGame: role});
+    if(role==="PLAYER") {
+      playersConnect.push(data.userId);
+    }
+
+    socket.emit("CONNECT_PLAYER", {userId: data.userId, playersConnect, players: playersResult, status: tournamentStatus});
+
+  
   })
+
+  socket.on('CREATE', async (data) => {
+    console.log(data);
+    const gameInfo = await gameDao.findGameById(data.gameId);
+    const id = mongoose.Types.ObjectId();
+    const newTournament = new Tournament({ 
+      gameId: data.gameId, 
+      status: "CREATE",  
+      _id: id
+    });
+    const players = gameInfo.players;
+    const playersResult = [];
+    for(let i = 0; i < players.length; i++) {
+      const userProfileInfo = await userDao.findUserById(players[i]);
+      playersResult.push({login: userProfileInfo.login, id:userProfileInfo._id});
+    }
+    await newTournament.save();
+    tournamentStatus = "CREATE";
+    io.emit('CREATE', {players: playersResult, id:id, status: tournamentStatus})
+  })
+
+  socket.on('START', async (data) => {
+    const gameInfo = await gameDao.findGameById(data.gameId);
+    await tournamentDao.findTournamentAndUpdateById(data.tournamentId, 'status', 'START');
+    
+    const rounds = [];
+    for(let i = 0; i < gameInfo.rounds.length; i++) {
+      rounds.push({});
+      for(let key in gameInfo.rounds[i]) {
+        const test = await testDao.findTestById(key);
+        rounds[i][key] = test;
+      }
+    }
+
+
+    console.log(rounds, 163)
+    tournamentStatus = 'START';
+    socket.emit('START', {rounds: rounds, status: tournamentStatus});
+  })
+
+
+
+
+  // socket.on('CREATE', async (data) => {
+  //   const gameInfo = await gameDao.findGameById(data.message);
+  //   const leadings = gameInfo.leadings;
+  //   let leadingResult = false;
+  //   console.log(data.userId)
+  //   for(let i = 0; i < leadings.length; i++) {
+  //     console.log(leadings[i])
+  //     if(leadings[i] == data.userId) {
+  //       console.log(1)
+  //       leadingResult = true;
+  //       break;
+  //     }
+
+  //   }
+  //   console.log("leading",leadingResult);
+  //   io.emit('CREATE', {resolution: leadingResult})
+  // });
+
+
+  // socket.on('CREATE_TOURNAMENT', async (data)=>{
+  //   //обработка и запись в бд, достать всех игроков
+  //   console.log(data)
+  //   const id = mongoose.Types.ObjectId();
+  //   console.log(id)
+  //   const newTournament = new Tournament({
+  //     gameId: data.message, 
+  //     status: "CREATE",
+  //     _id: id
+  //   });
+
+  //   const gameInfo = await gameDao.findGameById(data.message);
+  //   const players = gameInfo.players;
+
+  //   // const playersResult = players.map(async (item)=>{
+  //   //   const userProfileInfo = await userDao.findUserById(item);
+  //   //   return {login: userProfileInfo.login, id:userProfileInfo._id};
+  //   // })
+  //   const playersResult = [];
+  //   for(let i = 0; i < players.length; i++) {
+  //     const userProfileInfo = await userDao.findUserById(players[i]);
+  //     playersResult.push({login: userProfileInfo.login, id:userProfileInfo._id});
+  //   }
+
+  //   console.log("players",playersResult);
+  
+  //   // const userProfileInfo = await userDao.findUserById(userId)
+  //   // const userInfo = {login: userProfileInfo.login};
+
+  //   await newTournament.save();
+  //   console.log(players);
+  //   io.emit('CREATE_TOURNAMENT', {players: playersResult, id:id})
+  // })
 
   // socket.on('CONNECT_PLAYER', (data)=>{
   //   console.log(data)
   //   const [token] = data.token.split(' ');
   //   console.log(token)
-  //   if (!token) {
+  //   if (!token) {  
   //     return res.status(401).json({message: 'No JWT token found!'});
   //   }
   //   const user = jwt.verify(token, JWT_SECRET);
