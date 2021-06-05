@@ -4,7 +4,7 @@ const tournamentDao = require('../dao/tournamentDao');
 const gameDao = require('../dao/gameDao');
 
 module.exports.getAllStart = async (req, res) => {
-  const tournamentsInfo = await tournamentDao.findTournamentByParam('status', 'CREATE');
+  const tournamentsInfo = await tournamentDao.findTournamentByParam('status', ['CREATE', 'START']);
   console.log(tournamentsInfo)
   const tournamentsInfoStart = [...tournamentsInfo];
   console.log(tournamentsInfoStart)

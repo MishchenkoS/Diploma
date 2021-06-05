@@ -3,7 +3,6 @@ const { Game } = require('../models/gameModel');
 const testDao = require('../dao/testDao');
 // const { deleteTestWithGame } = require('./gamesController');
 
-
 module.exports.photoAdd = async (req, res) =>{
   const {photo} = req.body;
   console.log(photo);

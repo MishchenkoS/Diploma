@@ -19,6 +19,7 @@ export const OnlineTournamentPage = () => {
   const [tournamentId, setTournamentId] = useState(null);
   const [tournamentStatus, setTournamentStatus] = useState(null);
   const [roleGame, setRoleGame] = useState(null);
+  const [countRound, setCountRound] = useState(null);
 
 
 
@@ -29,58 +30,99 @@ export const OnlineTournamentPage = () => {
 
 
 
-const getTestToLeading = (event) => {
-  let name = event.target.name;
-  let id = event.target.id;
-  console.log(rounds[name][id]);
-  console.log(event.target.id)
-  console.log(event.target.name)
-  // console.log()
 
-
-}
 
 const createTournament = (event) => {
   socket.emit('CREATE', {gameId});
+  alert('CREATE emit')
   event.target.style.display = 'none';
 }
 
 socket.on('CREATE', (data) => {
+  alert('CREATE')
   setPlayers(data.players);
   setTournamentId(data.id);
   setTournamentStatus(data.status);
 });
 
 socket.on('CONNECT_PLAYER', (data) =>{
+  alert('CONNECT_PLAYER')
   setPlayers(data.players);
   setPlayersConnect(data.playersConnect);
   setTournamentId(data.id);
   setTournamentStatus(data.status);
-  console.log(data.players)
-  console.log(data.playersConnect)
-  console.log(data.status)
+  if(data.test) {
+    setTest(data.test);
+    setRounds(data.rounds);
+  }
+  console.log(data.players);
+  console.log(data.playersConnect);
+  console.log(data.status);
   // const li = document.getElementById(data.userId);
   // li.style.color = "green";
 });
 
 const startTournament = () => {
+  alert('START emit')
   socket.emit('START', {gameId, tournamentId});
 }
 
 socket.on('START', (data) => {
+  alert('START')
   setTournamentStatus(data.status);
-  if(roleGame === "LEADING") {
-    setRounds(data.rounds);
-  }
+  setRounds(data.rounds);
 });
 
+const getTestToLeading = (event) => {
+  alert('getTestToLeading')
+  let name = event.target.name;
+  let id = event.target.id;
+  console.log(rounds[name][id]);
+  console.log(event.target.id)
+  console.log(event.target.name);
+  setCountRound(name)
+  setTest(rounds[name][id]);
+  // console.log()
+}
 
+const startTest = (event) => {
+  alert('START_TEST emit')
+  socket.emit('START_TEST', { id: event.target.id, round: countRound})
+  event.target.style.display = 'none';
+  const btn = document.createElement('button');
+  btn.innerText = 'Остановить тест';
+  btn.addEventListener('click', stopTest);
+  event.target.after(btn);
+}
+
+socket.on('START_TEST', (data) => {
+  alert('START_TEST')
+  console.log(rounds)
+  console.log(roleGame);
+  console.log(test);
+  console.log(players);
+  console.log(tournamentId);
+  setTest(data.test);
+})
+
+const stopTest = (event) => {
+  // socket.emit()
+}
+
+const reply = () => {
+  
+}
+
+const changeInput = (event) => {
+  setAnswers([event.target.value]);
+}
 
 useEffect(()=>{
   if(count) {
 
     socket.emit('CONNECT', {userId, gameId});
     socket.on('CONNECT', (data) => {
+      alert('CONNECT')
       console.log(data.roleGame)
       setRoleGame(data.roleGame);
     })
@@ -234,9 +276,11 @@ if(!roleGame && !players) {
 }
 
 console.log(rounds)
+console.log(test)
 
 
-return <>
+return (
+<>
 {tournamentStatus && <p>Статус турнира: {tournamentStatus}</p>}
 {roleGame==="LEADING" && !tournamentStatus && <button onClick={createTournament}>Разрешить подключаться к игре</button>}
 {players && <ul>
@@ -267,8 +311,61 @@ return <>
   return roundsDOM;
   // <span>Раунд {index+1}</span>
 
-})} </div>}
+})} 
+</div>}
 
+{test && roleGame==="LEADING" && <div>
+  <p> Сложность: {test.complexity} </p>
+  <p> Тип: {test.type} </p>
+  <p> Вопрос: {test.question}</p>
+  <ul>
+  {test.answers.map((item)=>{
+    return <li>{item}</li>
+  })}
+  </ul>
+  <button id={test._id} onClick={startTest}>Начать тест</button>
+  </div>}
+
+
+{test && roleGame === "PLAYER" && <div>
+  <p> Сложность: {test.complexity} </p>
+  <p>Вопрос: {test.question}</p>
+  {test.type === 'WRITE' && <div>
+    <input onChange={changeInput}></input>
+  </div> }
+  {test.type === 'RADIO' && <div>
+  {test.answers.map((item)=>{
+    return (<>
+     <label>
+      {<input 
+        type='radio' 
+        name='true_answers' 
+        // id={index}
+        // value={form.answers[index]} 
+        className='with-gap'
+        // onChange={changeRadio}
+      />}
+      <span className='span-radio'></span>
+    </label>
+    <label>{item}</label>
+    </>)
+  })}
+    </div>}
+  {test.type === 'CHECK'}
+  <button onClick={reply}>Ответить</button>
+  </div>}
+
+
+{test && roleGame === 'VIEWER' && <div>
+  <p> Сложность: {test.complexity} </p>
+  <p> Тип: {test.type} </p>
+  <p> Вопрос: {test.question}</p>
+  <ul>
+  {test.answers.map((item)=>{
+    return <li>{item}</li>
+  })}
+  </ul>
+  </div>}
 
 
 {/* <div>
@@ -290,6 +387,6 @@ return <>
   <button type='submit'>Submit</button>
 </form> */}
 
-</>
+</>);
 
 }

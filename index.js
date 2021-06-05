@@ -22,7 +22,7 @@ const gameDao = require('./dao/gameDao');
 const userDao = require('./dao/userDao');
 const testDao = require('./dao/testDao');
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8080;   
 // const ws = new WebSocket('ws://locallhost:8080');
 const app = express();
 const http = require('http').Server(app);
@@ -61,7 +61,7 @@ app.use((err, req, res, next) => res.status(500).json({message: err.message}));
 //   // обратите внимание на передаваемые аргументы
   
 //   // registerMessageHandlers(io, socket)
-//   // registerUserHandlers(io, socket)
+//   // registerUserHandlers(io, socket)  
 
 //   // обрабатываем отключение сокета-пользователя
 //   socket.on('disconnect', () => {
@@ -75,8 +75,12 @@ app.use((err, req, res, next) => res.status(500).json({message: err.message}));
 // // обрабатываем подключение
 // io.on('connection', onConnection)
 
+const playersResult = [];
 const playersConnect = [];
 let tournamentStatus;
+let roundsGlobal;
+let testId;
+let roundNumber;
 
 
 io.on('connection', (socket) =>{
@@ -87,15 +91,18 @@ io.on('connection', (socket) =>{
     const gameInfo = await gameDao.findGameById(data.gameId);
     const leadings = gameInfo.leadings;
     const players = gameInfo.players;
-    const playersResult = [];
     let role = "VIEWER";
     // let flag = true;
 
-    if(leadings.indexOf(data.userId) !== -1) {
-      role = "LEADING";
-    } else if(players.indexOf(data.userId) !== -1) {
-      role = "PLAYER";
+    if(!tournamentStatus || tournamentStatus === 'CREATE') {
+      if(leadings.indexOf(data.userId) !== -1) {
+        role = "LEADING";
+      } else if(players.indexOf(data.userId) !== -1) {
+        role = "PLAYER";
+      }
     }
+
+    playersResult.length = 0;
 
     for(let i = 0; i < players.length; i++) {
       const userProfileInfo = await userDao.findUserById(players[i]);
@@ -120,10 +127,29 @@ io.on('connection', (socket) =>{
       playersConnect.push(data.userId);
     }
 
-    socket.emit("CONNECT_PLAYER", {userId: data.userId, playersConnect, players: playersResult, status: tournamentStatus});
+    // console.log(tournamentStatus)
+
+    if(tournamentStatus === 'CREATE') {
+      socket.emit("CONNECT_PLAYER", {userId: data.userId, 
+                                    playersConnect, 
+                                    players: playersResult, 
+                                    status: tournamentStatus
+                                  });
+    } else if(tournamentStatus === 'START') {
+      socket.emit("CONNECT_PLAYER", {userId: data.userId, 
+                                    playersConnect,
+                                    players: playersResult, 
+                                    status: tournamentStatus, 
+                                    rounds: roundsGlobal,
+                                    test: roundsGlobal && roundsGlobal[roundNumber][testId]
+                                  });
+    }
+
+
+
 
   
-  })
+  });
 
   socket.on('CREATE', async (data) => {
     console.log(data);
@@ -134,12 +160,12 @@ io.on('connection', (socket) =>{
       status: "CREATE",  
       _id: id
     });
-    const players = gameInfo.players;
-    const playersResult = [];
-    for(let i = 0; i < players.length; i++) {
-      const userProfileInfo = await userDao.findUserById(players[i]);
-      playersResult.push({login: userProfileInfo.login, id:userProfileInfo._id});
-    }
+    // const players = gameInfo.players;
+    // const playersResult = [];
+    // for(let i = 0; i < players.length; i++) {
+    //   const userProfileInfo = await userDao.findUserById(players[i]);
+    //   playersResult.push({login: userProfileInfo.login, id:userProfileInfo._id});
+    // }
     await newTournament.save();
     tournamentStatus = "CREATE";
     io.emit('CREATE', {players: playersResult, id:id, status: tournamentStatus})
@@ -157,11 +183,20 @@ io.on('connection', (socket) =>{
         rounds[i][key] = test;
       }
     }
-
+    
+    roundsGlobal = [...rounds];
 
     console.log(rounds, 163)
     tournamentStatus = 'START';
+    
     socket.emit('START', {rounds: rounds, status: tournamentStatus});
+  })
+
+
+  socket.on('START_TEST', async (data) => {
+    roundNumber = data.round;
+    testId = data.id;
+    socket.emit('START_TEST', {test: roundsGlobal[data.round][data.id]});
   })
 
 

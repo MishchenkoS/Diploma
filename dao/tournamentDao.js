@@ -27,7 +27,7 @@ module.exports.findTournamentById = async (id) =>  {
 module.exports.findTournamentByParam = async (param, value) => {
   console.log(param, value)
   const tournaments = await Tournament.find({
-    [param]: value,
+    [param]: {$in: [...value]},
   })
   .catch((err) => {
     console.error(err.message);
