@@ -75,12 +75,14 @@ app.use((err, req, res, next) => res.status(500).json({message: err.message}));
 // // обрабатываем подключение
 // io.on('connection', onConnection)
 
-const playersResult = [];
-const playersConnect = [];
-let tournamentStatus;
+const playersResultGlobal = [];
+const playersConnectGlobal = [];
+let tournamentStatusGlobal;
+let tournamentIdGlobal;
 let roundsGlobal;
-let testId;
-let roundNumber;
+let testIdGlobal;
+let testStatusGlobal;
+let roundNumberGlobal;
 
 
 io.on('connection', (socket) =>{
@@ -94,19 +96,19 @@ io.on('connection', (socket) =>{
     let role = "VIEWER";
     // let flag = true;
 
-    if(!tournamentStatus || tournamentStatus === 'CREATE') {
+    // if(!tournamentStatusGlobal || tournamentStatusGlobal === 'CREATE') {
       if(leadings.indexOf(data.userId) !== -1) {
         role = "LEADING";
       } else if(players.indexOf(data.userId) !== -1) {
         role = "PLAYER";
       }
-    }
+    // }
 
-    playersResult.length = 0;
+    playersResultGlobal.length = 0;
 
     for(let i = 0; i < players.length; i++) {
       const userProfileInfo = await userDao.findUserById(players[i]);
-      playersResult.push({login: userProfileInfo.login, id:userProfileInfo._id});
+      playersResultGlobal.push({login: userProfileInfo.login, id:userProfileInfo._id});
     }
 
 
@@ -122,38 +124,47 @@ io.on('connection', (socket) =>{
 
     // }
     console.log(role)
-    socket.emit("CONNECT", {roleGame: role});
+
+
     if(role==="PLAYER") {
-      playersConnect.push(data.userId);
+      playersConnectGlobal.push(data.userId);
     }
 
     // console.log(tournamentStatus)
+    if(!tournamentStatusGlobal) {
+      socket.emit("CONNECT", {roleGame: role});
 
-    if(tournamentStatus === 'CREATE') {
-      socket.emit("CONNECT_PLAYER", {userId: data.userId, 
-                                    playersConnect, 
-                                    players: playersResult, 
-                                    status: tournamentStatus
-                                  });
-    } else if(tournamentStatus === 'START') {
-      socket.emit("CONNECT_PLAYER", {userId: data.userId, 
-                                    playersConnect,
-                                    players: playersResult, 
-                                    status: tournamentStatus, 
-                                    rounds: roundsGlobal,
-                                    test: roundsGlobal && roundsGlobal[roundNumber][testId]
-                                  });
+    } else if(tournamentStatusGlobal === 'CREATE') {
+
+      socket.emit('CONNECT', {
+        roleGame: role,
+        playersConnect: playersConnectGlobal, 
+        players: playersResultGlobal, 
+        status: tournamentStatusGlobal,
+        id: tournamentIdGlobal,
+      });
+
+      if(role === 'PLAYER') {
+        socket.emit("CONNECT_PLAYER", {
+          userId: data.userId, 
+        });
+      }
+    } else if(tournamentStatusGlobal === 'START') {
+      socket.emit('CONNECT', {
+        roleGame: role,
+        players: playersResultGlobal, 
+        status: tournamentStatusGlobal,
+        rounds: roundsGlobal,
+        id: tournamentIdGlobal,
+        test: roundsGlobal && testIdGlobal && roundsGlobal[roundNumberGlobal][testIdGlobal],
+        statusTest: testStatusGlobal
+      });
     }
-
-
-
-
-  
   });
 
   socket.on('CREATE', async (data) => {
     console.log(data);
-    const gameInfo = await gameDao.findGameById(data.gameId);
+    // const gameInfo = await gameDao.findGameById(data.gameId);
     const id = mongoose.Types.ObjectId();
     const newTournament = new Tournament({ 
       gameId: data.gameId, 
@@ -166,9 +177,10 @@ io.on('connection', (socket) =>{
     //   const userProfileInfo = await userDao.findUserById(players[i]);
     //   playersResult.push({login: userProfileInfo.login, id:userProfileInfo._id});
     // }
+    tournamentIdGlobal = id;
+    tournamentStatusGlobal = "CREATE";
     await newTournament.save();
-    tournamentStatus = "CREATE";
-    io.emit('CREATE', {players: playersResult, id:id, status: tournamentStatus})
+    io.emit('CREATE', {players: playersResultGlobal, id:id, status: tournamentStatusGlobal})
   })
 
   socket.on('START', async (data) => {
@@ -186,16 +198,17 @@ io.on('connection', (socket) =>{
     
     roundsGlobal = [...rounds];
 
-    console.log(rounds, 163)
-    tournamentStatus = 'START';
+    // console.log(rounds, 163)
+    tournamentStatusGlobal = 'START';
     
-    socket.emit('START', {rounds: rounds, status: tournamentStatus});
+    socket.emit('START', {rounds: rounds, status: tournamentStatusGlobal});
   })
 
 
   socket.on('START_TEST', async (data) => {
-    roundNumber = data.round;
-    testId = data.id;
+    roundNumberGlobal = data.round;
+    testIdGlobal = data.id;
+    testStatusGlobal = 'START';
     socket.emit('START_TEST', {test: roundsGlobal[data.round][data.id]});
   })
 

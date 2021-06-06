@@ -20,6 +20,7 @@ export const OnlineTournamentPage = () => {
   const [tournamentStatus, setTournamentStatus] = useState(null);
   const [roleGame, setRoleGame] = useState(null);
   const [countRound, setCountRound] = useState(null);
+  const [testStatus, setTestStatus] = useState(null);
 
 
 
@@ -34,47 +35,37 @@ export const OnlineTournamentPage = () => {
 
 const createTournament = (event) => {
   socket.emit('CREATE', {gameId});
-  alert('CREATE emit')
+  // alert('CREATE emit')
   event.target.style.display = 'none';
 }
 
 socket.on('CREATE', (data) => {
-  alert('CREATE')
+  // alert('CREATE')
   setPlayers(data.players);
   setTournamentId(data.id);
   setTournamentStatus(data.status);
 });
 
 socket.on('CONNECT_PLAYER', (data) =>{
-  alert('CONNECT_PLAYER')
-  setPlayers(data.players);
-  setPlayersConnect(data.playersConnect);
-  setTournamentId(data.id);
-  setTournamentStatus(data.status);
-  if(data.test) {
-    setTest(data.test);
-    setRounds(data.rounds);
-  }
-  console.log(data.players);
-  console.log(data.playersConnect);
-  console.log(data.status);
-  // const li = document.getElementById(data.userId);
-  // li.style.color = "green";
+  alert('CONNECT_PLAYER');
+  const li = document.getElementById(data.userId);
+  li.style.color = "green";
 });
 
 const startTournament = () => {
-  alert('START emit')
+  // alert('START emit')
   socket.emit('START', {gameId, tournamentId});
 }
 
 socket.on('START', (data) => {
-  alert('START')
+  // alert('START')
+  setPlayersConnect(null);
   setTournamentStatus(data.status);
   setRounds(data.rounds);
 });
 
 const getTestToLeading = (event) => {
-  alert('getTestToLeading')
+  // alert('getTestToLeading')
   let name = event.target.name;
   let id = event.target.id;
   console.log(rounds[name][id]);
@@ -86,7 +77,7 @@ const getTestToLeading = (event) => {
 }
 
 const startTest = (event) => {
-  alert('START_TEST emit')
+  // alert('START_TEST emit')
   socket.emit('START_TEST', { id: event.target.id, round: countRound})
   event.target.style.display = 'none';
   const btn = document.createElement('button');
@@ -96,13 +87,14 @@ const startTest = (event) => {
 }
 
 socket.on('START_TEST', (data) => {
-  alert('START_TEST')
-  console.log(rounds)
-  console.log(roleGame);
-  console.log(test);
-  console.log(players);
-  console.log(tournamentId);
+  // alert('START_TEST')
+  // console.log(rounds)
+  // console.log(roleGame);
+  // console.log(test);
+  // console.log(players);
+  // console.log(tournamentId);
   setTest(data.test);
+  setAnswers([])
 })
 
 const stopTest = (event) => {
@@ -117,14 +109,56 @@ const changeInput = (event) => {
   setAnswers([event.target.value]);
 }
 
+const radio = (event) => {
+  setAnswers([event.target.value])
+}
+
+const check = (event) => {
+  console.log(answers)
+  const index = answers.indexOf(event.target.value);
+
+  if(index === -1) {
+    setAnswers((answers) => {
+      const answ = [...answers, event.target.value];
+      return {...answ};
+    })
+  //     setForm((form) => {
+  //       const true_answers = [...form.true_answers, +event.target.id];
+  //       return {...form, true_answers};
+  //     })
+  } else {
+    setAnswers((answers)=>{
+      const answ = [...answers];
+      answ.splice(index, 1);
+      return {...answ};
+    })
+  //   setForm((form)=>{
+  //     const true_answers = [...form.true_answers];
+  //     true_answers.splice(index, 1);
+  //     return {...form, true_answers};
+  //   })
+  }
+}
+
 useEffect(()=>{
   if(count) {
 
     socket.emit('CONNECT', {userId, gameId});
     socket.on('CONNECT', (data) => {
-      alert('CONNECT')
-      console.log(data.roleGame)
       setRoleGame(data.roleGame);
+      if(data.status === 'CREATE') {
+        setPlayers(data.players);
+        setPlayersConnect(data.playersConnect);
+        setTournamentStatus(data.status);
+        setTournamentId(data.id);
+      } else if(data.status === 'START') {
+        setPlayers(data.players);
+        setTournamentStatus(data.status);
+        setTournamentId(data.id);
+        setRounds(data.round);
+        setTest(data.test);
+        setTestStatus(data.testStatus)
+      }   
     })
 
 
@@ -277,6 +311,7 @@ if(!roleGame && !players) {
 
 console.log(rounds)
 console.log(test)
+console.log(roleGame);
 
 
 return (
@@ -339,11 +374,11 @@ return (
      <label>
       {<input 
         type='radio' 
-        name='true_answers' 
-        // id={index}
-        // value={form.answers[index]} 
+        // name='true_answers' 
+        // id={item}
+        value={item} 
         className='with-gap'
-        // onChange={changeRadio}
+        onChange={radio}
       />}
       <span className='span-radio'></span>
     </label>
@@ -351,7 +386,30 @@ return (
     </>)
   })}
     </div>}
-  {test.type === 'CHECK'}
+  {test.type === 'CHECK' && <div> 
+    {test.answers.map((item)=>{
+      return(
+       <>
+       <label>
+        <input 
+          type='checkbox' 
+          // id={index} 
+          // name='true_answers'
+          value={item}
+          // checked
+          onChange={check}
+        />     
+        <span></span>
+        </label>  
+
+        <label>{item}</label>
+       </>
+        
+
+      )
+    })}
+
+  </div> }
   <button onClick={reply}>Ответить</button>
   </div>}
 
