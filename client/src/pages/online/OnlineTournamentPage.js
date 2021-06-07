@@ -21,6 +21,7 @@ export const OnlineTournamentPage = () => {
   const [roleGame, setRoleGame] = useState(null);
   const [countRound, setCountRound] = useState(null);
   const [testStatus, setTestStatus] = useState(null);
+  const [playerAnswers, setPlayerAnswers] = useState(null);
 
 
 
@@ -65,25 +66,31 @@ socket.on('START', (data) => {
 });
 
 const getTestToLeading = (event) => {
-  // alert('getTestToLeading')
   let name = event.target.name;
+  console.log(name, 'name')
   let id = event.target.id;
-  console.log(rounds[name][id]);
-  console.log(event.target.id)
-  console.log(event.target.name);
-  setCountRound(name)
+  setCountRound((countRound)=>{return name})
   setTest(rounds[name][id]);
-  // console.log()
+  console.log(countRound, 'countRound get')
 }
 
 const startTest = (event) => {
   // alert('START_TEST emit')
-  socket.emit('START_TEST', { id: event.target.id, round: countRound})
-  event.target.style.display = 'none';
+  console.log(event.target)
+  console.log(event.target.name, 'name')
+
+  // console.log(countRound, 'countRound start');
+  socket.emit('START_TEST', { id: event.target.id, round: event.target.name})
   const btn = document.createElement('button');
   btn.innerText = 'Остановить тест';
   btn.addEventListener('click', stopTest);
+  btn.setAttribute('id', event.target.id);
+  btn.setAttribute('name', event.target.name);
+  console.log(btn);
   event.target.after(btn);
+  event.target.style.display = 'none';
+  
+  // event.target.remove();!!!!
 }
 
 socket.on('START_TEST', (data) => {
@@ -95,15 +102,21 @@ socket.on('START_TEST', (data) => {
   // console.log(tournamentId);
   setTest(data.test);
   setAnswers([])
+  setTestStatus(data.status);
 })
 
-const stopTest = (event) => {
-  // socket.emit()
+const reply = () => {
+  setTestStatus('REPLY');
+  socket.emit('REPLY', {
+    userId,
+    answers
+  });
 }
 
-const reply = () => {
-  
-}
+socket.on('REPLY', (data) => {
+  const li = document.getElementById(data.userId);
+  li.style.color = "green";
+})
 
 const changeInput = (event) => {
   setAnswers([event.target.value]);
@@ -131,7 +144,7 @@ const check = (event) => {
       const answ = [...answers];
       answ.splice(index, 1);
       return {...answ};
-    })
+    });
   //   setForm((form)=>{
   //     const true_answers = [...form.true_answers];
   //     true_answers.splice(index, 1);
@@ -139,6 +152,24 @@ const check = (event) => {
   //   })
   }
 }
+
+const stopTest = (event) => {
+  socket.emit('STOP_TEST', { id: event.target.id, round: event.target.name});
+  const btn = document.createElement('button');
+  btn.innerText = 'Начать тест';
+  btn.addEventListener('click', startTest);
+  btn.setAttribute('id', event.target.id);
+  btn.setAttribute('name', event.target.name);
+  console.log(btn);
+  event.target.after(btn);
+  event.target.style.display = 'none';
+  // event.target.remove();
+}
+
+socket.on('STOP_TEST', (data) => {
+  setPlayerAnswers(data.answers);
+  setTestStatus('FINISH');
+});
 
 useEffect(()=>{
   if(count) {
@@ -152,12 +183,15 @@ useEffect(()=>{
         setTournamentStatus(data.status);
         setTournamentId(data.id);
       } else if(data.status === 'START') {
+        console.log(data.rounds)
         setPlayers(data.players);
         setTournamentStatus(data.status);
         setTournamentId(data.id);
-        setRounds(data.round);
+        setRounds(data.rounds);
         setTest(data.test);
         setTestStatus(data.testStatus)
+        setCountRound(()=>data.countRound);
+
       }   
     })
 
@@ -318,7 +352,7 @@ return (
 <>
 {tournamentStatus && <p>Статус турнира: {tournamentStatus}</p>}
 {roleGame==="LEADING" && !tournamentStatus && <button onClick={createTournament}>Разрешить подключаться к игре</button>}
-{players && <ul>
+{testStatus !== 'FINISH' && players && <ul>
   {players.map((item)=>{
     console.log(item)
     if(playersConnect && playersConnect.indexOf(item.id) !== -1) {
@@ -330,6 +364,19 @@ return (
     //   return <li id={item.id}>{item.login}</li>
     // }
    
+  })}
+</ul>}
+
+{tournamentStatus === 'START' && testStatus === 'FINISH' && playerAnswers && <ul>
+  {players.map((item)=>{
+    console.log(item)
+    if(item.id in playerAnswers) {
+      if(test.true_answers.indexOf(playerAnswers[item.id]) !== -1){
+        return <li style={{color: 'green'}} id={item.id}>{item.login} {playerAnswers[item.id]}</li>
+      } 
+      return <li style={{color: 'red'}} id={item.id}>{item.login} {playerAnswers[item.id]}</li>
+    }
+    return <li id={item.id}>{item.login}</li> 
   })}
 </ul>}
 {roleGame==="LEADING" && tournamentStatus === "CREATE" && <button onClick={startTournament}>Старт турнира</button>}
@@ -358,7 +405,8 @@ return (
     return <li>{item}</li>
   })}
   </ul>
-  <button id={test._id} onClick={startTest}>Начать тест</button>
+  {!testStatus && <button id={test._id} name={countRound} onClick={startTest}>Начать тест</button>}
+  {/* {testStatus==='START' && <button id={test._id} onClick={stopTest}>Начать тест</button>} */}
   </div>}
 
 
@@ -404,13 +452,11 @@ return (
 
         <label>{item}</label>
        </>
-        
-
-      )
+      );
     })}
 
   </div> }
-  <button onClick={reply}>Ответить</button>
+  {testStatus === 'START' && <button onClick={reply}>Ответить</button>}
   </div>}
 
 
