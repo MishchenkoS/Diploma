@@ -133,7 +133,7 @@ const check = (event) => {
   if(index === -1) {
     setAnswers((answers) => {
       const answ = [...answers, event.target.value];
-      return {...answ};
+      return [...answ];
     })
   //     setForm((form) => {
   //       const true_answers = [...form.true_answers, +event.target.id];
@@ -143,7 +143,7 @@ const check = (event) => {
     setAnswers((answers)=>{
       const answ = [...answers];
       answ.splice(index, 1);
-      return {...answ};
+      return [...answ];
     });
   //   setForm((form)=>{
   //     const true_answers = [...form.true_answers];
@@ -176,6 +176,7 @@ useEffect(()=>{
 
     socket.emit('CONNECT', {userId, gameId});
     socket.on('CONNECT', (data) => {
+      console.log(data)
       setRoleGame(data.roleGame);
       if(data.status === 'CREATE') {
         setPlayers(data.players);
@@ -183,13 +184,14 @@ useEffect(()=>{
         setTournamentStatus(data.status);
         setTournamentId(data.id);
       } else if(data.status === 'START') {
+    
         console.log(data.rounds)
         setPlayers(data.players);
         setTournamentStatus(data.status);
         setTournamentId(data.id);
         setRounds(data.rounds);
         setTest(data.test);
-        setTestStatus(data.testStatus)
+        setTestStatus(data.statusTest)
         setCountRound(()=>data.countRound);
 
       }   
@@ -346,6 +348,7 @@ if(!roleGame && !players) {
 console.log(rounds)
 console.log(test)
 console.log(roleGame);
+console.log(testStatus, 349)
 
 
 return (
@@ -407,6 +410,7 @@ return (
   </ul>
   {!testStatus && <button id={test._id} name={countRound} onClick={startTest}>Начать тест</button>}
   {/* {testStatus==='START' && <button id={test._id} onClick={stopTest}>Начать тест</button>} */}
+  
   </div>}
 
 

@@ -130,7 +130,7 @@ io.on('connection', (socket) =>{
       playersConnectGlobal.push(data.userId);
     }
 
-    // console.log(tournamentStatus)
+    // console.log(tournamentStatus) 
     if(!tournamentStatusGlobal) {
       io.emit("CONNECT", {roleGame: role});
 
@@ -250,11 +250,20 @@ io.on('connection', (socket) =>{
 
   socket.on('REPLY', async (data) => { 
     const tournament = await tournamentDao.findTournamentById(tournamentIdGlobal);
+    console.log(data.userId);
     for(let i = 0; i < tournament.rounds[roundNumberGlobal].length; i++) {
-      if(tournament.rounds[round][i].testId == testIdGlobal) {
-        tournament.rounds[round][i].responders.push(data.userId);
-        tournament.rounds[round][i].answers[player] = data.answers;
-        break;
+      if(tournament.rounds[roundNumberGlobal][i].testId == testIdGlobal) {
+        console.log(tournament.rounds[roundNumberGlobal][i])
+        if(tournament.rounds[roundNumberGlobal][i].answers) {
+          tournament.rounds[roundNumberGlobal][i].responders.push(data.userId);
+          tournament.rounds[roundNumberGlobal][i].answers[data.userId] = data.answers;
+          break;
+        } 
+        tournament.rounds[roundNumberGlobal][i].responders = [data.userId];
+        tournament.rounds[roundNumberGlobal][i].answers = {
+          [data.userId]: [...data.answers]
+        }
+        
       }
     } 
     await tournament.updateOne({rounds: tournament.rounds});
