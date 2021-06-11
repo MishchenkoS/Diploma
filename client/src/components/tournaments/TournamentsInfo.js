@@ -26,7 +26,6 @@ export const TournamentsInfo = ({ tournaments}) => {
         setGames((games)=>[...games, fetched.game]);
       } else {
 
-      
       const fetched = await request(`/api/games/myGames/${id}`, "GET", null, {
         Authorization: `Bearer ${token}`
       });
@@ -80,7 +79,7 @@ export const TournamentsInfo = ({ tournaments}) => {
 
 
 
-  if(loading ) {
+  if(loading || !games) {
     return <Loader></Loader>
   }
 
@@ -91,19 +90,20 @@ export const TournamentsInfo = ({ tournaments}) => {
 
   return (
     <>
-    {games.length === tournaments.length && <div>
+    <div className='div-btn div-name-page'><h5>Список турниров</h5></div>
+    {games.length === tournaments.length && <div className="collection">
       {tournaments.map((tournament, index) => {
         // getGame(tournament.gameId);
         console.log(games)
         return (
-          <div key={`${tournament._id}`}>
+            <Link to={`/tournaments/${tournament._id}`} className="collection-item "> 
             <span>{ index + 1 } </span>
-            <Link to={`/tournaments/${tournament._id}`}> 
-            <span>{ games[index].nameGame }  </span>
-            <span>{new Date(tournament.created_date).toLocaleDateString()}</span>
+            <span> { games[index].nameGame }  </span>
+            <span> {new Date(tournament.created_date).toLocaleDateString()} </span>
+            <span> Статус: {tournament.status} </span>
+            <i class="material-icons right">arrow_forward</i>
             </ Link>
-            
-          </div>
+          
         );
       }) }
     </div>}

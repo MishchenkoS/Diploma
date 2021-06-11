@@ -272,7 +272,7 @@ export const CheckTests = (formArg) => {
             id={index} 
             name='true_answers'
             value={form.answers[index]}
-            checked
+            defaultChecked
             onChange={changeCheck}
           />}
           {!check && <input 

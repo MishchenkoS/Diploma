@@ -4,10 +4,10 @@ const { asyncWrapper } = require('../helpers');
 const { authMiddleware, adminRoleChecker } = require('./middlewares/authMiddleware');
 const { idGameValidation, gameValidation, roundValidation, nameGameValidation, testValidation, 
   leadingsChangingValidation, roundsValidation } = require('./middlewares/validationMiddleware');
-const { getGamesInfo, getGameInfo, getRoundInfo, getMyGamesInfo,getMyGameInfo,
+const { getGamesInfo, getGameInfo, getRoundInfo, getMyGamesInfo,getMyGameInfo, getGameInfoAll, 
   addLeadings, addPlayers, newGame,
   changeRound, changeNameGame, changeRounds, changeGame, changeLeadings,changePlayers,
-  deleteGame, deleteRound, deleteTestWithGame, deleteLeadingWithGame, deletePlayerWithGame } = 
+  deleteGame, deleteRound, deleteTestWithGame, deleteLeadingWithGame, deletePlayerWithGame, } = 
   require('../controllers/gamesController');
 const { getTestInfo, changeTest } = require('../controllers/testsController');
 
@@ -26,6 +26,8 @@ router.get('/game/:gameId/:round', asyncWrapper(idGameValidation),authMiddleware
     asyncWrapper(adminRoleChecker), asyncWrapper(getRoundInfo));
 router.get('/game/:gameId/:round/:testId', asyncWrapper(idGameValidation), authMiddleware, 
     asyncWrapper(adminRoleChecker), asyncWrapper(getTestInfo));
+
+router.get('/gameAll/:gameId', asyncWrapper(idGameValidation), authMiddleware, asyncWrapper(getGameInfoAll))
 
 router.post('/game', authMiddleware, 
     asyncWrapper(adminRoleChecker), asyncWrapper(gameValidation), asyncWrapper(newGame));

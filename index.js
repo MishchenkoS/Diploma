@@ -75,14 +75,19 @@ app.use((err, req, res, next) => res.status(500).json({message: err.message}));
 // // обрабатываем подключение
 // io.on('connection', onConnection)
 
-const playersResultGlobal = [];
-const playersConnectGlobal = [];
 let tournamentStatusGlobal;
 let tournamentIdGlobal;
+let nameGame;
+let gameIdGlobal;
+
 let roundsGlobal;
 let testIdGlobal;
 let testStatusGlobal;
 let roundNumberGlobal;
+
+const playersResultGlobal = [];
+const playersConnectGlobal = [];
+let replyGlobal = {};
 
 
 io.on('connection', (socket) =>{
@@ -90,9 +95,23 @@ io.on('connection', (socket) =>{
 
 
   socket.on('CONNECT', async (data) => {
-    const gameInfo = await gameDao.findGameById(data.gameId);
+    console.log(data.gameId,' data.gameId');
+    console.log(gameIdGlobal, 'gameIdGlobal');
+    if(!data.gameId && !gameIdGlobal) {
+        io.emit('CONNECT', {message: "Нет начатых игр"});
+    }
+
+    const gameInfo = gameIdGlobal ? 
+      await gameDao.findGameById(gameIdGlobal) : 
+      await gameDao.findGameById(data.gameId);
+
+    if(!gameIdGlobal) {
+      gameIdGlobal = data.gameId;
+    }
+    // const gameInfo = await gameDao.findGameById(data.gameId);
     const leadings = gameInfo.leadings;
     const players = gameInfo.players;
+    nameGame = gameInfo.nameGame;
     let role = "VIEWER";
     // let flag = true;
 
@@ -132,7 +151,7 @@ io.on('connection', (socket) =>{
 
     // console.log(tournamentStatus) 
     if(!tournamentStatusGlobal) {
-      io.emit("CONNECT", {roleGame: role});
+      io.emit("CONNECT", {roleGame: role, nameGame});
 
     } else if(tournamentStatusGlobal === 'CREATE') {
 
@@ -142,6 +161,7 @@ io.on('connection', (socket) =>{
         players: playersResultGlobal, 
         status: tournamentStatusGlobal,
         id: tournamentIdGlobal, 
+        nameGame
       });
 
       if(role === 'PLAYER') {
@@ -161,7 +181,8 @@ io.on('connection', (socket) =>{
         id: tournamentIdGlobal,
         test: roundsGlobal && testIdGlobal && roundsGlobal[roundNumberGlobal][testIdGlobal],
         statusTest: testStatusGlobal,
-        countRound: roundNumberGlobal
+        countRound: roundNumberGlobal,
+        nameGame
       });
     }
   });
@@ -173,6 +194,7 @@ io.on('connection', (socket) =>{
     const newTournament = new Tournament({ 
       gameId: data.gameId, 
       status: "CREATE",  
+      balls: {},
       _id: id
     });
     // const players = gameInfo.players;
@@ -189,7 +211,7 @@ io.on('connection', (socket) =>{
       id:id, 
       status: tournamentStatusGlobal
     });
-  }); 
+  });  
 
   socket.on('START', async (data) => {
     const gameInfo = await gameDao.findGameById(data.gameId);
@@ -218,6 +240,7 @@ io.on('connection', (socket) =>{
 
   socket.on('START_TEST', async (data) => {
     console.log(data.round, 219)
+    replyGlobal = {};
     roundNumberGlobal = data.round;
     testIdGlobal = data.id; 
     testStatusGlobal = 'START';
@@ -247,18 +270,18 @@ io.on('connection', (socket) =>{
       status: testStatusGlobal
     });
   });
-
+      
   socket.on('REPLY', async (data) => { 
     const tournament = await tournamentDao.findTournamentById(tournamentIdGlobal);
-    console.log(data.userId);
+    console.log(data.userId, "data.userId"); 
     for(let i = 0; i < tournament.rounds[roundNumberGlobal].length; i++) {
       if(tournament.rounds[roundNumberGlobal][i].testId == testIdGlobal) {
-        console.log(tournament.rounds[roundNumberGlobal][i])
+        console.log(tournament.rounds[roundNumberGlobal][i], 'tournament.rounds[roundNumberGlobal][i]') 
         if(tournament.rounds[roundNumberGlobal][i].answers) {
           tournament.rounds[roundNumberGlobal][i].responders.push(data.userId);
           tournament.rounds[roundNumberGlobal][i].answers[data.userId] = data.answers;
-          break;
-        } 
+          break; 
+        }  
         tournament.rounds[roundNumberGlobal][i].responders = [data.userId];
         tournament.rounds[roundNumberGlobal][i].answers = {
           [data.userId]: [...data.answers]
@@ -266,9 +289,36 @@ io.on('connection', (socket) =>{
         
       }
     } 
-    await tournament.updateOne({rounds: tournament.rounds});
 
-    io.emit('REPLY', {userId: data.userId});
+    let true_answers = false;   
+    console.log(roundsGlobal[roundNumberGlobal][testIdGlobal], 'roundsGlobal[roundNumberGlobal][testIdGlobal]');
+    console.log(data.answers.length, 'data.answers.length')
+    console.log(roundsGlobal[roundNumberGlobal][testIdGlobal].true_answers.length, 'roundsGlobal[roundNumberGlobal][testIdGlobal].true_answers.length')
+
+    if(data.answers.length === roundsGlobal[roundNumberGlobal][testIdGlobal].true_answers.length){
+      console.log('length')
+      true_answers = true;
+    }
+
+    for(let i = 0; true_answers && i < data.answers.length; i++) {
+      if(roundsGlobal[roundNumberGlobal][testIdGlobal].true_answers.indexOf(data.answers[i]) === -1) {
+        true_answers = false;
+      }
+    }
+ 
+    if(true_answers) { 
+      if(data.userId in tournament.balls) {
+        tournament.balls[data.userId] += roundsGlobal[roundNumberGlobal][testIdGlobal].complexity;
+      } else {
+        tournament.balls[data.userId] = roundsGlobal[roundNumberGlobal][testIdGlobal].complexity;
+      }
+    }
+  
+    replyGlobal[data.userId] = true_answers;
+    await tournament.updateOne({rounds: tournament.rounds, balls: tournament.balls});
+    
+
+    io.emit('REPLY', {userId: data.userId, reply: replyGlobal}); 
   }); 
 
   socket.on('STOP_TEST', async (data) => {
@@ -287,9 +337,31 @@ io.on('connection', (socket) =>{
 
 
     io.emit('STOP_TEST', { 
+      reply: replyGlobal,  
       answers
     })
   });
+
+  socket.on('STOP_TOURNAMENT', async () => {
+    const tournament = await tournamentDao.findTournamentById(tournamentIdGlobal);
+    tournament.status = 'FINISH';
+    await tournament.updateOne({status: tournament.status});
+
+    tournamentStatusGlobal = null;
+    tournamentIdGlobal = null;
+    nameGame = null;
+    
+    roundsGlobal = null;
+    testIdGlobal = null;
+    testStatusGlobal = null;
+    roundNumberGlobal = null;
+    
+    playersResultGlobal.length = 0;
+    playersConnectGlobal.length = 0;
+    replyGlobal = {};
+
+    socket.emit('STOP_TOURNAMENT', {balls: tournament.balls})
+  })
 
 
 

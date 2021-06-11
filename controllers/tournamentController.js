@@ -2,6 +2,8 @@ const { Game } = require('../models/gameModel');
 const { Tournament } = require('../models/tournamentModel');
 const tournamentDao = require('../dao/tournamentDao');
 const gameDao = require('../dao/gameDao');
+const testDao = require('../dao/testDao');
+const userDao = require('../dao/userDao');
 
 module.exports.getAllStart = async (req, res) => {
   const tournamentsInfo = await tournamentDao.findTournamentByParam('status', ['CREATE', 'START']);
@@ -28,6 +30,56 @@ module.exports.newTournament = async (req, res) => {
   res.json({message: 'Tournament created successfully!'});
 };
 
+
+module.exports.getTournamentInfoAll = async (req, res) => {
+  console.log(req.params.tournamentId)
+  const tournamentInfo = await tournamentDao.findTournamentById(req.params.tournamentId);
+
+  const gameInfo = await gameDao.findGameById(tournamentInfo.gameId);
+
+  const rounds = [];
+
+  for(let i = 0; i < tournamentInfo.rounds.length; i++) {
+    rounds.push([]);
+    console.log(tournamentInfo.rounds[i], 'tournamentInfo.rounds[i]')
+    console.log(tournamentInfo.rounds[i].length, 'tournamentInfo.rounds[i].length')
+    for(let j = 0; j < tournamentInfo.rounds[i].length; j++) {
+      console.log(j, 'j')
+      rounds[i].push(tournamentInfo.rounds[i][j]);
+      const testInfo = await testDao.findTestById(tournamentInfo.rounds[i][j].testId); 
+      // rounds[i].push({...testInfo});
+      console.log(testInfo, 'testInfo');
+      console.log(rounds[i], 'rounds[i]')
+      rounds[i][j].testId = testInfo;
+    }
+  }
+
+  const leadings = [];
+
+  console.log(gameInfo)
+  for(let i = 0; i < gameInfo.leadings.length; i++) {
+    const userInfo = await userDao.findUserById(gameInfo.leadings[i]);
+    console.log(userInfo, 'userInfo leadings');
+    leadings.push({id: userInfo._id, login: userInfo.login})
+  }
+
+  const players = [];
+  for(let i = 0; i < gameInfo.players.length; i++) {
+    const userInfo = await userDao.findUserById(gameInfo.players[i]);
+    console.log(userInfo, 'userInfo players');
+    players.push({id: userInfo._id, login: userInfo.login})
+  }
+
+  console.log(rounds, 'rounds');
+  console.log(leadings, 'leadings');
+  console.log(players, 'players')
+  res.json({tournament: tournamentInfo, game: gameInfo, rounds, leadings, players});
+}
+
+
+
+
+
 module.exports.addTestToRound = async (req, res) => {
   const tournament = await tournamentDao.findTournamentById(req.params.tournamentId);
   const round = req.params.round;
@@ -52,7 +104,7 @@ module.exports.addTestToRound = async (req, res) => {
   res.json({message: 'Test start!'});
 };
 
-module.exports.addAnswer = async (req, res) => {
+module.exports.addAnswer = async (req, res) => {cd 
   const tournament = await tournamentDao.findTournamentById(req.params.tournamentId);
   const round = req.params.round;
   const testId = req.params.testId;

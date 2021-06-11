@@ -31,7 +31,10 @@ const tournamentSchema = new mongoose.Schema({
       }
     ]
   ],
-
+  balls: {
+    type: mongoose.Schema.Types.Mixed,
+    default: {}
+  },
   created_date: {
     type: Date,
     default: Date.now(),

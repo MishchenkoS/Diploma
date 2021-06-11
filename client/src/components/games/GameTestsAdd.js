@@ -52,7 +52,7 @@ export const GameTestsAdd = ( formArg) => {
     <>
     <div>
       {tests.map((test, index) => {
-        const check = test._id in  form.rounds[round];
+        const check = test._id in form.rounds[round];
         return (
           <div key={test._id}>
             <label>
@@ -61,7 +61,7 @@ export const GameTestsAdd = ( formArg) => {
                   id={test._id} 
                   name={index} 
                   value={test._id}
-                  checked
+                  defaultChecked
                   onClick={changeCheck}
                 />}
                 {!check && <input 

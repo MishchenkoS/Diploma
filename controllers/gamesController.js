@@ -1,6 +1,7 @@
 const { Game } = require('../models/gameModel');
 const gameDao = require('../dao/gameDao');
 const userDao = require('../dao/userDao');
+const testDao = require('../dao/testDao');
 const { Tournament } = require('../models/tournamentModel');
 const { models } = require('mongoose');
 
@@ -56,6 +57,33 @@ module.exports.getGamesInfo = async (req, res) => {
 module.exports.getGameInfo = async (req, res) => {
   const gameInfo = await gameDao.findGameById(req.params.gameId);
   res.json({game: gameInfo});
+}
+
+module.exports.getGameInfoAll = async (req, res) => {
+  const gameInfo = await gameDao.findGameById(req.params.gameId);
+  const leadings = [];
+  for(let i = 0; i < gameInfo.leadings.length; i++) {
+    const userInfo = await userDao.findUserById(gameInfo.leadings[i]);
+    leadings.push(userInfo);
+  }
+  const players = [];
+  for(let i = 0; i < gameInfo.players.length; i++) {
+    const userInfo = await userDao.findUserById(gameInfo.players[i]);
+    players.push(userInfo);
+  }
+
+
+  const rounds = [];
+  for(let i = 0; i < gameInfo.rounds.length; i++) {
+    rounds.push({})
+    for(let key in gameInfo.rounds[i]) {
+      const testInfo = await testDao.findTestById(key);
+      rounds[i][key] = testInfo;
+    }
+  }
+  console.log(rounds, 'rounds')
+  console.log([...rounds], 'rounds []')
+  res.json({game: gameInfo, leadings, players, roundsGame: [...rounds]});
 }
 
 module.exports.getMyGamesInfo = async (req, res) => {

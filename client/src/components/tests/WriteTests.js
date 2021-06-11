@@ -4,7 +4,7 @@ export const WriteTests = (formArg, setFormArg) => {
   const {formArg: form, setFormArg: setForm} = formArg;
 
   const changeQuestion = (event) => {
-    setForm({...form, "guestion": event.target.value});
+    setForm({...form, "question": event.target.value});
   }
 
   const changeAnswer = (event) => {
@@ -25,6 +25,7 @@ export const WriteTests = (formArg, setFormArg) => {
       autoComplete="off"
       onChange={changeComplexity} 
       name="complexity"
+      value={form.complexity}
       min={0}
       required
     />
@@ -35,6 +36,7 @@ export const WriteTests = (formArg, setFormArg) => {
       onChange={changeQuestion} 
       name='question' 
       placeholder='Вопрос' 
+      value={form.question}
       required
     />
     <label>Ответ</label> 
@@ -44,6 +46,7 @@ export const WriteTests = (formArg, setFormArg) => {
       onChange={changeAnswer} 
       name='variant' 
       placeholder='Ответ' 
+      value={form.answers[0]}
       required
     />
       

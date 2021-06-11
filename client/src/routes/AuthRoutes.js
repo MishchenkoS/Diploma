@@ -72,7 +72,7 @@ export const useRoutes = (isAuthenticated, role) => {
         </Route>
 
         <Route exact path='/online'> 
-          <OnlinePage></OnlinePage>
+          <OnlineTournamentPage></OnlineTournamentPage>
         </Route>
         <Route exact path='/online/:gameId'>
           <OnlineTournamentPage></OnlineTournamentPage>
@@ -106,7 +106,7 @@ export const useRoutes = (isAuthenticated, role) => {
           <TournamentInfoPage></TournamentInfoPage>
         </Route>
         <Route exact path='/online'> 
-          <OnlinePage></OnlinePage>
+          <OnlineTournamentPage></OnlineTournamentPage>
         </Route>
         <Route exact path='/online/:gameId'>
           <OnlineTournamentPage></OnlineTournamentPage>
@@ -123,6 +123,12 @@ export const useRoutes = (isAuthenticated, role) => {
         <HomePage></HomePage>
         {/* <LoginPage></LoginPage> */}
       </Route>
+      <Route exact path='/online'> 
+          <OnlineTournamentPage></OnlineTournamentPage>
+        </Route>
+        <Route exact path='/online/:gameId'>
+          <OnlineTournamentPage></OnlineTournamentPage>
+        </Route>
       <Route path='/login'>
         <AuthPage></AuthPage>
       </Route>

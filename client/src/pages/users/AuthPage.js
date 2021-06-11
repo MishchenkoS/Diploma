@@ -68,7 +68,7 @@ export const AuthPage = () => {
         onClick={loginHandler}
         className="btn waves-effect waves-light indigo lighten-1 my-btn"
       >
-        Login
+        Войти
       <i class="material-icons right">assignment_turned_in</i>
       </button>
       </div>

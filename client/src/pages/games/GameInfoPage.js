@@ -11,6 +11,9 @@ export const GamePage = () => {
   const {token, role} = useContext(AuthContext);
   const {loading, error, request, clearError} = useHttp();
   const [game, setGame] = useState(null);
+  const [leadings, setLeadings] = useState(null);
+  const [players, setPlayers] = useState(null);
+  const [rounds, setRounds] = useState(null);
   const gameId = useParams().gameId;
   console.log(gameId)
 
@@ -18,21 +21,15 @@ export const GamePage = () => {
 
   const getGame = useCallback ( async () => {
     try {
-      if(role==="ADMIN"){
-        const fetched = await request(`/api/games/game/${gameId}`, "GET", null, {
-          Authorization: `Bearer ${token}`
-        });
-  
-        setGame(fetched.game);
-      } else {
-        const fetched = await request(`/api/games/myGames/${gameId}`, "GET", null, {
-          Authorization: `Bearer ${token}`
-        });
-  
-        setGame(fetched.game);
-      }
+      const fetched = await request(`/api/games/gameAll/${gameId}`, "GET", null, {
+        Authorization: `Bearer ${token}`
+      });
+      console.log(fetched, 'fetched');
+      setGame(fetched.game);
+      setLeadings(fetched.leadings);
+      setPlayers(fetched.players);
+      setRounds(fetched.roundsGame);
 
-      
     } catch(error) {
 
     }
@@ -53,8 +50,10 @@ export const GamePage = () => {
 
   return (
     <>
-      {!loading && game && role==="ADMIN" && <GameInfo game={game} />}
-      {!loading && game && (role==="LEADING" || role==="STUDENT") && <MyGameInfo game={game} />}
+      {!loading && game && players && leadings && rounds && role==="ADMIN" && 
+      <GameInfo game={game} players={players} leadings={leadings} rounds={rounds} />}
+      {!loading && game && players && leadings && (role==="LEADING" || role==="STUDENT") && 
+      <MyGameInfo game={game} players={players} leadings={leadings} rounds={rounds}  />}
     </>
   );
 }

@@ -7,13 +7,12 @@ import { Loader } from "../Loader";
 
 // import { Link } from "react-router-dom";
 
-export const GameInfo = ({ game }) => {
+export const GameInfo = (arg) => {
   //Loader
   const {token} = useContext(AuthContext);
   const {loading, error, request, clearError} = useHttp();
-  const [leadings, setLeadings] = useState([]);
-  const [players, setPlayers] = useState([]);
-  const [rounds, setRounds] = useState([]);
+  const {game, players, leadings, rounds} = arg;
+
   const message = useMessage();
 
   console.log(game)
@@ -23,74 +22,88 @@ export const GameInfo = ({ game }) => {
     clearError();
   }, [error, message, clearError]);
 
-  const getLeading = useCallback ( async (id) => {
-    try {
-      const fetched = await request(`/api/users/me/admin/${id}`, "GET", null, {
-        Authorization: `Bearer ${token}`
-      });
-      // console.log(fetched)
-      setLeadings([...leadings, fetched.user]);
-      
-    } catch(error) {
 
+  const getTest = (item) => {
+    const testDOM = []
+    for(let key in item) {
+      testDOM.push(
+        <Link to={`/tests/test/${item[key]._id}`} className="collection-item">
+          <span>{item[key].question} </span>
+        <i class="material-icons right">arrow_forward</i></Link>
+        ) 
     }
-  }, [token, request]);
+    return testDOM;
+  }
 
-  const getPlayers = useCallback ( async (id) => {
-    try {
-      const fetched = await request(`/api/users/me/admin/${id}`, "GET", null, {
-        Authorization: `Bearer ${token}`
-      });
-      // console.log(fetched)
-      setPlayers([...players, fetched.user]);
+  // const getLeading = useCallback ( async (id) => {
+  //   try {
+  //     const fetched = await request(`/api/users/me/admin/${id}`, "GET", null, {
+  //       Authorization: `Bearer ${token}`
+  //     });
+  //     // console.log(fetched)
+  //     setLeadings([...leadings, fetched.user]);
       
-    } catch(error) {
+  //   } catch(error) {
 
-    }
-  }, [token, request]);
+  //   }
+  // }, [token, request]);
 
-  const getRound = useCallback ( async (id) => {
-    try {
-      const fetched = await request(`/api/tests/${id}`, "GET", null, {
-        Authorization: `Bearer ${token}`
-      });
-      console.log(fetched.test)
-      const obj = {[id]:fetched.test}
-      setRounds([...rounds, obj]);
+  // const getPlayers = useCallback ( async (id) => {
+  //   console.log(id, 'id')
+  //   try {
+  //     const fetched = await request(`/api/users/me/admin/${id}`, "GET", null, {
+  //       Authorization: `Bearer ${token}`
+  //     });
+  //     // console.log(fetched)
+  //     setPlayers([...players, fetched.user]);
       
-    } catch(error) {
+  //   } catch(error) {
 
-    }
-  }, [token, request]);
+  //   }
+  // }, [token, request]);
+
+  // const getRound = useCallback ( async (id) => {
+  //   try {
+  //     const fetched = await request(`/api/tests/${id}`, "GET", null, {
+  //       Authorization: `Bearer ${token}`
+  //     });
+  //     console.log(fetched.test)
+  //     const obj = {[id]:fetched.test}
+  //     setRounds([...rounds, obj]);
+      
+  //   } catch(error) {
+
+  //   }
+  // }, [token, request]);
 
   const changeGame = () => {
     window.location.href = `/games/changeGame/${game._id}`;
   }
 
-  useEffect(() => {
-    game.leadings.map((item) => {
-      getLeading(item);
-    });
-    game.players.map((item, index) => {
-      getPlayers(item);
-    });
+  // useEffect(() => {
+  //   game.leadings.map((item) => {
+  //     getLeading(item);
+  //   });
+  //   game.players.map((item, index) => {
+  //     getPlayers(item);
+  //   });
 
-    game.rounds.map((item) => {
-      console.log(item)
-      for(let key in item) {
-        getRound(key);
-      }
-    })
+  //   game.rounds.map((item) => {
+  //     console.log(item)
+  //     for(let key in item) {
+  //       getRound(key);
+  //     }
+  //   })
 
-  }, [getLeading, getPlayers, getRound]);
+  // }, [getLeading, getPlayers, getRound]);
 
   
   console.log(rounds)
   console.log(game.rounds)
 
-  if(loading) {
-    return <Loader></Loader>
-  }
+  // if(loading) {
+  //   return <Loader></Loader>
+  // }
 
   const deleteGame = async () => {
     try {
@@ -107,6 +120,8 @@ export const GameInfo = ({ game }) => {
     window.location.href = `/online/${game._id}`;
   }
 
+  console.log(players, 'players')
+  console.log(rounds, 'rounds')
 
   return (
     <>
@@ -160,41 +175,33 @@ export const GameInfo = ({ game }) => {
     </thead>
     <tbody>
       <tr>
+      {/* <div> */}
       {players.map((item, index) => {
+        console.log(item, 'item');
           return (
             <td key={`${index}`}>
+            {/* <p> */}
               <Link to={`/users/user/${game.players[index]}`}>
               {item.login}
               </Link>
+              {/* </p> */}
             </td>
           );
       })}
+      {/* </div> */}
       </tr>
     </tbody>
   </table>
 
-  <table className="striped">
-  <thead>
-      <tr>
-        <th>Раунды</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr> 
-      {rounds.map((item, index) => {
-        let testInRound = [<td>Раунд №{index+1}</td>]
 
-          
-        for(let key in item) {
-          testInRound.push( <td key={`${index}${key}`}><Link to={`/tests/test/${item[key]._id}`}>{item[key].question}</Link></td>) 
-        }
+      {rounds.map((item, index) => {
+        let testInRound = [<p >Раунд №{index+1}</p>];
+        testInRound.push(<div className="collection">{getTest(item)}</div>)
         return testInRound;
       })}
-      </tr>
-    </tbody>
-  </table>
 
-  <div className='div-btn-game'>
+
+   <div className='div-btn-game'>
       <button onClick={changeGame} className="btn waves-effect waves-light indigo lighten-1 btn-add ">
           Изменить игру<i class="material-icons right">edit</i></button>
 
@@ -244,7 +251,7 @@ export const GameInfo = ({ game }) => {
       })}
       </p>
       <p>{new Date(game.created_date).toLocaleDateString()}</p> */}
-      
+       
 
 
     </>
