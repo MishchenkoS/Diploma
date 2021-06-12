@@ -1,12 +1,29 @@
 const { Test } = require('../models/testModel');
 const { Game } = require('../models/gameModel');
 const testDao = require('../dao/testDao');
+const mongoose = require('mongoose'); 
 // const { deleteTestWithGame } = require('./gamesController');
+const fs = require('fs');
+
 
 module.exports.photoAdd = async (req, res) =>{
-  const {photo} = req.body;
-  console.log(photo);
+  const {photo, testId} = req.body;
+  console.log(photo, 'photo');
+  console.log(testId);
+  const id = mongoose.Types.ObjectId(testId);
   
+  const testInfo = await testDao.findTestById(testId);
+  testInfo.img_question = photo;
+
+  await testInfo.updateOne({img_question: testInfo.img_question});
+
+  res.json({message: 'Test changed successfully!'});
+}
+
+module.exports.getPhoto = async(req, res) => {
+  const testInfo = await testDao.findTestById(req.params.testId);
+
+  res.json({photo: testInfo.img_question});
 }
 
 //Создаем новый тест

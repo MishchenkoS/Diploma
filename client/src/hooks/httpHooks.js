@@ -13,8 +13,6 @@ export const useHttp = () => {
         headers['Content-Type'] = 'application/json';
       // }
 
-      console.log(headers);
-
     }
 
     try {

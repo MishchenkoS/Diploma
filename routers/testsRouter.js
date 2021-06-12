@@ -2,7 +2,7 @@ const express = require('express');
 
 const { authMiddleware, adminRoleChecker } = require('./middlewares/authMiddleware');
 const { testValidation, idGameValidation } = require('./middlewares/validationMiddleware');
-const { newTest, getTestsInfo, changeTest, deleteTest, getTestInfo, photoAdd } =
+const { newTest, getTestsInfo, changeTest, deleteTest, getTestInfo, photoAdd, getPhoto } =
     require('../controllers/testsController');
 const { asyncWrapper } = require('../helpers');
 
@@ -12,8 +12,11 @@ const router = new express.Router();
 
 router.get('/', authMiddleware, 
     asyncWrapper(adminRoleChecker), asyncWrapper(getTestsInfo));
-router.get('/:testId', authMiddleware, 
-    asyncWrapper(adminRoleChecker), asyncWrapper(idGameValidation), asyncWrapper(getTestInfo));
+// router.get('/:testId', authMiddleware, 
+//     asyncWrapper(adminRoleChecker), asyncWrapper(idGameValidation), asyncWrapper(getTestInfo));
+
+router.get('/:testId', asyncWrapper(getPhoto));
+
 router.post('/test', authMiddleware, 
     asyncWrapper(adminRoleChecker), asyncWrapper(testValidation), asyncWrapper(newTest));
 

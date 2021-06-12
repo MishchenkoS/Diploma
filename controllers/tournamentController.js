@@ -5,6 +5,8 @@ const gameDao = require('../dao/gameDao');
 const testDao = require('../dao/testDao');
 const userDao = require('../dao/userDao');
 
+
+
 module.exports.getAllStart = async (req, res) => {
   const tournamentsInfo = await tournamentDao.findTournamentByParam('status', ['CREATE', 'START']);
   console.log(tournamentsInfo)

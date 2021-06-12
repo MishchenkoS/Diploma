@@ -18,6 +18,8 @@ module.exports.findTestById = async (id) => {
     .catch((err) => {
       console.error(err.message);
     });
+
+  console.log(test)
   
   if (!test) {
     throw new Error('No test found');

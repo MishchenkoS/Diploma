@@ -2,6 +2,7 @@ require('dotenv').config(); //Загрузка переменных из сре�
 
 const mongoose = require('mongoose'); 
 const express = require('express');
+const GridFS = require('mongoose-gridfs');
 const morgan = require('morgan');
 const jwt = require('jsonwebtoken');
 // const multer = require('multer');

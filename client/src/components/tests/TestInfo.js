@@ -1,5 +1,5 @@
 import React, {useCallback, useContext, useEffect} from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
 import { useHttp } from "../../hooks/httpHooks";
 import { useMessage } from "../../hooks/messageHook";
@@ -50,6 +50,7 @@ export const TestInfo = ({ test }) => {
 
   return (
     <>
+            <Link to={`/home/${testId}`}>TEST</Link>
        <div className='div-btn div-name-page'><h5>Тест</h5></div>
       <table className="striped">
         <thead>
@@ -129,6 +130,7 @@ export const TestInfo = ({ test }) => {
 
         <button onClick={deleteTest} className="btn waves-effect waves-light indigo lighten-1 btn-add">
           Удалить тест<i className="material-icons right">delete</i></button></div>
+
     </>
   );
   

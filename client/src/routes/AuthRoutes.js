@@ -51,6 +51,10 @@ export const useRoutes = (isAuthenticated, role) => {
           <TestChangePage></TestChangePage>
         </Route>
 
+        <Route exact path='/home/:testId'>
+          <HomePage></HomePage>
+        </Route>
+
         <Route exact path='/games'>
           <GamesInfoPage></GamesInfoPage>
         </Route>
@@ -77,7 +81,6 @@ export const useRoutes = (isAuthenticated, role) => {
         <Route exact path='/online/:gameId'>
           <OnlineTournamentPage></OnlineTournamentPage>
         </Route>
-        
         <Route path='/register'>
           <LoginPage></LoginPage> 
    </Route>
