@@ -37,6 +37,8 @@ export const TestPage = () => {
     return <Loader></Loader>
   }
 
+  console.log(test)
+
   return (
     <>
       {!loading && test && <TestInfo test={test} />}

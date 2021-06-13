@@ -121,7 +121,7 @@ io.on('connection', (socket) =>{
         role = "LEADING";
       } else if(players.indexOf(data.userId) !== -1) {
         role = "PLAYER";
-      }
+      } 
     // } 
 
     playersResultGlobal.length = 0; 
@@ -229,7 +229,7 @@ io.on('connection', (socket) =>{
     
     roundsGlobal = [...rounds];
 
-    // console.log(rounds, 163)
+    console.log(rounds, 163)
     tournamentStatusGlobal = 'START';
     
     io.emit('START', {
@@ -244,7 +244,7 @@ io.on('connection', (socket) =>{
     replyGlobal = {};
     roundNumberGlobal = data.round;
     testIdGlobal = data.id; 
-    testStatusGlobal = 'START';
+    testStatusGlobal = 'START';  
 
     const tournament = await tournamentDao.findTournamentById(tournamentIdGlobal);
     console.log(tournament.rounds);
@@ -342,11 +342,18 @@ io.on('connection', (socket) =>{
       answers
     })
   });
-
+   
   socket.on('STOP_TOURNAMENT', async () => {
     const tournament = await tournamentDao.findTournamentById(tournamentIdGlobal);
     tournament.status = 'FINISH';
-    await tournament.updateOne({status: tournament.status});
+    //Пофиксить ленгз
+    for(let i = 0; i < tournament.rounds[roundNumberGlobal].length; i++) {
+      if(tournament.rounds[roundNumberGlobal][i].testId == testIdGlobal) { 
+        tournament.rounds[roundNumberGlobal][i].status = 'FINISH';
+        break;
+      }
+    }
+    await tournament.updateOne({status: tournament.status, rounds: tournament.rounds});
 
     tournamentStatusGlobal = null;
     tournamentIdGlobal = null;

@@ -12,10 +12,10 @@ const router = new express.Router();
 
 router.get('/', authMiddleware, 
     asyncWrapper(adminRoleChecker), asyncWrapper(getTestsInfo));
-// router.get('/:testId', authMiddleware, 
-//     asyncWrapper(adminRoleChecker), asyncWrapper(idGameValidation), asyncWrapper(getTestInfo));
+router.get('/:testId', authMiddleware, 
+    asyncWrapper(adminRoleChecker), asyncWrapper(idGameValidation), asyncWrapper(getTestInfo));
 
-router.get('/:testId', asyncWrapper(getPhoto));
+// router.get('/:testId', asyncWrapper(getPhoto));
 
 router.post('/test', authMiddleware, 
     asyncWrapper(adminRoleChecker), asyncWrapper(testValidation), asyncWrapper(newTest));

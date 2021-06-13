@@ -52,7 +52,7 @@ export const TournamentsInfoPage = () => {
     clearError();
   }, [error, message, clearError]);
 
-  if(loading) {
+  if(loading && !tournaments.length) {
     return <Loader></Loader>
   }
 

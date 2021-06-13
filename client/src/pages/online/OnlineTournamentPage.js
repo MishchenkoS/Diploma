@@ -1,5 +1,5 @@
 // import e from "express";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import io from 'socket.io-client'
 import { useHttp } from "../../hooks/httpHooks";
@@ -29,8 +29,10 @@ export const OnlineTournamentPage = () => {
   const [test, setTest] = useState(null);
   const [answers, setAnswers] = useState([]);
   const [rounds, setRounds] = useState(null);
-  const [countRound, setCountRound] = useState(null);
+  // const rounds = useRef(null);
+  // const [countRound, setCountRound] = useState(null);
   const [testStatus, setTestStatus] = useState(null);
+  const countRound = useRef(null);
 
   const clearError = useCallback(() => setError(null), []);
 
@@ -72,15 +74,20 @@ socket.on('START', (data) => {
   // alert('START')
   setPlayersConnect(null);
   setTournamentStatus(data.status);
+  // countRound.current = data.rounds;
   setRounds(data.rounds);
-  
+  // rounds.current = data.rounds;
+  console.log(rounds, 80)
 });
 
 const getTestToLeading = (event) => {
   let name = event.target.name;
-  console.log(name, 'name')
+  console.log(event.target.name, 'name')
   let id = event.target.id;
-  setCountRound((countRound)=>{return name})
+  // setCountRound(name)
+  countRound.current = name;
+  console.log(rounds, 'rounds');
+  console.log(name, 91)
   setTest(rounds[name][id]);
   console.log(countRound, 'countRound get')
 }
@@ -90,8 +97,8 @@ const startTest = (event) => {
   console.log(event.target)
   console.log(event.target.name, 'name')
   setReplyPlayer(null)
-  // console.log(countRound, 'countRound start');
-  socket.emit('START_TEST', { id: event.target.id, round: event.target.name})
+  console.log(countRound, 'countRound start');
+  socket.emit('START_TEST', { id: event.target.id, round: countRound.current})
   // const btn = document.createElement('button');
   // btn.innerText = 'Остановить тест';
   // btn.addEventListener('click', stopTest);
@@ -191,6 +198,16 @@ const stopTournament = (event) => {
 socket.on('STOP_TOURNAMENT', (data) => {
   setBalls(data.balls);
   setTestStatus('FINISH');
+  setTournamentStatus('FINISH');
+  setTournamentId(null);
+  setNameGame(null);
+  setPlayersConnect(null);
+  setReplyPlayer(null);
+  setTest(null);
+  setAnswers([]);
+  setRounds(null);
+  countRound.current = null;
+
 });
 
 const getBalls = () => {
@@ -232,10 +249,13 @@ useEffect(()=>{
           setPlayers(data.players);
           setTournamentStatus(data.status);
           setTournamentId(data.id);
+          // setRounds(data.rounds);
           setRounds(data.rounds);
+          console.log(rounds, 243)
           setTest(data.test);
           setTestStatus(data.statusTest)
-          setCountRound(()=>data.countRound);
+          // setCountRound(()=>data.countRound);
+          countRound.current = data.countRound;
         }
       }   
     })
@@ -402,193 +422,240 @@ console.log(testStatus, 349)
 
 return (
 <>
-<div class='online-name-status col s12'> 
-{nameGame && <span>Название игры: {nameGame}</span>}
-{tournamentStatus && <span>Статус турнира: {tournamentStatus}</span>}
-</div>
-{roleGame==="LEADING" && !tournamentStatus &&
-<div className="input-field div-btn">
-<button onClick={createTournament} className="btn waves-effect waves-light indigo lighten-1 my-btn">Разрешить подключаться к игре</button>
-</div> }
+<div className='row'>
 
-{roleGame==="LEADING" && tournamentStatus === "CREATE" && <div className="input-field div-btn">
-  <button  className="btn waves-effect waves-light indigo lighten-1 my-btn" onClick={startTournament}>Старт турнира</button>
+  <div className='online-name-status col s12'> 
+    {nameGame && <span>Название игры: {nameGame}</span>}
+    {tournamentStatus && <span>Статус турнира: {tournamentStatus}</span>}
   </div>
-}
 
-{tournamentStatus === 'START' && roleGame === 'LEADING' && <div className="input-field div-btn">
-<button onClick={stopTournament}
-className="btn waves-effect waves-light indigo lighten-1 my-btn"
->Остановить турнир</button>
-</div>}
-
-<div className="main-online col s12">
-  <div className="players-online col s6">
-
-{tournamentStatus === 'CREATE' && players && 
-<ul>
-  {players.map((item)=>{
-    console.log(item)
-    if(playersConnect && playersConnect.indexOf(item.id) !== -1) {
-      console.log(2)
-      return <li style={{color: 'green'}} id={item.id}>{item.login}</li>
-    }
-    return <li id={item.id}>{item.login}</li>  
-  })}
-</ul>}
-
-{tournamentStatus === 'START' && testStatus !== 'FINISH' && 
-<ul>
-  {players.map((item)=>{
-    console.log(item, 380)
-    if(replyPlayer && (item.id in replyPlayer)) {
-        return <li style={{color: 'green'}} id={item.id}>{item.login}</li>
-    }
-    return <li id={item.id}>{item.login}</li> 
-  })}
-</ul>}
-
-{tournamentStatus === 'START' && testStatus === 'FINISH' && playerAnswers && replyPlayer && 
-<ul>
-  {players.map((item)=>{
-    console.log(item)
-    if(item.id in playerAnswers) {
-      if(replyPlayer[item.id]){
-        return <li style={{color: 'green'}} id={item.id}>{item.login} {playerAnswers[item.id]}</li>
-      } 
-      return <li style={{color: 'red'}} id={item.id}>{item.login} {playerAnswers[item.id]}</li>
-    }
-    return <li style={{color: 'red'}} id={item.id}>{item.login}</li> 
-  })}
-</ul>}
-
-</div>
-<div className="rounds-online col s6 offset-s6">
-
-{roleGame==="LEADING" && tournamentStatus === "START" && rounds && <div onClick={getTestToLeading}>{rounds.map((item, index)=>{
-  console.log(item);
-  let roundsDOM = [(<p>Раунд {index + 1}</p>)];
-  let i = 0;
-  for(let key in item) {
-    roundsDOM.push(<button id={key} name={index} className="btn waves-effect waves-light indigo lighten-1 btn-round"> {i + 1} </button>);
-    i++;
-  }
-
-  return roundsDOM;
-  // <span>Раунд {index+1}</span>
-
-})} 
-</div>}
-
-{test && roleGame==="LEADING" && <div>
-  <p> Сложность: {test.complexity} </p>
-  <p> Тип: {test.type} </p>
-  <p> Вопрос: {test.question}</p>
-  <ul>
-  {test.answers.map((item)=>{
-    return <li>{item}</li>
-  })}
-  </ul>
-  {testStatus!=='START' && <button id={test._id} name={countRound} onClick={startTest} className="btn waves-effect waves-light indigo lighten-1 my-btn"
-  >Начать тест</button>}
-  {testStatus==='START' && <button id={test._id} onClick={stopTest} className="btn waves-effect waves-light indigo lighten-1 my-btn"
-  >Остановить тест</button>}
-
-  </div>}
-
-
-{test && roleGame === "PLAYER" && <div>
-  <p>Раунд: {countRound}</p>
-  <p>Сложность: {test.complexity} </p>
-  <p>Вопрос: {test.question}</p>
-  {test.type === 'WRITE' && <div>
-  {testStatus === 'START' && <input onChange={changeInput}></input>}
-  {testStatus !== 'START' && <input disabled onChange={changeInput}></input>}
+  {roleGame==="LEADING" && !tournamentStatus &&
+  <div className="input-field div-btn col s12">
+    <button onClick={createTournament} className="btn waves-effect waves-light indigo lighten-1 my-btn">
+      Разрешить подключаться к игре
+    </button>
   </div> }
-  {test.type === 'RADIO' && <div>
-  {test.answers.map((item)=>{
-    return (<>
-     {testStatus === 'START' && <label>
-      <input 
-        type='radio' 
-        name='true_answers' 
-        // id={item}
-        value={item} 
-        className='with-gap'
-        onChange={radio}
-      />
-      <span className='span-radio'></span>
-    </label>}
-    {testStatus !== 'START' &&  <label>
-      <input 
-        type='radio' 
-        name='true_answers' 
-        disabled
-        value={item} 
-        className='with-gap'
-        onChange={radio}
-      />
-      <span className='span-radio'></span>
-    </label>}
-    <label>{item}</label>
-    </>)
-  })}
-    </div>}
-  {test.type === 'CHECK' && <div> 
-    {test.answers.map((item)=>{
-      return(
-       <>
-        {testStatus === 'START' && <label>
-        <input 
-          type='checkbox' 
-          // id={index} 
-          name='true_answers'
-          value={item}
-          // checked
-          onChange={check}
-        />     
-        <span></span>
-        </label>}
-        {testStatus !== 'START' && <label>
-        <input 
-          type='checkbox' 
-          // id={index} 
-          name='true_answers'
-          value={item}
-          disabled
-          onChange={check}
-        />     
-        <span></span>
-        </label>}
-        <label>{item}</label>
-       </>
-      );
-    })}
 
-  </div> }
-  {testStatus === 'START' && <button onClick={reply} className="btn waves-effect waves-light indigo lighten-1 my-btn"
-  >Ответить</button>}
+  {roleGame==="LEADING" && tournamentStatus === "CREATE" && 
+  <div className="input-field div-btn col s12">
+    <button  className="btn waves-effect waves-light indigo lighten-1 my-btn" onClick={startTournament}>
+      Старт турнира
+    </button>
   </div>}
 
-
-{test && roleGame === 'VIEWER' && <div>
-  <p> Сложность: {test.complexity} </p>
-  <p> Тип: {test.type} </p>
-  <p> Вопрос: {test.question}</p>
-  <ul>
-  {test.answers.map((item)=>{
-    return <li>{item}</li>
-  })}
-  </ul>
+  {tournamentStatus === 'START' && roleGame === 'LEADING' && 
+  <div className="input-field div-btn col s12">
+    <button onClick={stopTournament}
+      className="btn waves-effect waves-light indigo lighten-1 my-btn">
+      Остановить турнир
+    </button>
   </div>}
 
+  <div className="main-online col s12">
+    <div className="players-online col s4">
+      {tournamentStatus === 'CREATE' && players && 
+      <ul>
+        <h5>Список Игроков:</h5>
+        <hr className="listname-line-2"></hr>
+        {players.map((item, i)=>{
+          console.log(item)
+          if(playersConnect && playersConnect.indexOf(item.id) !== -1) {
+            console.log(2)
+            return <> <li style={{color: 'green'}} id={item.id}>{item.login}</li><hr className="listname-line"></hr></>
+          }
+          return <><li id={item.id}>{item.login}</li><hr className="listname-line"></hr></>
+        })}
+      </ul>}
+
+      {tournamentStatus === 'START' && testStatus !== 'FINISH' && 
+      <ul>
+        <h5>Список Игроков:</h5>
+        <hr className="listname-line-2"></hr>
+        {players.map((item)=>{
+          console.log(item, 380)
+          if(replyPlayer && (item.id in replyPlayer)) {
+              return <><li style={{color: 'green'}} id={item.id}>{item.login}</li><hr className="listname-line"></hr></>
+          }
+          return <><li id={item.id}>{item.login}</li> <hr className="listname-line"></hr></>
+        })}
+      </ul>}
+
+      {tournamentStatus === 'START' && testStatus === 'FINISH' && playerAnswers && replyPlayer && 
+      <ul>
+        <h5>Список Игроков:</h5>
+        <hr className="listname-line-2"></hr>
+        {players.map((item)=>{
+          console.log(item)
+          if(item.id in playerAnswers) {
+            if(replyPlayer[item.id]){
+              return <><li className="listname-answer" style={{color: 'green'}} id={item.id}>{item.login} {playerAnswers[item.id]}</li><hr className="listname-line"></hr></>
+            } 
+            return <> <li className="listname-answer" style={{color: 'red'}} id={item.id}>{item.login} {playerAnswers[item.id]}</li><hr className="listname-line"></hr></>
+          }
+          return <> <li className="listname-answer" style={{color: 'red'}} id={item.id}>{item.login}</li> <hr className="listname-line"></hr></>
+        })}
+      </ul>}
+
+    </div>
 
 
-{balls && <div>
-  <ul>{getBalls()}</ul>
-  </div>}
+
+    <div className="col s4 question-online">
+      {test && roleGame==="LEADING" && 
+      <div>
+        <p> Сложность: {test.complexity} </p>
+        <p> Тип: {test.type} </p>
+        <p className="question"> Вопрос: {test.question}?</p>
+        <ul>
+          {test.answers.map((item)=>{
+            return <li>{item}</li>
+          })}
+        </ul>
+        {testStatus!=='START' && 
+        <button id={test._id} onClick={startTest} 
+          className="btn waves-effect waves-light indigo lighten-1 my-btn question-start">
+          Начать тест
+        </button>}
+        {testStatus==='START' && 
+        <button id={test._id} onClick={stopTest} 
+          className="btn waves-effect waves-light indigo lighten-1 my-btn question-start">
+          Остановить тест
+        </button>}
+
+      </div>}
+    
+    
+
+      {test && roleGame === "PLAYER" && 
+      <div>
+        <p>Раунд: {countRound.current}</p>
+        <p>Сложность: {test.complexity} </p>
+        <p className="question">Вопрос: {test.question}?</p>
+
+        {test.type === 'WRITE' && 
+        <div>
+          {testStatus === 'START' && 
+          <input onChange={changeInput}></input>}
+          {testStatus !== 'START' && 
+          <input disabled onChange={changeInput}></input>}
+        </div> }
+
+        {test.type === 'RADIO' && 
+        <div>
+          {test.answers.map((item)=>{
+            return (
+            <>
+            {testStatus === 'START' && <div><label>
+              <input 
+                type='radio' 
+                name='true_answers' 
+                // id={item}
+                value={item} 
+                className='with-gap'
+                onChange={radio}
+              />
+              <span className='span-radio'></span>
+            </label>
+            <label className="text-item">{item}</label></div>}
+            {testStatus !== 'START' &&  <div><label>
+              <input 
+                type='radio' 
+                name='true_answers' 
+                disabled
+                value={item} 
+                className='with-gap'
+                onChange={radio}
+              />
+              <span className='span-radio'></span>
+            </label>
+            <label className="text-item">{item}</label></div>}
+            </>)
+          })}
+        </div>}
+
+        {test.type === 'CHECK' && 
+        <div> 
+          {test.answers.map((item)=>{
+            return(
+            <>
+              {testStatus === 'START' && <div><label>
+              <input 
+                type='checkbox' 
+                // id={index} 
+                name='true_answers'
+                value={item}
+                // checked
+                onChange={check}
+              />     
+              <span></span>
+              </label>
+              <label className="text-item">{item}</label></div>}
+              {testStatus !== 'START' && <div><label>
+              <input 
+                type='checkbox' 
+                // id={index} 
+                name='true_answers'
+                value={item}
+                disabled
+                onChange={check}
+              />     
+              <span></span>
+              </label>
+              <label className="text-item">{item}</label></div>}
+            </>
+            );
+          })}
+
+        </div> }
+
+        {testStatus === 'START' && 
+        <button onClick={reply} 
+          className="btn waves-effect waves-light indigo lighten-1 my-btn question-start">
+          Ответить
+        </button>}
+      </div>}
+
+
+      {test && roleGame === 'VIEWER' && 
+      <div>
+        <p> Сложность: {test.complexity} </p>
+        <p> Тип: {test.type} </p>
+        <p className="question"> Вопрос: {test.question}?</p>
+        <ul>
+          {test.answers.map((item)=>{
+            return <li>{item}</li>
+          })}
+        </ul>
+      </div>}
+
+      {balls && 
+      <div>
+        <ul>{getBalls()}</ul>
+      </div>}
 
     
+    </div>
+
+    <div className="rounds-online col s4">
+
+      {roleGame==="LEADING" && tournamentStatus === "START" && rounds && 
+      <div onClick={getTestToLeading}>
+        {rounds.map((item, index)=>{
+        console.log(item, 482);
+        console.log(index, 483)
+        let roundsDOM = [(<p>Раунд {index + 1}</p>)];
+        let i = 0;
+        for(let key in item) {
+          roundsDOM.push(
+          <button id={key} name={index} className="btn waves-effect waves-light indigo lighten-1 btn-round"> {i + 1} </button>
+          );
+          i++;
+        }
+        return roundsDOM;
+        // <span>Раунд {index+1}</span>
+        })} 
+      </div>}
+    </div>
   </div>
 </div>
 
