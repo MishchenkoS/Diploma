@@ -1,7 +1,12 @@
-import React from 'react';
+import React, {useContext, useEffect} from 'react';
 import {NavLink} from 'react-router-dom';
 
 export const Navbar = () => {
+  useEffect(()=>{
+    const elems = document.querySelectorAll('.sidenav');
+    const instances = window.M.Sidenav.init(elems, {});
+  }, [])
+
 
   return (
     <>

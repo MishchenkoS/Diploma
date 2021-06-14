@@ -113,13 +113,25 @@ export const MyGameInfo = (arg) => {
     <tbody>
       <tr>
       {players.map((item, index) => {
+        if(game.type === 'PLAYER') {
           return (
             <td key={`${index}`}>
-              <p>
+            {/* <p> */}
+              <Link to={`/users/user/${game.players[index]}`}>
               {item.login}
-              </p>
+              </Link>
+              {/* </p> */}
             </td>
           );
+        }
+
+        return (
+          <td key={`${index}`}>
+          {/* <p> */}
+            {item}
+            {/* </p> */}
+          </td>
+        );
       })}
       </tr>
     </tbody>

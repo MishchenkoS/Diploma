@@ -5,8 +5,6 @@ const gameDao = require('../dao/gameDao');
 const testDao = require('../dao/testDao');
 const userDao = require('../dao/userDao');
 
-
-
 module.exports.getAllStart = async (req, res) => {
   const tournamentsInfo = await tournamentDao.findTournamentByParam('status', ['CREATE', 'START']);
   console.log(tournamentsInfo)
@@ -224,26 +222,28 @@ module.exports.getTournamentsInfo = async (req, res) => {
   res.json(tournamentsInfo); 
 };
 
-module.exports.getGame = async (req, res) => {
-  const tournament = await tournamentDao.findTournamentById(req.params.tournamentId);
-  const game = await gameDao.findGameById(tournament.gameId);
+module.exports.getTournamentsInfoAll = async (req, res) => {
+  const tournamentsInfo = await tournamentDao.findTournaments();
+  const tournamentsResult = [];
+  for(let i = 0; i < tournamentsInfo.length; i++) {
+    console.log(tournamentsInfo[i])
+    const gameInfo = await gameDao.findGameById(tournamentsInfo[i].gameId);
+    console.log(gameInfo.nameGame)
+    // tournamentsInfo[i].gameId = gameInfo.nameGame;
+    tournamentsResult.push({...tournamentsInfo[i]._doc, nameGame: gameInfo.nameGame})
+  }
 
-  res.json(game); 
-};
+  console.log(tournamentsResult)
+  res.json(tournamentsResult); 
+}
 
-module.exports.getRound = async (req, res) => {
-  const tournament = await tournamentDao.findTournamentById(req.params.tournamentId);
-  const game = await gameDao.findGameById(tournament.gameId);
-  const round = req.params.round;
-
-  res.json(game.rounds[round]); 
-};
 
 module.exports.getMyTournamentsInfo = async (req, res) => {
   const userId = req.user.id;
   const tournamentsInfo = await tournamentDao.findTournaments();
   const gamesInfo = []
   console.log(tournamentsInfo)
+  const userInfo = await userDao.findUserById(userId);
 
   for(let i = 0; i < tournamentsInfo.length; i++) {
     console.log(tournamentsInfo[i].gameId)
@@ -265,14 +265,14 @@ module.exports.getMyTournamentsInfo = async (req, res) => {
   for(let i = 0; i < gamesInfo.length; i++) {
     for(let j = 0; j < gamesInfo[i].leadings.length; j++) {  
       if(gamesInfo[i].leadings[j] == userId){
-        myTournaments.push(tournamentsInfo[i]);
+        myTournaments.push({...tournamentsInfo[i]._doc, nameGame: gamesInfo[i].nameGame});
         flag = false;
         break;
       }
     }
     for(let j = 0; flag && j < gamesInfo[i].players.length; j++) {
-      if(gamesInfo[i].players[j] === userId) {
-        myTournaments.push(tournamentsInfo[i]);
+      if(gamesInfo[i].players[j] === userId || gamesInfo[i].players[j] === userId.team) {
+        myTournaments.push({...tournamentsInfo[i]._doc, nameGame: gamesInfo[i].nameGame});
         break;
       }
     }
@@ -281,3 +281,20 @@ module.exports.getMyTournamentsInfo = async (req, res) => {
 
   res.json(myTournaments); 
 }
+
+
+module.exports.getGame = async (req, res) => {
+  const tournament = await tournamentDao.findTournamentById(req.params.tournamentId);
+  const game = await gameDao.findGameById(tournament.gameId);
+
+  res.json(game); 
+};
+
+module.exports.getRound = async (req, res) => {
+  const tournament = await tournamentDao.findTournamentById(req.params.tournamentId);
+  const game = await gameDao.findGameById(tournament.gameId);
+  const round = req.params.round;
+
+  res.json(game.rounds[round]); 
+};
+

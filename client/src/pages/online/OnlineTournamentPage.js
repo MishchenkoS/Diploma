@@ -25,6 +25,7 @@ export const OnlineTournamentPage = () => {
   const [playerAnswers, setPlayerAnswers] = useState(null);
   const [replyPlayer, setReplyPlayer] = useState(null);
   const [balls, setBalls] = useState(null);
+  const [team, setTeam] = useState(null);
 
   const [test, setTest] = useState(null);
   const [answers, setAnswers] = useState([]);
@@ -125,10 +126,18 @@ socket.on('START_TEST', (data) => {
 
 const reply = () => {
   setTestStatus('REPLY');
-  socket.emit('REPLY', {
-    userId,
-    answers
-  });
+  if(team) {
+    socket.emit('REPLY', {
+      userId: team,
+      answers
+    });
+  } else {
+    socket.emit('REPLY', {
+      userId,
+      answers
+    });
+  }
+
 }
 
 socket.on('REPLY', (data) => {
@@ -207,7 +216,6 @@ socket.on('STOP_TOURNAMENT', (data) => {
   setAnswers([]);
   setRounds(null);
   countRound.current = null;
-
 });
 
 const getBalls = () => {
@@ -243,6 +251,9 @@ useEffect(()=>{
           setPlayersConnect(data.playersConnect);
           setTournamentStatus(data.status);
           setTournamentId(data.id);
+          if(data.team) {
+            setTeam(data.team)
+          }
         } else if(data.status === 'START') {
       
           console.log(data.rounds)
@@ -255,7 +266,11 @@ useEffect(()=>{
           setTest(data.test);
           setTestStatus(data.statusTest)
           // setCountRound(()=>data.countRound);
+          setReplyPlayer(data.replyGlobal)
           countRound.current = data.countRound;
+          if(data.team) {
+            setTeam(data.team)
+          }
         }
       }   
     })
@@ -460,10 +475,15 @@ return (
         {players.map((item, i)=>{
           console.log(item)
           if(playersConnect && playersConnect.indexOf(item.id) !== -1) {
-            console.log(2)
-            return <> <li style={{color: 'green'}} id={item.id}>{item.login}</li><hr className="listname-line"></hr></>
+            return (<> 
+              <li style={{color: 'green'}} id={item.id}>{item.login}</li>
+              <hr className="listname-line"></hr>
+            </>)
           }
-          return <><li id={item.id}>{item.login}</li><hr className="listname-line"></hr></>
+          return (<>
+            <li id={item.id}>{item.login}</li>
+            <hr className="listname-line"></hr>
+          </>)
         })}
       </ul>}
 
@@ -472,11 +492,19 @@ return (
         <h5>Список Игроков:</h5>
         <hr className="listname-line-2"></hr>
         {players.map((item)=>{
-          console.log(item, 380)
+          console.log(item, 494)
+          console.log(replyPlayer, 495)
           if(replyPlayer && (item.id in replyPlayer)) {
-              return <><li style={{color: 'green'}} id={item.id}>{item.login}</li><hr className="listname-line"></hr></>
+            console.log('if', 497)
+            return (<>
+              <li style={{color: 'green'}} id={item.id}>{item.login}</li>
+              <hr className="listname-line"></hr>
+            </>)
           }
-          return <><li id={item.id}>{item.login}</li> <hr className="listname-line"></hr></>
+          return (<>
+            <li id={item.id}>{item.login}</li> 
+            <hr className="listname-line"></hr>
+          </>)
         })}
       </ul>}
 
@@ -488,11 +516,20 @@ return (
           console.log(item)
           if(item.id in playerAnswers) {
             if(replyPlayer[item.id]){
-              return <><li className="listname-answer" style={{color: 'green'}} id={item.id}>{item.login} {playerAnswers[item.id]}</li><hr className="listname-line"></hr></>
+              return (<>
+                <li className="listname-answer" style={{color: 'green'}} id={item.id}>{item.login} {playerAnswers[item.id]}</li>
+                <hr className="listname-line"></hr>
+              </>);
             } 
-            return <> <li className="listname-answer" style={{color: 'red'}} id={item.id}>{item.login} {playerAnswers[item.id]}</li><hr className="listname-line"></hr></>
+            return (<> 
+              <li className="listname-answer" style={{color: 'red'}} id={item.id}>{item.login} {playerAnswers[item.id]}</li>
+              <hr className="listname-line"></hr>
+            </>);
           }
-          return <> <li className="listname-answer" style={{color: 'red'}} id={item.id}>{item.login}</li> <hr className="listname-line"></hr></>
+          return (<> 
+            <li className="listname-answer" style={{color: 'red'}} id={item.id}>{item.login}</li> 
+            <hr className="listname-line"></hr>
+          </>);
         })}
       </ul>}
 
@@ -545,30 +582,36 @@ return (
           {test.answers.map((item)=>{
             return (
             <>
-            {testStatus === 'START' && <div><label>
-              <input 
-                type='radio' 
-                name='true_answers' 
-                // id={item}
-                value={item} 
-                className='with-gap'
-                onChange={radio}
-              />
-              <span className='span-radio'></span>
-            </label>
-            <label className="text-item">{item}</label></div>}
-            {testStatus !== 'START' &&  <div><label>
-              <input 
-                type='radio' 
-                name='true_answers' 
-                disabled
-                value={item} 
-                className='with-gap'
-                onChange={radio}
-              />
-              <span className='span-radio'></span>
-            </label>
-            <label className="text-item">{item}</label></div>}
+            {testStatus === 'START' && 
+            <div>
+              <label>
+                <input 
+                  type='radio' 
+                  name='true_answers' 
+                  // id={item}
+                  value={item} 
+                  className='with-gap'
+                  onChange={radio}
+                />
+                <span className='span-radio'></span>
+              </label>
+              <label className="text-item">{item}</label>
+            </div>}
+            {testStatus !== 'START' &&  
+            <div>
+              <label>
+                <input 
+                  type='radio' 
+                  name='true_answers' 
+                  disabled
+                  value={item} 
+                  className='with-gap'
+                  onChange={radio}
+                />
+                <span className='span-radio'></span>
+              </label>
+              <label className="text-item">{item}</label>
+            </div>}
             </>)
           })}
         </div>}
@@ -578,30 +621,36 @@ return (
           {test.answers.map((item)=>{
             return(
             <>
-              {testStatus === 'START' && <div><label>
-              <input 
-                type='checkbox' 
-                // id={index} 
-                name='true_answers'
-                value={item}
-                // checked
-                onChange={check}
-              />     
-              <span></span>
-              </label>
-              <label className="text-item">{item}</label></div>}
-              {testStatus !== 'START' && <div><label>
-              <input 
-                type='checkbox' 
-                // id={index} 
-                name='true_answers'
-                value={item}
-                disabled
-                onChange={check}
-              />     
-              <span></span>
-              </label>
-              <label className="text-item">{item}</label></div>}
+              {testStatus === 'START' && 
+              <div>
+                <label>
+                <input 
+                  type='checkbox' 
+                  // id={index} 
+                  name='true_answers'
+                  value={item}
+                  // checked
+                  onChange={check}
+                />     
+                <span></span>
+                </label>
+                <label className="text-item">{item}</label>
+              </div>}
+              {testStatus !== 'START' &&
+              <div>
+                <label>
+                <input 
+                  type='checkbox' 
+                  // id={index} 
+                  name='true_answers'
+                  value={item}
+                  disabled
+                  onChange={check}
+                />     
+                <span></span>
+                </label>
+                <label className="text-item">{item}</label>
+              </div>}
             </>
             );
           })}
@@ -647,7 +696,9 @@ return (
         let i = 0;
         for(let key in item) {
           roundsDOM.push(
-          <button id={key} name={index} className="btn waves-effect waves-light indigo lighten-1 btn-round"> {i + 1} </button>
+          <button id={key} name={index} className="btn waves-effect waves-light indigo lighten-1 btn-round"> 
+            {i + 1} 
+          </button>
           );
           i++;
         }

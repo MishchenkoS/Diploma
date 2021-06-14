@@ -25,12 +25,45 @@ code {
 }
 
 .my-btn {
-  width: 20rem;
+  min-width: 20rem;
   /* align-content: center; */
 }
 
 a {
   color: #1a237e;
+}
+
+/* Абсолютные стили */
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+}
+
+.question {
+  font-weight: 600;
+  font-style: italic;
+  font-size: 1.1rem;
+}
+
+.hr-line-end {
+  border: 0;
+  height: 2px;
+  background: skyblue;
+}
+
+.border-line {
+  border: 2px solid #9EFD38;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+}
+
+.text-italic {
+  font-style: italic;
+}
+
+.text-bold {
+  font-weight: 700;
 }
 
 
@@ -173,6 +206,7 @@ label.active {
 .rules .rules-description {
   color: white;
   padding-left: 3rem;
+  padding-right: 3rem;
 }
 
 .rules .rules-description > h2 {
@@ -303,42 +337,15 @@ button:active {
   margin-top: 0;
 }
 
+.main-online .rounds-online button {
+  margin: .5rem .5rem .5rem 0;
+}
+
 .container .input-field {
   margin-bottom: 3rem;
 }
 
 /* Итоги */
-
-.flex-center {
-  display: flex;
-  justify-content: center;
-}
-
-.question {
-  font-weight: 600;
-  font-style: italic;
-  font-size: 1.1rem;
-}
-
-.hr-line-end {
-  border: 0;
-  height: 2px;
-  background: skyblue;
-}
-
-.border-line {
-  border: 2px solid #9EFD38;
-  margin-bottom: 2rem;
-  padding: 0 1rem;
-}
-
-.text-italic {
-  font-style: italic;
-}
-
-.text-bold {
-  font-weight: 700;
-}
 
 .container .text-center {
   display: flex;
@@ -347,10 +354,151 @@ button:active {
   font-weight: 600;
 }
 
-@media screen and (max-device-width: 1024px){
+/* media */
+
+@media (max-width: 450px) {
+
+  /* Главная */
+
+  .container .rules .rules-description   {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  .container .rules .rules-description > h2  {
+    font-size: 2.5rem;
+  }
+
+  .container .rules .rules-description > h4  {
+    font-size: 1.8rem;
+  }
+
+  /* Тест (один) */
+  .container .striped tr td,
+  .container .striped tr th {
+    padding-right: .3rem;
+    padding-left: .3rem;
+  }
+}
+
+@media (max-width: 769px) {
+
+  /* Главная */
+  .container .rules .rules-description {
+    width: 100%;
+  }
+
+  .container .rules .rules-description > button {
+    margin-right: auto;
+    margin-left: auto;
+    display: block;
+  }
+
+  /* Тесты */
+  .container .collection .collection-item {
+    position: relative;
+    padding-right: 10%;
+  }
+
+  .container .collection .collection-item > i {
+    position: absolute;
+    right: 3%;
+    top: 25%;
+  }
+
+  /* Тест (один) */
+  .container .striped td,
+  .container .striped th {
+    text-align: center;
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+
+  .container .striped td tr {
+    display: block;
+  }
+
+  .container .div-btn-test {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .container .div-btn-test > button {
+    margin-right: 2rem;
+    margin-left: 2rem;
+  }
+
+  /* Обо мне */
+  .container .about-me {
+    position: absolute;
+    left: 1%;
+    width: 98%;
+  }
+
+  .container .about-me td,
+  .container .about-me th {
+    padding: .1rem;
+  }
+}
+
+@media (max-width: 992px) {
+  /* Начатая игра */
+  .container .row .online-name-status > span {
+    margin-right: 1rem;
+    margin-left: 1rem;
+  }
+
+  .container .row .main-online > div {
+    width: 100%;
+    margin-top: 2rem;
+  }
+
+  .row .main-online .players-online hr {
+    width: 100%; 
+  }
+
+  .main-online .question-online .question-start {
+    display: flex;
+    justify-content: center;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .row .main-online .question-online {
+    padding: 0;
+  }
+
+  .container .row .main-online .rounds-online {
+    justify-content: flex-start;
+    padding: 0;
+  }
+}
+
+@media screen and (max-device-width: 1024px) {
   .div-btn-test {
     display: grid;
     grid-template-columns: 100%;
     justify-content: space-between;
   }
+}
+
+@media (max-width: 1300px) {
+
+  /* Игра */
+  .container .div-btn-game {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .container .div-btn-game > button {
+    margin-right: 2rem;
+    margin-left: 2rem;
+  }
+
+  .row .main-online .rounds-online {
+    justify-content: flex-end;
+  }
+
 }

@@ -9,9 +9,9 @@ export const useHttp = () => {
     
     if(body) {
       body = JSON.stringify(body);
-      // if(!('Content-Type' in headers)) {
+      if(!('Content-Type' in headers)) {
         headers['Content-Type'] = 'application/json';
-      // }
+      }
 
     }
 

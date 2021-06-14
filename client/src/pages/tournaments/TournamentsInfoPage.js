@@ -14,7 +14,7 @@ export const TournamentsInfoPage = () => {
 
   const getTournaments = useCallback ( async () => {
     try {
-      const fetched = await request('/api/tournaments/', "GET", null, {
+      const fetched = await request('/api/tournaments/tournamentsAll', "GET", null, {
         Authorization: `Bearer ${token}`
       });
       console.log(fetched)

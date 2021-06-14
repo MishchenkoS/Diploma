@@ -5,6 +5,7 @@ const express = require('express');
 const GridFS = require('mongoose-gridfs');
 const morgan = require('morgan');
 const jwt = require('jsonwebtoken');
+// const upload = require('')
 // const multer = require('multer');
 // const { createBucket } = require('mongoose-gridfs');
 // const WebSocket = require('ws');
@@ -80,6 +81,7 @@ let tournamentStatusGlobal;
 let tournamentIdGlobal;
 let nameGame;
 let gameIdGlobal;
+let gameTypeGlobal;
 
 let roundsGlobal;
 let testIdGlobal;
@@ -113,23 +115,46 @@ io.on('connection', (socket) =>{
     const leadings = gameInfo.leadings;
     const players = gameInfo.players;
     nameGame = gameInfo.nameGame;
+    gameTypeGlobal = gameInfo.type;
+    console.log(gameTypeGlobal, 'gameTypeGlobal')
     let role = "VIEWER";
+    let team;
     // let flag = true;
-
+    
     // if(!tournamentStatusGlobal || tournamentStatusGlobal === 'CREATE') {
       if(leadings.indexOf(data.userId) !== -1) {
         role = "LEADING";
-      } else if(players.indexOf(data.userId) !== -1) {
-        role = "PLAYER";
-      } 
+      } else if(gameTypeGlobal === 'PLAYER') {
+        if(players.indexOf(data.userId) !== -1) {
+          role = "PLAYER";
+        } 
+      } else if(gameTypeGlobal === 'TEAM') {
+        console.log(data.userId, 'gameTypeGlobal === TEAM')
+        if(data.userId) {
+          const userProfileInfo = await userDao.findUserById(data.userId);
+          team = userProfileInfo.team;
+          console.log(team, 'team')
+          if(players.indexOf(userProfileInfo.team) !== -1) {
+            role = "PLAYER";
+          }
+          console.log(role, 'role')
+        }
+
+      }
     // } 
-
-    playersResultGlobal.length = 0; 
-
-    for(let i = 0; i < players.length; i++) {
-      const userProfileInfo = await userDao.findUserById(players[i]);
-      playersResultGlobal.push({login: userProfileInfo.login, id:userProfileInfo._id});
-    }
+   
+    if(!playersResultGlobal.length) {
+      if(gameTypeGlobal === 'PLAYER') {
+        for(let i = 0; i < players.length; i++) {
+          const userProfileInfo = await userDao.findUserById(players[i]);
+          playersResultGlobal.push({login: userProfileInfo.login, id:userProfileInfo._id});
+        }
+      } else if(gameTypeGlobal === 'TEAM') {
+        for(let i = 0; i < players.length; i++) {
+          playersResultGlobal.push({login: players[i], id: players[i]});
+        }
+      }
+    }      
 
 
     // for(let i = 0; i < leadings.length; i++) {
@@ -147,28 +172,38 @@ io.on('connection', (socket) =>{
 
 
     if(role==="PLAYER") {
-      playersConnectGlobal.push(data.userId);
+      if(gameTypeGlobal === 'PLAYER') {
+        playersConnectGlobal.push(data.userId);
+      } else if(gameTypeGlobal === 'TEAM') {
+        playersConnectGlobal.push(team);
+      }
     }
 
     // console.log(tournamentStatus) 
     if(!tournamentStatusGlobal) {
       io.emit("CONNECT", {roleGame: role, nameGame});
-
     } else if(tournamentStatusGlobal === 'CREATE') {
-
       io.emit('CONNECT', {
         roleGame: role,
         playersConnect: playersConnectGlobal, 
         players: playersResultGlobal, 
         status: tournamentStatusGlobal,
         id: tournamentIdGlobal, 
-        nameGame
+        nameGame,
+        team
       });
 
       if(role === 'PLAYER') {
-        io.emit("CONNECT_PLAYER", {  
-          userId: data.userId, 
-        });
+        if(gameTypeGlobal === 'PLAYER') {
+          io.emit("CONNECT_PLAYER", {  
+            userId: data.userId, 
+          });
+        } else {
+          io.emit("CONNECT_PLAYER", {  
+            userId: team 
+          });
+        }
+
       }
     } else if(tournamentStatusGlobal === 'START') { 
       console.log(roundsGlobal)
@@ -183,7 +218,9 @@ io.on('connection', (socket) =>{
         test: roundsGlobal && testIdGlobal && roundsGlobal[roundNumberGlobal][testIdGlobal],
         statusTest: testStatusGlobal,
         countRound: roundNumberGlobal,
-        nameGame
+        nameGame,
+        replyGlobal,
+        team
       });
     }
   });

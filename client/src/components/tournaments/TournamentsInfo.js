@@ -19,29 +19,29 @@ export const TournamentsInfo = ({ tournaments}) => {
 
   const getGames = useCallback(async (id) => {
     try {
-      if(role==="ADMIN") {
-        const fetched = await request(`/api/games/game/${id}`, "GET", null, {
-          Authorization: `Bearer ${token}`
-        });
-        setGames((games)=>[...games, fetched.game]);
-      } else {
+      // if(role==="ADMIN") {
+      //   const fetched = await request(`/api/games/game/${id}`, "GET", null, {
+      //     Authorization: `Bearer ${token}`
+      //   });
+      //   setGames((games)=>[...games, fetched.game]);
+      // } else {
 
-      const fetched = await request(`/api/games/myGames/${id}`, "GET", null, {
-        Authorization: `Bearer ${token}`
-      });
-      setGames((games)=>[...games, fetched.game]);
-      console.log(fetched.game)
-    }
+      // const fetched = await request(`/api/games/myGames/${id}`, "GET", null, {
+      //   Authorization: `Bearer ${token}`
+      // });
+      // setGames((games)=>[...games, fetched.game]);
+      // console.log(fetched.game)
+    // }
     } catch (error) {
     }
   }, [token, request]);
 
   useEffect(()=>{
-    console.log(2)
-    tournaments.map((item)=>{
-      console.log(item.gameId)
-        getGames(item.gameId);
-    })
+    // console.log(2)
+    // tournaments.map((item)=>{
+    //   console.log(item.gameId)
+    //     getGames(item.gameId);
+    // })
 
   }, [tournaments])
 
@@ -91,14 +91,14 @@ export const TournamentsInfo = ({ tournaments}) => {
   return (
     <>
     <div className='div-btn div-name-page'><h5>Список турниров</h5></div>
-    {games.length === tournaments.length && <div className="collection">
+    {<div className="collection">
       {tournaments.map((tournament, index) => {
         // getGame(tournament.gameId);
         console.log(games)
         return (
             <Link to={`/tournaments/${tournament._id}`} className="collection-item "> 
             <span>{ index + 1 } </span>
-            <span> { games[index].nameGame }  </span>
+            <span> { tournament.nameGame }  </span>
             <span> {new Date(tournament.created_date).toLocaleDateString()} </span>
             <span> Статус: {tournament.status} </span>
             <i class="material-icons right">arrow_forward</i>

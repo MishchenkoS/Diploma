@@ -178,6 +178,7 @@ export const GameInfo = (arg) => {
       {/* <div> */}
       {players.map((item, index) => {
         console.log(item, 'item');
+        if(game.type === 'PLAYER') {
           return (
             <td key={`${index}`}>
             {/* <p> */}
@@ -187,6 +188,16 @@ export const GameInfo = (arg) => {
               {/* </p> */}
             </td>
           );
+        }
+
+        return (
+          <td key={`${index}`}>
+          {/* <p> */}
+            {item}
+            {/* </p> */}
+          </td>
+        );
+
       })}
       {/* </div> */}
       </tr>

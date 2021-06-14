@@ -20,7 +20,11 @@ export const TestAddPage = () => {
     type: "",
     complexity: 0,
     question: "",
+    img_question: "",
+    photo_question: "",
     answers: [""],
+    img_answers: [""],
+    photo_answers: [""],
     true_answers: []
   });
 
@@ -39,7 +43,11 @@ export const TestAddPage = () => {
       [event.target.name]: event.target.value, 
       complexity: 0,
       question: "",
+      img_question: "",
+      photo_question: "",
       answers: [""],
+      img_answers: [""],
+      photo_answers: [""],
       true_answers: []
     });
     setType(event.target.value)
@@ -61,16 +69,31 @@ export const TestAddPage = () => {
           return item;
       });
 
+      const form_request = {
+        type: form.type,
+        complexity: form.complexity,
+        question: form.question,
+        img_question: form.img_question,
+        answers: form.answers,
+        img_answers: form.img_answers,
+        true_answers 
+      };
 
-      const form_request = {...form, true_answers };
-
-
+      console.log(form_request);
       if(form_request.true_answers.length
         && form_request.answers.length){
-        
+        console.log('if') 
+        // console.log('formdata', new FormData(form_request))
         const data = await request('/api/tests/test', 'POST', {...form_request}, {
           Authorization: `Bearer ${token}`
         });
+        // const data = await fetch('/api/tests/test', {
+        //   method: 'POST',
+        //   body: new FormData(form_request),
+        //   headers: {
+        //     Authorization: `Bearer ${token}`
+        //   }
+        // })
         message(data.message);
       } else {
         message("Не все поля заполнены");
@@ -86,7 +109,11 @@ export const TestAddPage = () => {
         type: "",
         complexity: 0,
         question: "",
+        img_question: "",
+        photo_question: "",
         answers: [""],
+        img_answers: [""],
+        photo_answers: [""],
         true_answers: []
       })))
     } catch (error) {

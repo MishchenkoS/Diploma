@@ -66,11 +66,19 @@ module.exports.getGameInfoAll = async (req, res) => {
     const userInfo = await userDao.findUserById(gameInfo.leadings[i]);
     leadings.push(userInfo);
   }
-  const players = [];
-  for(let i = 0; i < gameInfo.players.length; i++) {
-    const userInfo = await userDao.findUserById(gameInfo.players[i]);
-    players.push(userInfo);
+  let players = [];
+  // console.log(gameInfo.team)
+
+  if(gameInfo.type === 'PLAYER') {
+    console.log('if')
+    for(let i = 0; i < gameInfo.players.length; i++) {
+      const userInfo = await userDao.findUserById(gameInfo.players[i]);
+      players.push(userInfo);
+    }
+  } else {
+    players = [...gameInfo.players];
   }
+  console.log(players, 'players');
 
 
   const rounds = [];
@@ -92,6 +100,8 @@ module.exports.getMyGamesInfo = async (req, res) => {
   const myGame = [];
   let flag = true;
 
+  const userInfo = await userDao.findUserById(userId);
+
   for(let i = 0; i < gamesInfo.length; i++) {
     for(let j = 0; j < gamesInfo[i].leadings.length; j++) {  
       if(gamesInfo[i].leadings[j] == userId){
@@ -101,7 +111,7 @@ module.exports.getMyGamesInfo = async (req, res) => {
       }
     }
     for(let j = 0; flag && j < gamesInfo[i].players.length; j++) {
-      if(gamesInfo[i].players[j] === userId) {
+      if(gamesInfo[i].players[j] === userId || gamesInfo[i].players[j ]=== userInfo.team) {
         myGame.push(gamesInfo[i]);
         break;
       }

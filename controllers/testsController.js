@@ -8,20 +8,16 @@ const fs = require('fs');
 
 module.exports.photoAdd = async (req, res) =>{
   const {photo, testId} = req.body;
-  console.log(photo, 'photo');
-  console.log(testId);
-  const id = mongoose.Types.ObjectId(testId);
-  
+  const photoBD = JSON.parse(photo);
   const testInfo = await testDao.findTestById(testId);
-  testInfo.img_question = photo;
-
+  testInfo.img_question = photoBD.photo;
   await testInfo.updateOne({img_question: testInfo.img_question});
-
   res.json({message: 'Test changed successfully!'});
 }
 
 module.exports.getPhoto = async(req, res) => {
   const testInfo = await testDao.findTestById(req.params.testId);
+  // const photo = JSON.stringify({'photo': testInfo.img_question});
 
   res.json({photo: testInfo.img_question});
 }
@@ -30,6 +26,9 @@ module.exports.getPhoto = async(req, res) => {
 
 module.exports.newTest = async (req, res) => {
   const { complexity, type, question, img_question, answers, img_answers, true_answers } = req.body;
+  console.log('newTest', img_question)
+  console.log('files', req.files);
+  // console.log('busboy', req.b)
 
   console.log("controller", req.body)
 

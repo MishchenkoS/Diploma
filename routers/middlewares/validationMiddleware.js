@@ -77,9 +77,9 @@ module.exports.testValidation = async (req, res, next) => {
     complexity: joi.number().required(), 
     type: joi.string().pattern(new RegExp('^(RADIO|CHECK|WRITE)$')).required(), 
     question: joi.string().required(), 
-    img_question: joi.string(), 
+    img_question: joi.any(), 
     answers: joi.array().items(joi.string()).required(), 
-    img_answers: joi.array().items(joi.string()), 
+    img_answers: joi.any(), 
     true_answers: joi.array().items(joi.string()).required(),
     created_date: joi.string(),
     _id : joi.string(),
@@ -93,7 +93,7 @@ module.exports.testValidation = async (req, res, next) => {
 
 module.exports.gameValidation = async (req, res, next) => {
   let players = joi.objectId();
-  if(req.body.type === "Team") {
+  if(req.body.type === "TEAM") {
     players = joi.string();
   }
 

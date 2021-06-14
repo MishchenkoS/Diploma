@@ -35,7 +35,7 @@ export const UserInfo = ({ user }) => {
   return (
     <>
     <div className='div-btn div-name-page'><h5>Пользователь</h5></div>
-    <table className="striped">
+    <table className="striped about-me">
     <thead>
       <tr>
         <th>Login</th>

@@ -53,7 +53,7 @@ export const TestInfo = ({ test }) => {
 
   return (
     <>
-            <Link to={`/home/${testId}`}>TEST</Link>
+            <Link to={`/photo/${testId}`}>TEST</Link>
        <div className='div-btn div-name-page'><h5>Тест</h5></div>
       <table className="striped">
         <thead>

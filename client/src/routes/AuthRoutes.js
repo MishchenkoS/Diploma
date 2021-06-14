@@ -20,6 +20,7 @@ import { MyGamesPage } from "../pages/games/MyGamesPage";
 import { MyTournamentsPage } from "../pages/tournaments/MyTournamentsPage";
 import { OnlinePage } from "../pages/online/OnlinePage";
 import { OnlineTournamentPage } from "../pages/online/OnlineTournamentPage";
+import {Photo} from "../pages/tests/Photo";
 
 export const useRoutes = (isAuthenticated, role) => {
   if(isAuthenticated && role === "ADMIN") {
@@ -51,8 +52,8 @@ export const useRoutes = (isAuthenticated, role) => {
           <TestChangePage></TestChangePage>
         </Route>
 
-        <Route exact path='/home/:testId'>
-          <HomePage></HomePage>
+        <Route exact path='/photo/:testId'>
+          <Photo></Photo>
         </Route>
 
         <Route exact path='/games'>

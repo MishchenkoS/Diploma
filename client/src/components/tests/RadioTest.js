@@ -199,14 +199,20 @@ export const RadioTests = (formArg) => {
   const addVariant = () => {
     // setCountVariant([...countVariant, countVariant.length+1]);
     setCountVariant((countVariant) => 
-     [...countVariant, countVariant.length+1]
+      [...countVariant, countVariant.length+1]
     );
     console.log(countVariant)
 
     setForm((form) => {
       const answers = [...form.answers];
+      const img_answers = [...form.img_answers];
+      const photo_answers = [...form.photo_answers];
+
       answers.push("");
-      return { ...form, "answers":answers }
+      img_answers.push("");
+      photo_answers.push("");
+
+      return { ...form, answers, img_answers, photo_answers};
    });
   }
 
@@ -219,12 +225,17 @@ export const RadioTests = (formArg) => {
     setForm((form)=>{
       const answers = [...form.answers];
       const true_answers = [...form.true_answers];
+      const img_answers = [...form.img_answers];
+      const photo_answers = [...form.photo_answers];
+
       const index = true_answers.indexOf(+event.target.name);
       if(index !== -1) {
         true_answers.splice(index, 1);
       }
       answers.splice(+event.target.name, 1);
-      return {...form, answers, true_answers}
+      photo_answers.splice(+event.target.name, 1);
+      img_answers.splice(+event.target.name, 1);
+      return {...form, answers, true_answers, img_answers, photo_answers}
       // {...form, "complexity": +event.target.value}
     });
     
@@ -241,6 +252,39 @@ export const RadioTests = (formArg) => {
     radio.checked = false;
 
     console.log(countVariant)
+  }
+
+  const changeImgQuestion = async (event) => {
+    const blob = new Blob([event.target.files[0]], {type:'image/jpg'});
+    const buf = await blob.arrayBuffer()
+    console.log(buf);
+    let reader = new FileReader();
+    reader.readAsDataURL(event.target.files[0]);
+    reader.onload = function() {
+      setForm((form) => {
+        const img_question = btoa(reader.result);
+        // console.log(Buffer(reader.result, 'base64'));
+        // const img = Buffer
+        const photo_question = reader.result;
+        return {...form, img_question, photo_question};
+      });
+    }
+  }
+
+  const changeImgAnswers = (event) => {
+    const blob = new Blob([event.target.files[0]], {type:'image/jpg'});
+    let reader = new FileReader();
+    reader.readAsDataURL(event.target.files[0]);
+    reader.onload = function() {
+      setForm((form) => {
+        console.log(form)
+        const img_answers = [...form.img_answers];
+        const photo_answers = [...form.photo_answers];
+        photo_answers[event.target.name] = reader.result;
+        img_answers[event.target.name] = btoa(reader.result);
+        return { ...form, img_answers, photo_answers};
+     });
+    }
   }
 
   if(!countVariant) {
@@ -261,15 +305,21 @@ export const RadioTests = (formArg) => {
       required
     />
     <label>Введите вопрос:  </label>
-      <input 
-        type='text' 
-        name='question' 
-        autoComplete='off'
-        placeholder='Вопрос' 
-        onChange={changeHandler}
-        value={form.question}
-        required
-      />
+    <input 
+      type='text' 
+      name='question' 
+      autoComplete='off'
+      placeholder='Вопрос' 
+      onChange={changeHandler}
+      value={form.question}
+      required
+    />
+    <input 
+      type='file' 
+      name='img_question' 
+      onChange={changeImgQuestion}
+    />
+    <img src={form.photo_question}></img>
 
       {/* <input type='hidden' name='type' value='radio'/> */}
 
@@ -277,7 +327,12 @@ export const RadioTests = (formArg) => {
       const check = form.true_answers.indexOf(index) !== -1 ? true : false;
       return(
       <div key={index}>
-        
+        <input 
+          type='file' 
+          name={index} 
+          onChange={changeImgAnswers}
+        />
+        <img src={form.photo_answers[index]}></img>
         <label>
           {check && <input 
             type='radio' 

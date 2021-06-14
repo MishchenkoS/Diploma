@@ -51,7 +51,7 @@ export const NavbarAdmin = () => {
     </nav>
     <ul className="sidenav" id="mobile-demo">
     <li><NavLink to="/">Главная</NavLink></li>
-    <li><NavLink to={`/game/online`}>Онлайн</NavLink></li>
+    <li><NavLink to={`/online`}>Онлайн</NavLink></li>
     <li><NavLink to="/tests">Тесты</NavLink></li>
     <li><NavLink to="/games">Игры</NavLink></li>
     <li><NavLink to="/tournaments">Турниры</NavLink></li>

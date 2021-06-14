@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {NavLink, useHistory} from 'react-router-dom';
 import {AuthContext} from "../../context/authContext";
 
@@ -12,10 +12,10 @@ export const NavbarLeading = () => {
     history.push('/');
   }
 
-  // document.addEventListener('DOMContentLoaded', function() {
-  //   var elems = document.querySelectorAll('.sidenav');
-  //   var instances = M.Sidenav.init(elems, options);
-  // });
+  useEffect(()=>{
+    const elems = document.querySelectorAll('.sidenav');
+    const instances = window.M.Sidenav.init(elems, {});
+  }, [])
   
   return (
     <>

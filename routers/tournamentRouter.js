@@ -2,8 +2,8 @@ const express = require('express');
 const { getTestInfo } = require('../controllers/testsController');
 const { asyncWrapper } = require('../helpers');
 const { getTournamentsInfo, newTournament, getTournamentInfo, getTestResult, getAllStart,
-  addAnswer, addTestToRound, getMyTournamentsInfo, getTournamentInfoAll,
-  changeStatusTest, changeStatusTournament, getGame, getRound, deleteTournament, changeAnswer } = require('../controllers/tournamentController');
+  addAnswer, addTestToRound, getMyTournamentsInfo, getTournamentInfoAll, getTournamentsInfoAll, 
+  changeStatusTest, changeStatusTournament, getGame, getRound, deleteTournament, changeAnswer, } = require('../controllers/tournamentController');
 const { authMiddleware, leadingRoleChecker } = require('./middlewares/authMiddleware');
 const { tournamentValidation, answerValidation } = require('./middlewares/validationMiddleware');
 
@@ -19,7 +19,8 @@ router.get('/start/:tournamentId/:round', authMiddleware, asyncWrapper(leadingRo
 router.get('/start/:tournamentId/:round/:testId', authMiddleware, asyncWrapper(getTestInfo));
 router.get('/start/:tournamentId/:round/:testId/result', authMiddleware, asyncWrapper(getTestResult));
 
-router.get('/infoAll/:tournamentId', authMiddleware, asyncWrapper(getTournamentInfoAll))
+router.get('/infoAll/:tournamentId', authMiddleware, asyncWrapper(getTournamentInfoAll));
+router.get('/tournamentsAll', authMiddleware, asyncWrapper(leadingRoleChecker), asyncWrapper(getTournamentsInfoAll));
 
 router.post('/start', authMiddleware, asyncWrapper(leadingRoleChecker), asyncWrapper(tournamentValidation), asyncWrapper(newTournament));
 router.post('/start/:tournamentId/:round/:testId/answer', authMiddleware, asyncWrapper(answerValidation), asyncWrapper(addAnswer));
