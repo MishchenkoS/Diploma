@@ -1,17 +1,16 @@
 const { Test } = require('../models/testModel');
 const { Game } = require('../models/gameModel');
 const testDao = require('../dao/testDao');
-const mongoose = require('mongoose'); 
-// const { deleteTestWithGame } = require('./gamesController');
-const fs = require('fs');
 
 
 module.exports.photoAdd = async (req, res) =>{
-  const {photo, testId} = req.body;
-  const photoBD = JSON.parse(photo);
+  const {testId} = req.body;
+  const file = req.files['photo'];
+  console.log(file);
+  // const photoBD = JSON.parse(photo);
   const testInfo = await testDao.findTestById(testId);
-  testInfo.img_question = photoBD.photo;
-  await testInfo.updateOne({img_question: testInfo.img_question});
+//   testInfo.img_question = photoBD.photo;
+  await testInfo.updateOne({img_question: file});
   res.json({message: 'Test changed successfully!'});
 }
 
@@ -26,12 +25,6 @@ module.exports.getPhoto = async(req, res) => {
 
 module.exports.newTest = async (req, res) => {
   const { complexity, type, question, img_question, answers, img_answers, true_answers } = req.body;
-  console.log('newTest', img_question)
-  console.log('files', req.files);
-  // console.log('busboy', req.b)
-
-  console.log("controller", req.body)
-
   const newTest = new Test({
     complexity, 
     type, 

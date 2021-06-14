@@ -1,12 +1,11 @@
-const bcrypt = require('bcrypt'); //Хеширование паролей
-const jwt = require('jsonwebtoken'); //Реализация веб-токенов
+const bcrypt = require('bcrypt'); 
+const jwt = require('jsonwebtoken'); 
 
 const { User } = require('../models/userModel');
 const {JWT_SECRET} = require('../config');
 const userDao = require('../dao/userDao');
 
 module.exports.registration = async (req, res) => {
-  //Добавить проверку на админа в системе
   const {login, password, firstname, lastname, group, team, role} = req.body;
   const user = await User.findOne({login})
     .catch((err) => {

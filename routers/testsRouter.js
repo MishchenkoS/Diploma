@@ -1,4 +1,5 @@
 const express = require('express');
+const uploader = require('express-fileupload');
 
 const { authMiddleware, adminRoleChecker } = require('./middlewares/authMiddleware');
 const { testValidation, idGameValidation } = require('./middlewares/validationMiddleware');
@@ -12,15 +13,15 @@ const router = new express.Router();
 
 router.get('/', authMiddleware, 
     asyncWrapper(adminRoleChecker), asyncWrapper(getTestsInfo));
-// router.get('/:testId', authMiddleware, 
-//     asyncWrapper(adminRoleChecker), asyncWrapper(idGameValidation), asyncWrapper(getTestInfo));
+router.get('/:testId', authMiddleware, 
+    asyncWrapper(adminRoleChecker), asyncWrapper(idGameValidation), asyncWrapper(getTestInfo));
 
-router.get('/:testId', asyncWrapper(getPhoto));
+// router.get('/:testId', asyncWrapper(getPhoto));
 
 router.post('/test', authMiddleware, 
     asyncWrapper(adminRoleChecker), asyncWrapper(testValidation), asyncWrapper(newTest));
 
-router.post('/photo', asyncWrapper(photoAdd));
+router.post('/photo', uploader(), asyncWrapper(photoAdd));
 
 router.patch('/:testId', authMiddleware, asyncWrapper(adminRoleChecker), 
     asyncWrapper(idGameValidation), asyncWrapper(testValidation), asyncWrapper(changeTest));

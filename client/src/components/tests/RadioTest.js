@@ -259,7 +259,7 @@ export const RadioTests = (formArg) => {
     const buf = await blob.arrayBuffer()
     console.log(buf);
     let reader = new FileReader();
-    reader.readAsDataURL(event.target.files[0]);
+    reader.readAsDataURL(blob);
     reader.onload = function() {
       setForm((form) => {
         const img_question = btoa(reader.result);
@@ -274,7 +274,7 @@ export const RadioTests = (formArg) => {
   const changeImgAnswers = (event) => {
     const blob = new Blob([event.target.files[0]], {type:'image/jpg'});
     let reader = new FileReader();
-    reader.readAsDataURL(event.target.files[0]);
+    reader.readAsDataURL(blob);
     reader.onload = function() {
       setForm((form) => {
         console.log(form)

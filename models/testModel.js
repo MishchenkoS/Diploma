@@ -15,17 +15,12 @@ const testSchema = new mongoose.Schema({
     required: true,
   },
   img_question: {
-    type: String,
-    default: ""
+    type: String
   },
   answers: {
     type: [String],
     required: true,
   },
-  // answers: {
-  //   type: mongoose.Schema.Types.Mixed,
-  //   required: true,
-  // },
   img_answers: {
     type: [String],
   },
