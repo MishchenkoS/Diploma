@@ -2,11 +2,8 @@ require('dotenv').config(); //Загрузка переменных из сре�
 
 const mongoose = require('mongoose'); 
 const express = require('express');
-const GridFS = require('mongoose-gridfs');
 const morgan = require('morgan');
-const jwt = require('jsonwebtoken');
 
-const {JWT_SECRET} = require('./config');
 const authRouter = require('./routers/authRouter');
 const usersRouter = require('./routers/usersRouter');
 const testsRouter = require('./routers/testsRouter');
@@ -15,7 +12,6 @@ const tournamentsRouter = require('./routers/tournamentRouter');
 
 const { Tournament } = require('./models/tournamentModel'); 
 const tournamentDao = require('./dao/tournamentDao');
-const { Game } = require('./models/gameModel');
 const gameDao = require('./dao/gameDao');
 const userDao = require('./dao/userDao');
 const testDao = require('./dao/testDao');
@@ -138,7 +134,7 @@ io.on('connection', (socket) =>{
           });
         }
 
-      }
+      } 
     } else if(tournamentStatusGlobal === 'START') { 
       io.emit('CONNECT', { 
         roleGame: role,
@@ -294,6 +290,7 @@ io.on('connection', (socket) =>{
     tournament.status = 'FINISH';
     
     if(tournament.rounds) {
+      if(tournament.rounds[roundNumberGlobal])
       for(let i = 0; i < tournament.rounds[roundNumberGlobal].length; i++) {
         if(tournament.rounds[roundNumberGlobal][i].testId == testIdGlobal) { 
           tournament.rounds[roundNumberGlobal][i].status = 'FINISH';
@@ -307,7 +304,8 @@ io.on('connection', (socket) =>{
     tournamentStatusGlobal = null;
     tournamentIdGlobal = null;
     nameGame = null;
-    
+     
+    gameIdGlobal = null;
     roundsGlobal = null;
     testIdGlobal = null;
     testStatusGlobal = null;

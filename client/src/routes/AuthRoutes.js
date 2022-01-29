@@ -18,7 +18,6 @@ import { GameChangePage } from "../pages/games/GameChangePage";
 import { UserChangePage } from "../pages/users/UserChangePage";
 import { MyGamesPage } from "../pages/games/MyGamesPage";
 import { MyTournamentsPage } from "../pages/tournaments/MyTournamentsPage";
-import { OnlinePage } from "../pages/online/OnlinePage";
 import { OnlineTournamentPage } from "../pages/online/OnlineTournamentPage";
 import {Photo} from "../pages/tests/Photo";
 

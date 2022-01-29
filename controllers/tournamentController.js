@@ -7,15 +7,12 @@ const userDao = require('../dao/userDao');
 
 module.exports.getAllStart = async (req, res) => {
   const tournamentsInfo = await tournamentDao.findTournamentByParam('status', ['CREATE', 'START']);
-  console.log(tournamentsInfo)
   const tournamentsInfoStart = [...tournamentsInfo];
-  console.log(tournamentsInfoStart)
   for(let i = 0; i < tournamentsInfo.length; i++) {
     const game = await gameDao.findGameById(tournamentsInfo[i].gameId);
-    console.log(game.nameGame)
     tournamentsInfoStart[i].nameGame = game.nameGame;
    }
-  console.log(tournamentsInfoStart)
+
   res.json(tournamentsInfoStart); 
 }
 
@@ -32,53 +29,34 @@ module.exports.newTournament = async (req, res) => {
 
 
 module.exports.getTournamentInfoAll = async (req, res) => {
-  console.log(req.params.tournamentId)
   const tournamentInfo = await tournamentDao.findTournamentById(req.params.tournamentId);
-
   const gameInfo = await gameDao.findGameById(tournamentInfo.gameId);
-
   const rounds = [];
 
   for(let i = 0; i < tournamentInfo.rounds.length; i++) {
     rounds.push([]);
-    console.log(tournamentInfo.rounds[i], 'tournamentInfo.rounds[i]')
-    console.log(tournamentInfo.rounds[i].length, 'tournamentInfo.rounds[i].length')
     for(let j = 0; j < tournamentInfo.rounds[i].length; j++) {
-      console.log(j, 'j')
       rounds[i].push(tournamentInfo.rounds[i][j]);
       const testInfo = await testDao.findTestById(tournamentInfo.rounds[i][j].testId); 
-      // rounds[i].push({...testInfo});
-      console.log(testInfo, 'testInfo');
-      console.log(rounds[i], 'rounds[i]')
       rounds[i][j].testId = testInfo;
     }
   }
 
   const leadings = [];
 
-  console.log(gameInfo)
   for(let i = 0; i < gameInfo.leadings.length; i++) {
     const userInfo = await userDao.findUserById(gameInfo.leadings[i]);
-    console.log(userInfo, 'userInfo leadings');
     leadings.push({id: userInfo._id, login: userInfo.login})
   }
 
   const players = [];
   for(let i = 0; i < gameInfo.players.length; i++) {
     const userInfo = await userDao.findUserById(gameInfo.players[i]);
-    console.log(userInfo, 'userInfo players');
     players.push({id: userInfo._id, login: userInfo.login})
   }
 
-  console.log(rounds, 'rounds');
-  console.log(leadings, 'leadings');
-  console.log(players, 'players')
   res.json({tournament: tournamentInfo, game: gameInfo, rounds, leadings, players});
 }
-
-
-
-
 
 module.exports.addTestToRound = async (req, res) => {
   const tournament = await tournamentDao.findTournamentById(req.params.tournamentId);
@@ -97,8 +75,6 @@ module.exports.addTestToRound = async (req, res) => {
       status
     });
   }
-
-  console.log(tournament.rounds)
 
   await tournament.updateOne({rounds: tournament.rounds});
   res.json({message: 'Test start!'});
@@ -226,14 +202,9 @@ module.exports.getTournamentsInfoAll = async (req, res) => {
   const tournamentsInfo = await tournamentDao.findTournaments();
   const tournamentsResult = [];
   for(let i = 0; i < tournamentsInfo.length; i++) {
-    console.log(tournamentsInfo[i])
     const gameInfo = await gameDao.findGameById(tournamentsInfo[i].gameId);
-    console.log(gameInfo.nameGame)
-    // tournamentsInfo[i].gameId = gameInfo.nameGame;
     tournamentsResult.push({...tournamentsInfo[i]._doc, nameGame: gameInfo.nameGame})
   }
-
-  console.log(tournamentsResult)
   res.json(tournamentsResult); 
 }
 
@@ -242,25 +213,15 @@ module.exports.getMyTournamentsInfo = async (req, res) => {
   const userId = req.user.id;
   const tournamentsInfo = await tournamentDao.findTournaments();
   const gamesInfo = []
-  console.log(tournamentsInfo)
   const userInfo = await userDao.findUserById(userId);
 
   for(let i = 0; i < tournamentsInfo.length; i++) {
-    console.log(tournamentsInfo[i].gameId)
     const fetched = await gameDao.findGameById(tournamentsInfo[i].gameId);
-        console.log(fetched);
     gamesInfo.push(fetched);
   }
 
-  // tournamentsInfo.map(async (item)=>{
-  //   const fetched = await gameDao.findGameByName(item.nameGame);
-  //   console.log(fetched);
-  //   gamesInfo.push(fetched);
-  // });
   const myTournaments = [];
   let flag = true;
-
-  console.log(gamesInfo)
 
   for(let i = 0; i < gamesInfo.length; i++) {
     for(let j = 0; j < gamesInfo[i].leadings.length; j++) {  

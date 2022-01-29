@@ -1,24 +1,11 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
-import { AuthContext } from "../../context/authContext";
-import { useHttp } from "../../hooks/httpHooks";
-import { Loader } from "../Loader";
-import { GamePlayers } from "./GamePlayers";
+import React from "react";
 import { Link } from "react-router-dom";
-
 
 export const GameLeadingsAll = (formArg) => {
   const {formArg: form, setFormArg: setForm, users} = formArg;
-  // console.log()
-
-  const {token} = useContext(AuthContext);
-  const {request, loading} = useHttp();
-  
-
-
 
   const changeCheck = (event) => {
     const index = form.leadings.indexOf(event.target.id);
-
     if(index === -1) {
         setForm((form) => {
           const leadings = [...form.leadings, event.target.id];
@@ -31,8 +18,6 @@ export const GameLeadingsAll = (formArg) => {
         return {...form, leadings};
       })
     }
-
-    console.log(form)
   }
   
   if (!users.length) {
@@ -54,7 +39,6 @@ export const GameLeadingsAll = (formArg) => {
                   name={user._id} 
                   value={user._id}
                   checked
-                  // onClick={clickCheck}
                   onClick={changeCheck}
                 />}
                 {!check && <input 
@@ -62,27 +46,16 @@ export const GameLeadingsAll = (formArg) => {
                   id={user._id} 
                   name={user._id} 
                   value={user._id}
-                  // onClick={clickCheck}
                   onClick={changeCheck}
                 />}
                 <span></span>
               </label>  
               <span>{ index + 1 } </span>
               <Link to={`/users/${user._id}`}>{ user.login }</ Link>
-  
-              
-              
             </div>
           );
         }
-
       }) }
     </div>
   );
-
-  // return(
-  //   <>
-  //    {!loading && <GamePlayers users={users} formArg={form} setFormArg={setForm}></GamePlayers>}
-  //   </>
-  // );
 }

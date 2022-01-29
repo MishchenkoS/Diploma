@@ -8,7 +8,7 @@
     "start": "node index.js",
     "server": "nodemon index.js",
     "client": "npm run start --prefix client",
-    "dev": "concurrently \"nodemon index.js\" \"npm run start --prefix client\""
+    "dev": "concurrently \"nodemon index.js\" \"npm run  start --openssl-legacy-provider --prefix client\""
   },
   "author": "",
   "license": "ISC",
@@ -27,7 +27,7 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
     "nodemon": "^2.0.7",
-    "socket.io": "^4.1.2",
+    "socket.io": "^4.4.0",
     "ws": "^7.4.6"
   }
 }

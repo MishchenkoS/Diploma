@@ -3,15 +3,12 @@ import { Link, useParams } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
 import { useHttp } from "../../hooks/httpHooks";
 import { useMessage } from "../../hooks/messageHook";
-// import { Link } from "react-router-dom";
-
 
 export const TestInfo = ({ test }) => {
   const {loading, error, request, clearError} = useHttp();
   const {token} = useContext(AuthContext);
   const testId = useParams().testId;
   const message = useMessage();
-  // console.log("test", testId)
 
   useEffect(() => {
     message(error);
@@ -24,7 +21,6 @@ export const TestInfo = ({ test }) => {
   
   const deleteTest = async () => {
     try {
-      // console.log("testid",testId)
       const fetched = await request(`/api/tests/${testId}`, "DELETE", null, {
         Authorization: `Bearer ${token}`
       });
@@ -37,19 +33,7 @@ export const TestInfo = ({ test }) => {
   const changeTest = () => {
     window.location.href = `/tests/changeTest/${testId}`;
   }
-  // const getTest = useCallback ( async () => {
-  //   try {
-  //     const fetched = await request(`/api/tests/${test._id}`, "GET", null, {
-  //       Authorization: `Bearer ${token}`
-  //     });
-      
-  //   } catch(error) {
 
-  //   }
-  // }, [token, request, testId]);
-
-
-  
 
   return (
     <>
@@ -96,37 +80,6 @@ export const TestInfo = ({ test }) => {
             
          </tbody>
         </table>
-
-
-      {/* <p>Сложность: {test.complexity}</p>
-      <p>Тип: {test.type}</p>
-      <p>Вопрос: {test.question}</p>
-      {test.img_question &&
-      <img src={`${test.img_question}`}></img>
-      }
-      <p>Варианты ответа: 
-        {test.answers.map((item, index) => {
-          if(test.true_answer.includes(item)) {
-            return (
-            <li key={`${index}`}>
-              {test.img_answers[index] && 
-              <img src={`${test.img_answers[index]}`}></img>}
-              <b>{item}</b>
-            </li>
-          );}
-          return (
-            <li key={`${index}`}>
-              {test.img_answers[index] && 
-              <img src={`${test.img_answers[index]}`}></img>}
-              {item}
-            </li>
-          );
-        })}
-      </p>
-      <p>Дата создания: <strong>{new Date(test.created_date).toLocaleDateString()}</strong></p> */}
-{/* <div className='div-btn'>
-        </div> */}
-
       <div className='div-btn-test'>
       <button onClick={changeTest} className="btn waves-effect waves-light indigo lighten-1 btn-add ">
           Изменить тест<i className="material-icons right">edit</i></button>

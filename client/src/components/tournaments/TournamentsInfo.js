@@ -103,7 +103,6 @@ export const TournamentsInfo = ({ tournaments}) => {
             <span> Статус: {tournament.status} </span>
             <i class="material-icons right">arrow_forward</i>
             </ Link>
-          
         );
       }) }
     </div>}

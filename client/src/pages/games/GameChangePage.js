@@ -38,7 +38,7 @@ export const GameChangePage = () => {
   if(loading) {
     return <Loader></Loader>
   }
-  console.log(game)
+
   return (
     <>
       {!loading && game && <GameAddPage form={game} setForm={setGame} ok={true} />}

@@ -46,7 +46,6 @@ socket.on('CREATE', (data) => {
 });
 
 socket.on('CONNECT_PLAYER', (data) =>{
-  alert('CONNECT_PLAYER');
   const li = document.getElementById(data.userId);
   li.style.color = "green";
 });
@@ -65,7 +64,10 @@ const getTestToLeading = (event) => {
   let name = event.target.name;
   let id = event.target.id;
   countRound.current = name;
-  setTest(rounds[name][id]);
+  if(rounds[name]) {
+    setTest(rounds[name][id]);
+  }
+
 }
 
 const startTest = (event) => {
@@ -461,8 +463,7 @@ return (
     </div>
 
     <div className="rounds-online col s4">
-
-      {roleGame==="LEADING" && tournamentStatus === "START" && rounds && 
+      {roleGame==="LEADING" && tournamentStatus === "START" && rounds && testStatus != "START" && 
       <div onClick={getTestToLeading}>
         {rounds.map((item, index)=>{
         let roundsDOM = [(<p>Раунд {index + 1}</p>)];
@@ -470,6 +471,22 @@ return (
         for(let key in item) {
           roundsDOM.push(
           <button id={key} name={index} className="btn waves-effect waves-light indigo lighten-1 btn-round"> 
+            {i + 1} 
+          </button>
+          );
+          i++;
+        }
+        return roundsDOM;
+        })} 
+      </div>}
+      {roleGame==="LEADING" && tournamentStatus === "START" && rounds && testStatus == "START" && 
+      <div onClick={getTestToLeading}>
+        {rounds.map((item, index)=>{
+        let roundsDOM = [(<p>Раунд {index + 1}</p>)];
+        let i = 0;
+        for(let key in item) {
+          roundsDOM.push(
+          <button id={key} name={index} disabled={true} className="btn waves-effect waves-light indigo lighten-1 btn-round"> 
             {i + 1} 
           </button>
           );

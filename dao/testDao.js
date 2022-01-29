@@ -13,13 +13,10 @@ module.exports.findTests = async () => {
 };
 
 module.exports.findTestById = async (id) => {
-  console.log(id)
   const test = await Test.findById(id)
     .catch((err) => {
       console.error(err.message);
     });
-
-  console.log(test)
   
   if (!test) {
     throw new Error('No test found');

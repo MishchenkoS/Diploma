@@ -10,29 +10,6 @@ import { GameLeadingsAll } from "../../components/games/GameLeadings";
 import { GameTestsAdd } from "../../components/games/GameTestsAdd";
 
 export const GameAddPage = (formArg) => {
-
-
-  // } else {
-
-  //   const state = useState({
-  //     nameGame: "",
-  //     leadings: [],
-  //     players: [],
-  //     type: "",
-  //     rounds: []
-  //   });
-
-  //   form = state[0];
-  //   setForm = state[1]
-  // }
-  // const [form, setForm] = useState({
-  //   nameGame: "",
-  //   leadings: [],
-  //   players: [],
-  //   type: "",
-  //   rounds: []
-  // });
-
   const {token} = useContext(AuthContext);
   const {loading, error, request, clearError} = useHttp();
   const message = useMessage();
@@ -52,7 +29,6 @@ export const GameAddPage = (formArg) => {
   if(formArg.ok) {
     form = formArg.form;
     setForm = formArg.setForm;
-    // setType(form.type);
   }
 
   useEffect(()=>{
@@ -71,8 +47,6 @@ export const GameAddPage = (formArg) => {
     }
 
   }, [formArg])
-
-
 
   const getUsers = useCallback ( async () => {
     try {
@@ -102,7 +76,6 @@ export const GameAddPage = (formArg) => {
     var select = document.querySelectorAll('select');
     var instances = window.M.FormSelect.init(select, {});
   }, [!loading]);
-
 
   useEffect(() => {
     getUsers();
@@ -137,9 +110,6 @@ export const GameAddPage = (formArg) => {
   const addRound = (event) => {
     setForm((form) => ({
       ...form, rounds: [...form.rounds, {}]
-      // console.log(form)
-      // form.rounds.push([]);
-      // return form;
     }));
     setCountRounds([...countRounds, countRounds.length]);
   }
@@ -149,20 +119,12 @@ export const GameAddPage = (formArg) => {
       const rounds = [...form.rounds];
       rounds.splice(+event.target.name, 1);
       return {...form, rounds}
-      // {...form, "complexity": +event.target.value}
     });
-    
     setCountRounds((countRounds)=>{
       const count_rounds = [...countRounds];
       count_rounds.splice(+event.target.name, 1);
       return count_rounds;
     })
-    // console.log()
-    // console.log(form);
-    // const radio = document.getElementById(`${event.target.name}`);
-    // radio.checked = false;
-
-    // console.log(countVariant)
   }
 
   const gameAdd = async () => {
@@ -175,12 +137,6 @@ export const GameAddPage = (formArg) => {
           break;
         }
       }
-      // form.rounds.map((item)=>{
-      //   if(!item.length){
-      //     ok = false;
-      //     break;
-      //   }
-      // })
 
       if(form.leadings.length &&
         form.players.length 
@@ -208,17 +164,9 @@ export const GameAddPage = (formArg) => {
           break;
         }
       }
-      // form.rounds.map((item)=>{
-      //   if(!item.length){
-      //     ok = false;
-      //     break;
-      //   }
-      // })
-
       if(form.leadings.length &&
         form.players.length 
         && form.rounds.length && flag ) {
-          console.log(form)
           const data = await request(`/api/games/changeGame/${gameId}`, 'PATCH', {...form}, {
             Authorization: `Bearer ${token}`
           });
@@ -230,8 +178,7 @@ export const GameAddPage = (formArg) => {
     } catch(error) {
     }
   }
-    
-console.log(form)
+
   return (
     <div>
       <div>
@@ -253,7 +200,6 @@ console.log(form)
         </div>
         <div className="col s12 darken-1">
         <label>Выберите тип игры</label>
-        {/* {!formArg.ok && } */}
         <select name="type" onChange={changeTypeGame} defaultValue={form.type} required>
           <option value="" disabled selected>---</option>
           <option value="PLAYER">Игроки</option>

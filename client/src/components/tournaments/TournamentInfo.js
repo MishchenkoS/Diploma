@@ -26,7 +26,6 @@ export const TournamentInfo = (arg) => {
   const getRound = (round) => {
     const roundDOM = [];
     round.map((item)=>{
-
       roundDOM.push(<><hr className="hr-line-end"/><Link className="flex-center" to={`/tests/test/${item.testId._id}`}>Тест : </Link></>);
       roundDOM.push(<p className="question flex-center">Вопрос : {item.testId.question}</p>);
       for(let key in item.testId.answers) {
@@ -52,6 +51,18 @@ export const TournamentInfo = (arg) => {
 
     return roundDOM;
 
+  }
+
+  const deleteTournament = async () => {
+    try{
+      await request(`/api/tournaments/${tournament._id}`, "DELETE", null, {
+        Authorization: `Bearer ${token}`
+      });
+
+      window.location.href = "/tournaments";
+    } catch(err) {
+
+    }
   }
 
 
@@ -80,6 +91,12 @@ export const TournamentInfo = (arg) => {
       // return roundDOM;
     })}
   </div>
+
+  <button 
+    className="btn waves-effect waves-light indigo lighten-1 btn-add"
+    onClick={deleteTournament}
+    >
+    Удалить турнир<i className="material-icons right">delete</i></button>
   
 
   </>

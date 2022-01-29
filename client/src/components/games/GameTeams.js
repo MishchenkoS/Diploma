@@ -1,22 +1,10 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
-import { AuthContext } from "../../context/authContext";
-import { useHttp } from "../../hooks/httpHooks";
-import { Loader } from "../Loader";
-import { GamePlayers } from "./GamePlayers";
-import { Link } from "react-router-dom";
-
+import React, { useState } from "react";
 
 export const GameTeams = (formArg) => {
   const {formArg: form, setFormArg: setForm, users} = formArg;
-  // console.log(formArg)
-
-  const {token} = useContext(AuthContext);
-  const {request, loading} = useHttp();
+  
   const [teams, setTeams] = useState([]);
-
-
-
-  if(!loading && users.length) {
+  if(users.length) {
     users.map((item)=>{
       if(item.team) {
         const index = teams.indexOf(item.team);
@@ -29,7 +17,6 @@ export const GameTeams = (formArg) => {
 
   const changeCheck = (event) => {
     const index = form.players.indexOf(event.target.id);
-
     if(index === -1) {
         setForm((form) => {
           const players = [...form.players, event.target.id];
@@ -42,8 +29,6 @@ export const GameTeams = (formArg) => {
         return {...form, players};
       })
     }
-
-    console.log(form)
   }
 
   if (!teams.length || !users.length) {
@@ -76,10 +61,7 @@ export const GameTeams = (formArg) => {
               <span></span>
             </label>  
             <span>{ index + 1 } </span>
-            <span>{ team}</span>
-
-            
-            
+            <span>{ team}</span>           
           </div>
         );
       }) }

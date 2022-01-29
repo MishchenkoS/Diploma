@@ -67,10 +67,8 @@ module.exports.getGameInfoAll = async (req, res) => {
     leadings.push(userInfo);
   }
   let players = [];
-  // console.log(gameInfo.team)
 
   if(gameInfo.type === 'PLAYER') {
-    console.log('if')
     for(let i = 0; i < gameInfo.players.length; i++) {
       const userInfo = await userDao.findUserById(gameInfo.players[i]);
       players.push(userInfo);
@@ -78,8 +76,6 @@ module.exports.getGameInfoAll = async (req, res) => {
   } else {
     players = [...gameInfo.players];
   }
-  console.log(players, 'players');
-
 
   const rounds = [];
   for(let i = 0; i < gameInfo.rounds.length; i++) {
@@ -89,8 +85,7 @@ module.exports.getGameInfoAll = async (req, res) => {
       rounds[i][key] = testInfo;
     }
   }
-  console.log(rounds, 'rounds')
-  console.log([...rounds], 'rounds []')
+
   res.json({game: gameInfo, leadings, players, roundsGame: [...rounds]});
 }
 
@@ -129,7 +124,6 @@ module.exports.getMyGameInfo = async (req, res) => {
     type: gameInfo.type,
     created_date: gameInfo.created_date
   };
-  console.log(myGameInfo)
   res.json({game: myGameInfo});
 }
 
@@ -141,11 +135,6 @@ module.exports.getRoundInfo = async (req, res) => {
   if(!gameInfo.rounds[round]) {
     return res.status(400).json({message: 'No round found'});
   }
-  
-
-  // if(!gameInfo.rounds[round] || gameInfo.rounds[round].length === 0) {
-  //   return res.status(400).json({message: 'No round found'});
-  // }
 
   res.json({round: gameInfo.rounds[round]});
 }
@@ -201,7 +190,6 @@ module.exports.addPlayers = async (req, res) => {
   await game.updateOne({players : game.players.concat(players)});
   res.json({message: 'Players added successfully!'});
 };
-
 
 module.exports.changeRound = async (req, res) => {
   const game = await gameDao.findGameById(req.params.gameId);

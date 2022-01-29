@@ -155,4 +155,3 @@ module.exports.deleteTest = async (req, res) => {
   await test.deleteOne();
   res.json({message: 'Test deleted successfully!'});
 };
-
