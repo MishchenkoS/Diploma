@@ -10,7 +10,7 @@ const socket = io();
 export const OnlineTournamentPage = () => {
   const gameId = useParams().gameId;
   const message = useMessage();
-  const [error, setError] = useState(null)
+  const [error, setError] = useState(null);
 
   const [count, setCount] = useState(true);
   const [tournamentId, setTournamentId] = useState(null);
@@ -228,21 +228,21 @@ return (
 <div className='row'>
 
   <div className='online-name-status col s12'> 
-    {nameGame && <span>Название игры: {nameGame}</span>}
-    {tournamentStatus && <span>Статус турнира: {tournamentStatus}</span>}
+    {nameGame && <span>Назва гри: {nameGame}</span>}
+    {tournamentStatus && <span>Статус турниру: {tournamentStatus}</span>}
   </div>
 
   {roleGame==="LEADING" && !tournamentStatus &&
   <div className="input-field div-btn col s12">
     <button onClick={createTournament} className="btn waves-effect waves-light indigo lighten-1 my-btn">
-      Разрешить подключаться к игре
+      Дозволити подключатись до гри
     </button>
   </div> }
 
   {roleGame==="LEADING" && tournamentStatus === "CREATE" && 
   <div className="input-field div-btn col s12">
     <button  className="btn waves-effect waves-light indigo lighten-1 my-btn" onClick={startTournament}>
-      Старт турнира
+      Старт турниру
     </button>
   </div>}
 
@@ -250,7 +250,7 @@ return (
   <div className="input-field div-btn col s12">
     <button onClick={stopTournament}
       className="btn waves-effect waves-light indigo lighten-1 my-btn">
-      Остановить турнир
+      Зупинити турнир
     </button>
   </div>}
 
@@ -258,7 +258,7 @@ return (
     <div className="players-online col s4">
       {tournamentStatus === 'CREATE' && players && 
       <ul>
-        <h5>Список Игроков:</h5>
+        <h5>Список Гравців:</h5>
         <hr className="listname-line-2"></hr>
         {players.map((item, i)=>{
           if(playersConnect && playersConnect.indexOf(item.id) !== -1) {
@@ -276,7 +276,7 @@ return (
 
       {tournamentStatus === 'START' && testStatus !== 'FINISH' && 
       <ul>
-        <h5>Список Игроков:</h5>
+        <h5>Список Гравців:</h5>
         <hr className="listname-line-2"></hr>
         {players.map((item)=>{
           if(replyPlayer && (item.id in replyPlayer)) {
@@ -294,7 +294,7 @@ return (
 
       {tournamentStatus === 'START' && testStatus === 'FINISH' && playerAnswers && replyPlayer && 
       <ul>
-        <h5>Список Игроков:</h5>
+        <h5>Список Гравців:</h5>
         <hr className="listname-line-2"></hr>
         {players.map((item)=>{
           if(item.id in playerAnswers) {
@@ -321,9 +321,9 @@ return (
     <div className="col s4 question-online">
       {test && roleGame==="LEADING" && 
       <div>
-        <p> Сложность: {test.complexity} </p>
+        <p> Складність: {test.complexity} </p>
         <p> Тип: {test.type} </p>
-        <p className="question"> Вопрос: {test.question}?</p>
+        <p className="question"> Запитання: {test.question}?</p>
         <ul>
           {test.answers.map((item)=>{
             return <li>{item}</li>
@@ -332,12 +332,12 @@ return (
         {testStatus!=='START' && 
         <button id={test._id} onClick={startTest} 
           className="btn waves-effect waves-light indigo lighten-1 my-btn question-start">
-          Начать тест
+          Розпочати тест
         </button>}
         {testStatus==='START' && 
         <button id={test._id} onClick={stopTest} 
           className="btn waves-effect waves-light indigo lighten-1 my-btn question-start">
-          Остановить тест
+          Зупинити тест
         </button>}
 
       </div>}
@@ -347,8 +347,8 @@ return (
       {test && roleGame === "PLAYER" && 
       <div>
         <p>Раунд: {countRound.current}</p>
-        <p>Сложность: {test.complexity} </p>
-        <p className="question">Вопрос: {test.question}?</p>
+        <p>Складність: {test.complexity} </p>
+        <p className="question">Запитання: {test.question}?</p>
 
         {test.type === 'WRITE' && 
         <div>
@@ -437,16 +437,16 @@ return (
         {testStatus === 'START' && 
         <button onClick={reply} 
           className="btn waves-effect waves-light indigo lighten-1 my-btn question-start">
-          Ответить
+          Відповісти
         </button>}
       </div>}
 
 
       {test && roleGame === 'VIEWER' && 
       <div>
-        <p> Сложность: {test.complexity} </p>
+        <p> Складність: {test.complexity} </p>
         <p> Тип: {test.type} </p>
-        <p className="question"> Вопрос: {test.question}?</p>
+        <p className="question"> Запитання : {test.question}?</p>
         <ul>
           {test.answers.map((item)=>{
             return <li>{item}</li>

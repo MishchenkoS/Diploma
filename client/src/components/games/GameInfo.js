@@ -48,13 +48,13 @@ export const GameInfo = (arg) => {
 
   return (
     <>
-    <div className='div-btn div-name-page'><h5>Игра</h5></div>
+    <div className='div-btn div-name-page'><h5>Гра</h5></div>
   <table className="striped">
     <thead>
       <tr>
-        <th>Название</th>
+        <th>Назва</th>
         <th>Тип</th>
-        <th>Дата создания</th>
+        <th>Дата створення</th>
       </tr>
     </thead>
     <tbody>
@@ -68,7 +68,7 @@ export const GameInfo = (arg) => {
   <table className="striped">
     <thead>
       <tr>
-        <th>Ведущие</th>
+        <th>Ведучі</th>
       </tr>
     </thead>
     <tbody>
@@ -89,7 +89,7 @@ export const GameInfo = (arg) => {
   <table className="striped">
   <thead>
       <tr>
-        <th>Игроки</th>
+        <th>Гравці</th>
       </tr>
     </thead>
     <tbody>
@@ -120,11 +120,11 @@ export const GameInfo = (arg) => {
       })}
    <div className='div-btn-game'>
       <button onClick={changeGame} className="btn waves-effect waves-light indigo lighten-1 btn-add ">
-          Изменить игру<i class="material-icons right">edit</i></button>
+          Редагувати гру<i class="material-icons right">edit</i></button>
         <button onClick={deleteGame} className="btn waves-effect waves-light indigo lighten-1 btn-add">
-          Удалить игру<i class="material-icons right">delete</i></button>
+          Видалити гру<i class="material-icons right">delete</i></button>
         <button onClick={startGame} className="btn waves-effect waves-light indigo lighten-1 btn-add ">
-          Начать игру<i class="material-icons right">people</i></button>
+          Розпочати гру<i class="material-icons right">people</i></button>
           </div>
     </>
   );

@@ -32,12 +32,12 @@ export const GameTeams = (formArg) => {
   }
 
   if (!teams.length || !users.length) {
-    return <p className="center">Команд пока нет</p>
+    return <p className="center">Команд поки нема</p>
   }
 
   return(
     <div>
-      <div className='div-btn'><h6>Выбрать команды</h6></div>
+      <div className='div-btn'><h6>Обрати команди</h6></div>
       {teams.map((team, index) => {
         const check = form.players.indexOf(team) === -1 ? false : true;
         return (

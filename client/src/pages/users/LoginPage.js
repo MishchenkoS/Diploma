@@ -33,7 +33,6 @@ export const LoginPage = (formArg) => {
     setPassword(event.target.value)
   }
 
-
   useEffect(() => {
     message(error);
     clearError();
@@ -86,7 +85,7 @@ export const LoginPage = (formArg) => {
     <div className="div-login">
       <div className="input-field">
         <input 
-          placeholder="Введите login"
+          placeholder="Введіть login"
           id="login"
           type="text"
           name="login"
@@ -99,7 +98,7 @@ export const LoginPage = (formArg) => {
 
       {!formArg.ok && <div className="input-field">
         <input 
-          placeholder="Введите пароль"
+          placeholder="Введіть пароль"
           id="password"
           type="password"
           name="password"
@@ -113,7 +112,7 @@ export const LoginPage = (formArg) => {
       {formArg.ok && <>
        <div className="input-field">
        <input 
-         placeholder="Введите пароль"
+         placeholder="Введіть пароль"
          id="password"
          type="password"
          name="password"
@@ -127,7 +126,7 @@ export const LoginPage = (formArg) => {
 
       <div className="input-field">
         <input 
-          placeholder="Введите имя"
+          placeholder="Введіть ім'я"
           id="firstname"
           type="text"
           name="firstname"
@@ -135,12 +134,12 @@ export const LoginPage = (formArg) => {
           onChange={changeHandler}
           value={form.firstname}
         />
-        <label htmlFor="firstname">Имя</label>
+        <label htmlFor="firstname">Ім'я</label>
       </div>
 
       <div className="input-field">
         <input 
-          placeholder="Введите фамилию"
+          placeholder="Введіть прізвище"
           id="lastname"
           type="text"
           name="lastname"
@@ -148,12 +147,12 @@ export const LoginPage = (formArg) => {
           onChange={changeHandler}
           value={form.lastname}
         />
-        <label htmlFor="lastname">Фамилия</label>
+        <label htmlFor="lastname">Прізвище</label>
       </div>
 
       <div className="input-field">
         <input 
-          placeholder="Введите группу"
+          placeholder="Введіть групу"
           id="group"
           type="text"
           name="group"
@@ -161,12 +160,12 @@ export const LoginPage = (formArg) => {
           onChange={changeHandler}
           value={form.group}
         />
-        <label htmlFor="group">Группа</label>
+        <label htmlFor="group">Група</label>
       </div>
 
       <div className="input-field">
         <input 
-          placeholder="Введите команду"
+          placeholder="Введіть команду"
           id="team"
           type="text"
           name="team"
@@ -177,12 +176,12 @@ export const LoginPage = (formArg) => {
         <label htmlFor="team">Команда</label>
       </div>
       <div className="col s12 darken-1 ">
-      <label>Выберите роль</label>
+      <label>Оберіть роль</label>
         <select defaultValue={form.role} name="role" onChange={changeHandler} required>
           <option value="" disabled>---</option>
-          <option value="STUDENT">Пользователь</option>
-          <option value="LEADING">Ведущий</option>
-          <option value="ADMIN">Администратор</option>
+          <option value="STUDENT">Користувач</option>
+          <option value="LEADING">Ведучий</option>
+          <option value="ADMIN">Адміністратор</option>
         </select>
       </div>
 
@@ -193,7 +192,7 @@ export const LoginPage = (formArg) => {
         disabled={loading}
         className="btn waves-effect waves-light indigo lighten-1 my-btn"
         >
-          Зарегистрировать
+          Зареєструвати
           <i class="material-icons right">assignment_ind</i>
         </button>
       </div>}
@@ -205,7 +204,7 @@ export const LoginPage = (formArg) => {
         disabled={loading}
         className="btn waves-effect waves-light indigo lighten-1 my-btn"
         >
-          Изменить данные
+          Змінити дані
           <i class="material-icons right">assignment_ind</i>
         </button>
       </div>}

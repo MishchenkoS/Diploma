@@ -21,27 +21,27 @@ export const NavbarLeading = () => {
     <>
     <nav>
       <div className="nav-wrapper indigo darken-4" style={{ padding: '0 2rem' }}>
-        <span className="brand-logo">КТКТ</span>
+        <span className="brand-logo">НУЧП</span>
         <a href="#" data-target="mobile-demo" className="sidenav-trigger burger_a">
           <i className="material-icons burger_i">menu</i>
         </a>
         <ul className="right hide-on-med-and-down">
-          <li><NavLink to="/">Главная</NavLink></li>
+          <li><NavLink to="/">Головна</NavLink></li>
           <li><NavLink to={`/online`}>Онлайн</NavLink></li>
-          <li><NavLink to="/myGames">Игры</NavLink></li>
-          <li><NavLink to="/myTournaments">Турниры</NavLink></li>
-          <li><NavLink to={`/users/user/${auth.userId}`}>Обо мне</NavLink></li>
-          <li><a href="/" onClick={logoutHandler}>Выйти</a></li>
+          <li><NavLink to="/myGames">Ігри</NavLink></li>
+          <li><NavLink to="/myTournaments">Турнири</NavLink></li>
+          <li><NavLink to={`/users/user/${auth.userId}`}>Про мене</NavLink></li>
+          <li><a href="/" onClick={logoutHandler}>Вийти</a></li>
         </ul>
       </div>
     </nav>
     <ul className="sidenav" id="mobile-demo">
-      <li><NavLink to="/">Главная</NavLink></li>
+      <li><NavLink to="/">Головна</NavLink></li>
       <li><NavLink to={`/online`}>Онлайн</NavLink></li>
-      <li><NavLink to="/myGames">Игры</NavLink></li>
-      <li><NavLink to="/tournaments">Турниры</NavLink></li>
-      <li><NavLink to={`/users/user/${auth.userId}`}>Обо мне</NavLink></li>
-      <li><a href="/" onClick={logoutHandler}>Выйти</a></li>
+      <li><NavLink to="/myGames">Ігри</NavLink></li>
+      <li><NavLink to="/tournaments">Турнири</NavLink></li>
+      <li><NavLink to={`/users/user/${auth.userId}`}>Про мене</NavLink></li>
+      <li><a href="/" onClick={logoutHandler}>Вийти</a></li>
     </ul>
    </>
   );

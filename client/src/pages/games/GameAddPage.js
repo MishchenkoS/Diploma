@@ -147,7 +147,7 @@ export const GameAddPage = (formArg) => {
           message(data.message);
           window.location.href = '/games';
       } else {
-        message("Не все поля заполнены");
+        message("Не всі поля заповнені");
       }
 
     } catch(error) {
@@ -172,7 +172,7 @@ export const GameAddPage = (formArg) => {
           });
           message(data.message);
       } else {
-        message("Не все поля заполнены");
+        message("Не всі поля заповнені");
       }
       window.location.href = `/games/game/${gameId}`;
     } catch(error) {
@@ -182,16 +182,16 @@ export const GameAddPage = (formArg) => {
   return (
     <div>
       <div>
-        {formArg.ok && <h5>Изменить игру</h5>}
-        {!formArg.ok && <h5>Создать новую игру</h5>}
+        {formArg.ok && <h5>Редагувати гру</h5>}
+        {!formArg.ok && <h5>Створити нову гру</h5>}
       </div>
       <form action="" onSubmit={e => { e.preventDefault(); }}>
       <div>
-      <label>Введите название игры</label>
+      <label>Введіть назву гри</label>
       <input 
           type='text' 
           name='nameGame'
-          placeholder='Название игры'
+          placeholder='Назва гри'
           value={form.nameGame}
           onChange={changeNameGame}
           autoComplete='off'
@@ -199,11 +199,11 @@ export const GameAddPage = (formArg) => {
         />
         </div>
         <div className="col s12 darken-1">
-        <label>Выберите тип игры</label>
+        <label>Оберіть тип гри</label>
         <select name="type" onChange={changeTypeGame} defaultValue={form.type} required>
           <option value="" disabled selected>---</option>
-          <option value="PLAYER">Игроки</option>
-          <option value="TEAM">Команды</option>
+          <option value="PLAYER">Гравці</option>
+          <option value="TEAM">Команди</option>
         </select>
         </div>
         {type==="PLAYER" && <GamePlayersAll formArg={form} setFormArg={setForm} users={users}></GamePlayersAll>}
@@ -212,12 +212,12 @@ export const GameAddPage = (formArg) => {
           <GameLeadingsAll formArg={form} setFormArg={setForm} users={users}></GameLeadingsAll>
         </div>
         <div>
-          <div className='div-btn'><h6>Наполнить игру тестами</h6></div>
+          <div className='div-btn'><h6>Наповнити гру тестами</h6></div>
           <div className='div-btn'><button 
           name='rounds' 
           onClick={addRound}
           className="btn waves-effect waves-light indigo lighten-1 btn-add"
-          >Создать раунд <i class="material-icons right">add</i>
+          >Створити раунд <i class="material-icons right">add</i>
           </button></div>
           {countRounds.map((item, index) => {
             return (
@@ -235,12 +235,12 @@ export const GameAddPage = (formArg) => {
         type='submit' 
         onClick={gameChange} 
         className="btn waves-effect waves-light indigo lighten-1 btn-add"
-        >Изменить игру<i class="material-icons right">send</i></button></div>}
+        >Редагувати гру<i class="material-icons right">send</i></button></div>}
         {!formArg.ok && <div className='div-btn'><button  
         type='submit' 
         onClick={gameAdd} 
         className="btn waves-effect waves-light indigo lighten-1 btn-add"
-        >Создать игру<i class="material-icons right">send</i></button></div>}
+        >Створити гру<i class="material-icons right">send</i></button></div>}
         </form>
     </div>
   );

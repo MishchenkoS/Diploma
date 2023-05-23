@@ -200,7 +200,9 @@ label.active {
   right: 0;
   background: url(./img/rules-background.png) no-repeat center center;
   background-size: cover;
+  width: 100%;
   min-height: 657px;
+  height: 90%;
 }
 
 .rules .rules-description {

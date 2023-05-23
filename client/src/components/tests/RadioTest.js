@@ -62,16 +62,13 @@ export const RadioTests = (formArg) => {
     radio.checked = false;
   }
 
-
-
-
   if(!countVariant) {
     return <Loader></Loader>
   }
 
   return (
   <div>
-    <label>Введите сложность:</label>
+    <label>Введіть складність:</label>
     <input 
       type='number'
       placeholder='0' 
@@ -82,12 +79,12 @@ export const RadioTests = (formArg) => {
       min={0}
       required
     />
-    <label>Введите вопрос:  </label>
+    <label>Введіть запитання:  </label>
     <input 
       type='text' 
       name='question' 
       autoComplete='off'
-      placeholder='Вопрос' 
+      placeholder='Запитання' 
       onChange={changeHandler}
       value={form.question}
       required
@@ -124,7 +121,7 @@ export const RadioTests = (formArg) => {
         <input 
           type='text' 
           name={index} 
-          placeholder={`Вариант ${index + 1}`}
+          placeholder={`Варіант ${index + 1}`}
           value={form.answers[index]}
           autoComplete="off"
           onChange={changeAnswers}
@@ -137,7 +134,7 @@ export const RadioTests = (formArg) => {
     <button 
     onClick={addVariant} 
     className='add-variant btn waves-effect waves-light indigo lighten-1 btn-add' 
-    >Добавить вариант
+    >Додати варіант
       <i className="material-icons right">add</i>
     </button>
     </div>

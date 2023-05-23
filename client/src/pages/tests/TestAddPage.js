@@ -60,7 +60,7 @@ export const TestAddPage = () => {
         message(data.message);
         window.location.href = "/tests"
       } else {
-        message("Не все поля заполнены");
+        message("Не всі поля заповнені");
       }
 
       setForm((form=>({
@@ -83,17 +83,17 @@ export const TestAddPage = () => {
   return (
     <>
       <div>
-        <h5>Создать новый тест</h5>
+        <h5>Створити новий тест</h5>
       </div>
       <form action="" onSubmit={e => { e.preventDefault(); }}>
       <div className="col s12 darken-1">
       
-      <label>Выберите тип теста</label>
+      <label>Оберіть тип тесту</label>
         <select defaultValue="" name="type" onChange={changeSelect} required>
           <option value="" disabled>---</option>
-          <option value="RADIO">Один вариант ответа</option>
-          <option value="CHECK">Несколько вариантов ответа</option>
-          <option value="WRITE">Вписать значение в поле</option>
+          <option value="RADIO">Один варіант відповіді</option>
+          <option value="CHECK">Декілька вариантів відповіді</option>
+          <option value="WRITE">Вписати значення в поле</option>
         </select>
 
       </div>
@@ -108,7 +108,7 @@ export const TestAddPage = () => {
         type='submit' 
         onClick={testAdd} 
         className="btn waves-effect waves-light indigo lighten-1 btn-add"
-      >Создать тест<i className="material-icons right">send</i></button>
+      >Створити тест<i className="material-icons right">send</i></button>
       </div>
       </form>
     </>

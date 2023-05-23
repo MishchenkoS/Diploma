@@ -38,7 +38,7 @@ export const AuthPage = () => {
     <div className="div-login">
       <div className="input-field">
         <input 
-          placeholder="Введите login"
+          placeholder="Введіть login"
           id="login"
           type="text"
           name="login"
@@ -51,7 +51,7 @@ export const AuthPage = () => {
 
       <div className="input-field">
         <input 
-          placeholder="Введите пароль"
+          placeholder="Введіть паролі"
           id="password"
           type="password"
           name="password"
@@ -68,7 +68,7 @@ export const AuthPage = () => {
         onClick={loginHandler}
         className="btn waves-effect waves-light indigo lighten-1 my-btn"
       >
-        Войти
+        Ввійти
       <i class="material-icons right">assignment_turned_in</i>
       </button>
       </div>

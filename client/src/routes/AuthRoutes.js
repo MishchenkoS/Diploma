@@ -83,7 +83,7 @@ export const useRoutes = (isAuthenticated, role) => {
         </Route>
         <Route path='/register'>
           <LoginPage></LoginPage> 
-   </Route>
+        </Route>
         <Redirect to="/" />
       </Switch>
     );
@@ -135,6 +135,9 @@ export const useRoutes = (isAuthenticated, role) => {
       <Route path='/login'>
         <AuthPage></AuthPage>
       </Route>
+      <Route path='/register'>
+          <LoginPage></LoginPage> 
+        </Route>
       <Redirect to="/" />
 
     </Switch>

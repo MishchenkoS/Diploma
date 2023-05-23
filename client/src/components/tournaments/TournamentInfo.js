@@ -2,6 +2,7 @@ import React, { useContext, useCallback, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
 import { useHttp } from "../../hooks/httpHooks";
+import { GameInfo } from "../games/GameInfo";
 import { Loader } from "../Loader";
 
 export const TournamentInfo = (arg) => {
@@ -14,11 +15,16 @@ export const TournamentInfo = (arg) => {
 
   const getBalls = useCallback(() => {
     const content = [];
-    for(let key in tournament.balls) {
-      const user = players.find(item => item.id === key);
-      console.log(user, 'user')
-      console.log(players, 'players')
-      content.push(<p><Link to={`/users/user/${user._id}`}>{user.login}</Link> : {tournament.balls[key]}</p>)
+
+    if(game.type === "PLAYER") {
+      for(let key in tournament.balls) {
+        const user = players.find(item => item.id === key);
+        content.push(<p><Link to={`/users/user/${user._id}`}>{user.login}</Link> : {tournament.balls[key]}</p>)
+      }
+    } else {
+      for(let key in tournament.balls) {
+        content.push(<p>{key} : {tournament.balls[key]}</p>)
+      }
     }
     return content;
   }, [players])
@@ -27,7 +33,7 @@ export const TournamentInfo = (arg) => {
     const roundDOM = [];
     round.map((item)=>{
       roundDOM.push(<><hr className="hr-line-end"/><Link className="flex-center" to={`/tests/test/${item.testId._id}`}>Тест : </Link></>);
-      roundDOM.push(<p className="question flex-center">Вопрос : {item.testId.question}</p>);
+      roundDOM.push(<p className="question flex-center">Запитання : {item.testId.question}</p>);
       for(let key in item.testId.answers) {
         console.log(item, 'item')
         console.log(key, 'key')
@@ -40,13 +46,19 @@ export const TournamentInfo = (arg) => {
           roundDOM.push(<li className="flex-center">{item.testId.answers[key]}</li>);
         }
       }
-      roundDOM.push(<p className="text-bold">Ответы игроков : </p>);
-      for(let key of item.responders){
-        const user = players.find(key1 => key1.id === key);
-        console.log(players)
-        console.log(key, 'key')
-        roundDOM.push(<><p><Link to={`/users/user/${user.id}`}>{user.login}</Link> : {item.answers[key]}</p></>);
+      roundDOM.push(<p className="text-bold">Відповіді гравців : </p>);
+
+      if(game.type === "PLAYER") {
+        for(let key of item.responders){
+          const user = players.find(key1 => key1.id === key);
+          roundDOM.push(<><p><Link to={`/users/user/${user.id}`}>{user.login}</Link> : {item.answers[key]}</p></>);
+        }
+      } else {
+        for(let key of item.responders){
+          roundDOM.push(<><p>{key}: {item.answers[key]}</p></>);
+        }
       }
+
     });
 
     return roundDOM;
@@ -61,18 +73,17 @@ export const TournamentInfo = (arg) => {
 
       window.location.href = "/tournaments";
     } catch(err) {
-
     }
   }
 
 
   return ( 
   <>
-  <p className="text-center">Статус турнира: {tournament.status}</p>
-  <p className="text-center">Название игры: <Link to={`/games/game/${game._id}`}>{game.nameGame}</Link></p>
-  <p className="text-italic">Дата проведения турнира: {new Date(tournament.created_date).toLocaleDateString()}</p>
+  <p className="text-center">Статус турниру: {tournament.status}</p>
+  <p className="text-center">Назва гри: <Link to={`/games/game/${game._id}`}> {game.nameGame}</Link></p>
+  <p className="text-italic">Дата проведення турниру: {new Date(tournament.created_date).toLocaleDateString()}</p>
   <div>
-    <p className="text-bold">Очки за турнир:</p>
+    <p className="text-bold">Бали за турнир:</p>
     {getBalls()}
   </div>
 
@@ -96,7 +107,7 @@ export const TournamentInfo = (arg) => {
     className="btn waves-effect waves-light indigo lighten-1 btn-add"
     onClick={deleteTournament}
     >
-    Удалить турнир<i className="material-icons right">delete</i></button>
+    Видалити турнир<i className="material-icons right">delete</i></button>
   
 
   </>

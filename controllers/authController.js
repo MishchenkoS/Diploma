@@ -25,6 +25,7 @@ module.exports.registration = async (req, res) => {
     team,
     role,
   });
+  
   await newUser.save();
   res.json({message: 'Profile created successfully!'});
 };
@@ -33,7 +34,10 @@ module.exports.login = async (req, res) => {
   const {login, password} = req.body;
   const user = await userDao.getUserByLogin(login);
 
+  console.log(login, password, user);
+
   if (!(await bcrypt.compare(password, user.password))) {
+    console.log("if")
     return res.status(400).json({message: 'Wrong password'});
   }
   

@@ -119,7 +119,7 @@ export const TestChangePage = () => {
         });
         message(data.message);
       } else {
-        message("Не все поля заполнены");
+        message("Не всі поля заповнені");
         console.log(test_request)
       }
 
@@ -156,7 +156,7 @@ export const TestChangePage = () => {
         type='submit' 
         onClick={testChange} 
         className="btn waves-effect waves-light indigo lighten-1 btn-add"
-      >Изменить тест<i className="material-icons right">send</i></button>
+      >Редагувати тест<i className="material-icons right">send</i></button>
       </div>
       </form>
     </>

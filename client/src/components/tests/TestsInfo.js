@@ -8,8 +8,8 @@ export const TestsInfo = ({ tests }) => {
       <>
       <div class='div-btn'><Link to={`/tests/addTest`} 
       className="btn waves-effect waves-light indigo lighten-1 btn-add"
-      >Создать новый тест<i class="material-icons right">control_point</i></Link></div>
-      <p className="center">Тестов пока нет</p>
+      >Створити новий тест<i class="material-icons right">control_point</i></Link></div>
+      <p className="center">Тестів пока немає</p>
       </>
     )
   }
@@ -19,8 +19,8 @@ export const TestsInfo = ({ tests }) => {
     <div className='div-btn'><Link to={`/tests/addTest`} 
     className="btn waves-effect waves-light indigo lighten-1 btn-add"
     // className="btn waves-effect waves-light light-blue darken-3 btn-add"
-    >Создать новый тест<i class="material-icons right">control_point</i></Link></div>
-    <div className='div-btn div-name-page'><h5>Список доступных тестов</h5></div>
+    >Створити новий тест<i class="material-icons right">control_point</i></Link></div>
+    <div className='div-btn div-name-page'><h5>Список доступних тестів</h5></div>
     <div className="collection">
       {tests.map((test, index) => {
         return (

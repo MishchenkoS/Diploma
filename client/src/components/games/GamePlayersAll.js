@@ -22,12 +22,12 @@ export const GamePlayersAll = (formArg) => {
   }
   
   if (!users.length) {
-    return <p className="center">Пользователей пока нет</p>
+    return <p className="center">Користувачів поки немає</p>
   }
 
   return (
     <div>
-      <div className='div-btn'><h6>Выбрать игроков</h6></div>
+      <div className='div-btn'><h6>Обрати гравців</h6></div>
       {users.map((user, index) => {
         const check = form.players.indexOf(user._id) === -1 ? false : true;
         return (

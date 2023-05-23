@@ -76,7 +76,7 @@ export const CheckTests = (formArg) => {
 
   return (
   <div>
-    <label>Введите сложность:</label>
+    <label>Введіть складність:</label>
     <input 
       type='number'
       placeholder='0' 
@@ -87,12 +87,12 @@ export const CheckTests = (formArg) => {
       required
       value={form.complexity}
     />
-    <label>Введите вопрос:  </label>
+    <label>Введіть запитання:  </label>
       <input 
       type='text' 
       name='question' 
       autoComplete='off' 
-      placeholder='Вопрос' 
+      placeholder='Запитання' 
       required 
       onChange={changeHandler}
       value={form.question}
@@ -122,14 +122,14 @@ export const CheckTests = (formArg) => {
          
           <span></span>
         </label>  
-        <label>Вариант {index + 1}</label>
+        <label>Варіант {index + 1}</label>
         <i className="material-icons right">
           <a href='#' className='a-clear' name={index} onClick={clearVariant} >clear</a>
         </i>
         <input 
           type='text' 
           name={index} 
-          placeholder={`Вариант ${index + 1}`}
+          placeholder={`Варіант ${index + 1}`}
           value={form.answers[index]}
           autoComplete='off'
           onChange={changeAnswers}
@@ -143,7 +143,7 @@ export const CheckTests = (formArg) => {
     <button 
     onClick={addVariant} 
     className='add-variant btn waves-effect waves-light indigo lighten-1 btn-add' 
-    >Добавить вариант
+    >Додати варіант
       <i className="material-icons right">add</i>
     </button>
     </div>

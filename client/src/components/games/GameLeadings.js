@@ -21,12 +21,12 @@ export const GameLeadingsAll = (formArg) => {
   }
   
   if (!users.length) {
-    return <p className="center">Ведущих пока нет</p>
+    return <p className="center">Ведучих поки немає</p>
   }
 
   return (
     <div>
-      <div className='div-btn'><h6>Выбрать ведущих</h6></div>
+      <div className='div-btn'><h6>Обрати ведучих</h6></div>
       {users.map((user, index) => {
         if(user.role==="LEADING" || user.role==="ADMIN"){
           const check = form.leadings.indexOf(user._id) === -1 ? false : true;

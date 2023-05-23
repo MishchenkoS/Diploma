@@ -34,17 +34,17 @@ export const UserInfo = ({ user }) => {
 
   return (
     <>
-    <div className='div-btn div-name-page'><h5>Пользователь</h5></div>
+    <div className='div-btn div-name-page'><h5>Користувач</h5></div>
     <table className="striped about-me">
     <thead>
       <tr>
         <th>Login</th>
-        <th>Имя</th>
-        <th>Фамилия</th>
+        <th>Ім'я</th>
+        <th>Прізвище</th>
         <th>Роль</th>
-        <th>Группа</th>
+        <th>Група</th>
         <th>Команда</th>
-        <th>Дата регистрации</th>
+        <th>Дата реєстрації</th>
       </tr>
       </thead>
       <tbody>
@@ -62,10 +62,10 @@ export const UserInfo = ({ user }) => {
 
     {role==="ADMIN" && <div className='div-btn-test'>
       <button onClick={changeUser} className="btn waves-effect waves-light indigo lighten-1 btn-add ">
-          Изменить данные<i className="material-icons right">edit</i></button>
+          Редактувати дані<i className="material-icons right">edit</i></button>
 
         <button onClick={deleteUser} className="btn waves-effect waves-light indigo lighten-1 btn-add">
-          Удалить пользователя<i className="material-icons right">delete</i></button></div>}
+          Видалити користувача<i className="material-icons right">delete</i></button></div>}
 
       {/* <p>Login: </p>
       <p>Имя: {user.firstname}</p>

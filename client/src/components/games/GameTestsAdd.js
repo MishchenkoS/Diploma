@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 export const GameTestsAdd = ( formArg) => {
   const {formArg: form, setFormArg: setForm, tests, round} = formArg;
   if (!tests.length) {
-    return <p className="center">Тестов пока нет</p>
+    return <p className="center">Тестів поки немає</p>
   }
   const changeCheck = (event) => {
     const id = event.target.id;

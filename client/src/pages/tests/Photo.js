@@ -95,7 +95,7 @@ export const Photo = () => {
       <img src={form.img}/>
       <button type='submit' onClick={formSubmit}>Submit</button>
     </form>
-    <button onClick={getIMG}>Загрузить</button>
+    <button onClick={getIMG}>Завантажити</button>
     </>
   )
 }

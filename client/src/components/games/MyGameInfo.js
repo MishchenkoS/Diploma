@@ -14,9 +14,9 @@ export const MyGameInfo = (arg) => {
   <table className="striped">
     <thead>
       <tr>
-        <th>Название</th>
+        <th>Назва</th>
         <th>Тип</th>
-        <th>Дата создания</th>
+        <th>Дата створення</th>
       </tr>
     </thead>
     <tbody>
@@ -30,7 +30,7 @@ export const MyGameInfo = (arg) => {
   <table className="striped">
     <thead>
       <tr>
-        <th>Ведущие</th>
+        <th>Ведучі</th>
       </tr>
     </thead>
     <tbody>
@@ -51,7 +51,7 @@ export const MyGameInfo = (arg) => {
   <table className="striped">
   <thead>
       <tr>
-        <th>Игроки</th>
+        <th>Гравці</th>
       </tr>
     </thead>
     <tbody>
@@ -77,7 +77,7 @@ export const MyGameInfo = (arg) => {
   </table>
   {leadings.find(x => x._id === userId)  &&
   <button onClick={startGame} className="btn waves-effect waves-light indigo lighten-1 btn-add ">
-    Начать игру<i class="material-icons right">people</i></button>}
+    Розпочати гру<i class="material-icons right">people</i></button>}
  
 
 

@@ -29,7 +29,7 @@ export const NavbarAdmin = () => {
     <nav>
       {/* <div className="nav-wrapper blue darken-1" style={{ padding: '0 2rem' }}> */}
       <div className="nav-wrapper indigo darken-4" style={{ padding: '0 2rem' }}> 
-        <span className="brand-logo">КТКТ</span>
+        <span className="brand-logo">НУЧП</span>
         <a href="#" data-target="mobile-demo" className="sidenav-trigger burger_a">
           <i className="material-icons burger_i">menu
             {/* <div className="burger"></div>
@@ -38,26 +38,26 @@ export const NavbarAdmin = () => {
           </i>
           </a>
         <ul className="right hide-on-med-and-down">
-          <li><NavLink to="/">Главная</NavLink></li>
+          <li><NavLink to="/">Головна</NavLink></li>
           <li><NavLink to={`/online`}>Онлайн</NavLink></li>
-          <li><NavLink to="/tests">Тесты</NavLink></li>
-          <li><NavLink to="/games">Игры</NavLink></li>
-          <li><NavLink to="/tournaments">Турниры</NavLink></li>
-          <li><NavLink to="/users">Пользователи</NavLink></li>
-          <li><NavLink to="/register">Регистрация</NavLink></li>
-          <li><a href="/" onClick={logoutHandler}>Выйти</a></li>
+          <li><NavLink to="/tests">Тести</NavLink></li>
+          <li><NavLink to="/games">Ігри</NavLink></li>
+          <li><NavLink to="/tournaments">Турнири</NavLink></li>
+          <li><NavLink to="/users">Користувачі</NavLink></li>
+          <li><NavLink to="/register">Реєстрація</NavLink></li>
+          <li><a href="/" onClick={logoutHandler}>Вийти</a></li>
         </ul>
       </div>
     </nav>
     <ul className="sidenav" id="mobile-demo">
     <li><NavLink to="/">Главная</NavLink></li>
     <li><NavLink to={`/online`}>Онлайн</NavLink></li>
-    <li><NavLink to="/tests">Тесты</NavLink></li>
-    <li><NavLink to="/games">Игры</NavLink></li>
-    <li><NavLink to="/tournaments">Турниры</NavLink></li>
-    <li><NavLink to="/users">Пользователи</NavLink></li>
-    <li><NavLink to="/register">Регистрация</NavLink></li>
-    <li><a href="/" onClick={logoutHandler}>Выйти</a></li>
+    <li><NavLink to="/tests">Тести</NavLink></li>
+    <li><NavLink to="/games">Ігри</NavLink></li>
+    <li><NavLink to="/tournaments">Турнири</NavLink></li>
+    <li><NavLink to="/users">Користувачі</NavLink></li>
+    <li><NavLink to="/register">Реєстрація</NavLink></li>
+    <li><a href="/" onClick={logoutHandler}>Вийти</a></li>
   </ul>
   </>
   );

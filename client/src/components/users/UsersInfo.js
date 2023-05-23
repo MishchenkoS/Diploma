@@ -4,12 +4,12 @@ import { Link } from "react-router-dom";
 export const UsersInfo = ({ users }) => {
 
   if (!users.length) {
-    return <p className="center">Пользователей пока нет</p>
+    return <p className="center">Користувачів поки немає</p>
   }
 
   return (
     <>
-    <div className='div-btn div-name-page'><h5>Список пользователей</h5></div>
+    <div className='div-btn div-name-page'><h5>Список користувачів</h5></div>
     <div className="collection">
       {users.map((user, index) => {
         return (

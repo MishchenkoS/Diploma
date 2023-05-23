@@ -31,11 +31,11 @@ export const MyTournamentInfo = (arg) => {
         <hr className="hr-line-end"/>
         <p className="flex-center">Тест : </p>
       </>);
-      roundDOM.push(<p className="question flex-center">Вопрос : {item.testId.question}</p>);
+      roundDOM.push(<p className="question flex-center">Запитання : {item.testId.question}</p>);
       for(let key in item.testId.answers) {
           roundDOM.push(<li className="flex-center">{item.testId.answers[key]}</li>);
       }
-      roundDOM.push(<p className="text-bold">Ответы игроков : </p>);
+      roundDOM.push(<p className="text-bold">Відповіді гравців : </p>);
       for(let key of item.responders){
         const user = players.find(key1 => key1.id === key);
         console.log(players)
@@ -50,11 +50,11 @@ export const MyTournamentInfo = (arg) => {
 
   return ( 
   <>
-  <p className="text-center">Статус турнира: {tournament.status}</p>
-  <p className="text-center">Название игры: <Link to={`/games/game/${game._id}`}> {game.nameGame}</Link></p>
-  <p className="text-italic">Дата проведения турнира: {new Date(tournament.created_date).toLocaleDateString()}</p>
+  <p className="text-center">Статус турниру: {tournament.status}</p>
+  <p className="text-center">Назва гри: <Link to={`/games/game/${game._id}`}> {game.nameGame}</Link></p>
+  <p className="text-italic">Дата проведення турниру: {new Date(tournament.created_date).toLocaleDateString()}</p>
   <div>
-    <p className="text-bold">Очки за турнир:</p>
+    <p className="text-bold">Бали за турнир:</p>
     {getBalls()}
   </div>
 

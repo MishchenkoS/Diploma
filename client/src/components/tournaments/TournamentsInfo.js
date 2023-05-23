@@ -90,7 +90,7 @@ export const TournamentsInfo = ({ tournaments}) => {
 
   return (
     <>
-    <div className='div-btn div-name-page'><h5>Список турниров</h5></div>
+    <div className='div-btn div-name-page'><h5>Список турнирів</h5></div>
     {<div className="collection">
       {tournaments.map((tournament, index) => {
         // getGame(tournament.gameId);

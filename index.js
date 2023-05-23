@@ -53,6 +53,8 @@ io.on('connection', (socket) =>{
 
   socket.on('CONNECT', async (data) => {
 
+    console.log(gameIdGlobal);
+
     if(!data.gameId && !gameIdGlobal) {
         io.emit('CONNECT', {message: "Нет начатых игр"});
     }
@@ -171,9 +173,22 @@ io.on('connection', (socket) =>{
   });  
 
   socket.on('START', async (data) => {
-    const gameInfo = await gameDao.findGameById(data.gameId);
+    console.log(data.gameId, gameIdGlobal)
+    let gameInfo;
+    if(!data.gameId) {
+      console.log(1);
+      gameInfo = await gameDao.findGameById(gameIdGlobal);
+    } else {
+      console.log(2);
+      console.log(data.gameId)
+      gameInfo = await gameDao.findGameById(data.gameId);
+      console.log(gameInfo)
+    }
+
+    console.log("4343", data.tournamentId)
     await tournamentDao.findTournamentAndUpdateById(data.tournamentId, 'status', 'START');
-    
+
+    console.log(data.gameId, gameIdGlobal)
     const rounds = [];
     for(let i = 0; i < gameInfo.rounds.length; i++) {
       rounds.push({});

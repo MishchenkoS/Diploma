@@ -18,7 +18,7 @@ export const WriteTests = (formArg, setFormArg) => {
 
   return (
   <div>
-    <label>Введите сложность:</label>
+    <label>Введіть складність:</label>
     <input 
       type='number'
       placeholder='0' 
@@ -29,23 +29,23 @@ export const WriteTests = (formArg, setFormArg) => {
       min={0}
       required
     />
-    <label>Введите вопрос:  </label>
+    <label>Введіть запитання:  </label>
     <input 
       type='text' 
       autoComplete='off'
       onChange={changeQuestion} 
       name='question' 
-      placeholder='Вопрос' 
+      placeholder='Запитання' 
       value={form.question}
       required
     />
-    <label>Ответ</label> 
+    <label>Відповідь</label> 
     <input 
       type='text' 
       autoComplete='off'
       onChange={changeAnswer} 
       name='variant' 
-      placeholder='Ответ' 
+      placeholder='Відповідь' 
       value={form.answers[0]}
       required
     />

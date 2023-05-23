@@ -42,11 +42,11 @@ export const TestInfo = ({ test }) => {
       <table className="striped">
         <thead>
           <tr>
-            <th>Сложность</th>
+            <th>Складність</th>
             <th>Тип</th>
-            <th>Вопрос</th>
-            <th>Варианты ответа</th>
-            <th>Дата создания</th>
+            <th>Запитання</th>
+            <th>Варіанти відповіді</th>
+            <th>Дата створення</th>
           </tr>
          </thead>
          <tbody>
@@ -82,10 +82,10 @@ export const TestInfo = ({ test }) => {
         </table>
       <div className='div-btn-test'>
       <button onClick={changeTest} className="btn waves-effect waves-light indigo lighten-1 btn-add ">
-          Изменить тест<i className="material-icons right">edit</i></button>
+          Редагувати тест<i className="material-icons right">edit</i></button>
 
         <button onClick={deleteTest} className="btn waves-effect waves-light indigo lighten-1 btn-add">
-          Удалить тест<i className="material-icons right">delete</i></button></div>
+          Видалити тест<i className="material-icons right">delete</i></button></div>
 
     </>
   );

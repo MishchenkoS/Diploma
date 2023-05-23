@@ -50,9 +50,14 @@ module.exports.getTournamentInfoAll = async (req, res) => {
   }
 
   const players = [];
-  for(let i = 0; i < gameInfo.players.length; i++) {
-    const userInfo = await userDao.findUserById(gameInfo.players[i]);
-    players.push({id: userInfo._id, login: userInfo.login})
+
+  if(gameInfo.type === "PLAYER") {
+    for(let i = 0; i < gameInfo.players.length; i++) {
+      const userInfo = await userDao.findUserById(gameInfo.players[i]);
+      players.push({id: userInfo._id, login: userInfo.login});
+    }
+  } else {
+    players.push({});
   }
 
   res.json({tournament: tournamentInfo, game: gameInfo, rounds, leadings, players});
